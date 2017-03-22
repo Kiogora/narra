@@ -1,0 +1,9 @@
+- Design
+LED strip designs are available populated with many different types of SMD, not only in different colours and addressable or non-addressable, by different shapes, sizes, and power levels. The most common types of SMD are: 3528, single colour, non-addressable, very low power; 5050, containing three LEDs allowing for RGB and addressable strips as well as higher power levels; 2835, a newer single-colour SMD having the same surface dimensions as the 3528 but a larger emitter area and a thinner design with an integrated heatsink allowing for higher power levels; 5630/5730, a newer replacement for single-colour 5050 SMDs which can operate at slightly higher power levels and have high efficacy. Less common designs may have 3014, 4014, 7020, 8020, or other SMDs.
+Wikipedia:https://en.wikipedia.org/wiki/LED_strip_light 
+
+
+
+- Beam angle
+Typical SMD LEDs are rated as having a 120° beam angle, directed "up", ie. perpendicular to the mounting surface. 'Side View' or 'Edge Emitter' SMDs are designed is such that light is emitted parallel to the adhering surface (ie, 90 deg difference to typical tape design). These allow the construction of LED strips which wash surfaces within less space or accent edge profiles such as signage.
+Wikipedia:https://en.wikipedia.org/wiki/LED_strip_light 
