@@ -1,0 +1,187 @@
+EESchema Schematic File Version 2
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+EELAYER 25 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L LED D1
+U 1 1 58DE35E1
+P 2950 1600
+F 0 "D1" H 2950 1700 50  0000 C CNN
+F 1 "LED" H 2950 1500 50  0000 C CNN
+F 2 "LEDs:LED_0805" H 2950 1600 50  0001 C CNN
+F 3 "" H 2950 1600 50  0001 C CNN
+	1    2950 1600
+	1    0    0    -1  
+$EndComp
+$Comp
+L LED D2
+U 1 1 58DE3707
+P 2950 1900
+F 0 "D2" H 2950 2000 50  0000 C CNN
+F 1 "LED" H 2950 1800 50  0000 C CNN
+F 2 "LEDs:LED_0805" H 2950 1900 50  0001 C CNN
+F 3 "" H 2950 1900 50  0001 C CNN
+	1    2950 1900
+	1    0    0    -1  
+$EndComp
+$Comp
+L LED D3
+U 1 1 58DE3788
+P 2950 2200
+F 0 "D3" H 2950 2300 50  0000 C CNN
+F 1 "LED" H 2950 2100 50  0000 C CNN
+F 2 "LEDs:LED_0805" H 2950 2200 50  0001 C CNN
+F 3 "" H 2950 2200 50  0001 C CNN
+	1    2950 2200
+	1    0    0    -1  
+$EndComp
+$Comp
+L LED D4
+U 1 1 58DE378E
+P 2950 2500
+F 0 "D4" H 2950 2600 50  0000 C CNN
+F 1 "LED" H 2950 2400 50  0000 C CNN
+F 2 "LEDs:LED_0805" H 2950 2500 50  0001 C CNN
+F 3 "" H 2950 2500 50  0001 C CNN
+	1    2950 2500
+	1    0    0    -1  
+$EndComp
+$Comp
+L LED D5
+U 1 1 58DE38CC
+P 2950 2800
+F 0 "D5" H 2950 2900 50  0000 C CNN
+F 1 "LED" H 2950 2700 50  0000 C CNN
+F 2 "LEDs:LED_0805" H 2950 2800 50  0001 C CNN
+F 3 "" H 2950 2800 50  0001 C CNN
+	1    2950 2800
+	1    0    0    -1  
+$EndComp
+$Comp
+L LED D6
+U 1 1 58DE38D2
+P 2950 3100
+F 0 "D6" H 2950 3200 50  0000 C CNN
+F 1 "LED" H 2950 3000 50  0000 C CNN
+F 2 "LEDs:LED_0805" H 2950 3100 50  0001 C CNN
+F 3 "" H 2950 3100 50  0001 C CNN
+	1    2950 3100
+	1    0    0    -1  
+$EndComp
+$Comp
+L LED D7
+U 1 1 58DE38D8
+P 2950 3400
+F 0 "D7" H 2950 3500 50  0000 C CNN
+F 1 "LED" H 2950 3300 50  0000 C CNN
+F 2 "LEDs:LED_0805" H 2950 3400 50  0001 C CNN
+F 3 "" H 2950 3400 50  0001 C CNN
+	1    2950 3400
+	1    0    0    -1  
+$EndComp
+$Comp
+L LED D8
+U 1 1 58DE38DE
+P 2950 3700
+F 0 "D8" H 2950 3800 50  0000 C CNN
+F 1 "LED" H 2950 3600 50  0000 C CNN
+F 2 "LEDs:LED_0805" H 2950 3700 50  0001 C CNN
+F 3 "" H 2950 3700 50  0001 C CNN
+	1    2950 3700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2800 1600 2550 1600
+Wire Wire Line
+	2550 1300 2550 3700
+Wire Wire Line
+	2550 3700 2800 3700
+Wire Wire Line
+	2800 3400 2550 3400
+Connection ~ 2550 3400
+Wire Wire Line
+	2800 3100 2550 3100
+Connection ~ 2550 3100
+Wire Wire Line
+	2800 2800 2550 2800
+Connection ~ 2550 2800
+Wire Wire Line
+	2800 2500 2550 2500
+Connection ~ 2550 2500
+Wire Wire Line
+	2800 2200 2550 2200
+Connection ~ 2550 2200
+Wire Wire Line
+	2550 1900 2800 1900
+Connection ~ 2550 1900
+Wire Wire Line
+	3100 1600 3350 1600
+Wire Wire Line
+	3350 1600 3350 3700
+Wire Wire Line
+	3100 3700 3700 3700
+Wire Wire Line
+	3100 3400 3350 3400
+Connection ~ 3350 3400
+Wire Wire Line
+	3100 3100 3350 3100
+Connection ~ 3350 3100
+Wire Wire Line
+	3100 2800 3350 2800
+Connection ~ 3350 2800
+Wire Wire Line
+	3100 2500 3350 2500
+Connection ~ 3350 2500
+Wire Wire Line
+	3100 2200 3350 2200
+Connection ~ 3350 2200
+Wire Wire Line
+	3100 1900 3350 1900
+Connection ~ 3350 1900
+Connection ~ 2550 1600
+Connection ~ 3350 3700
+Text Label 3700 3700 0    60   ~ 0
+Columns_anode
+Text Label 2550 1300 0    60   ~ 0
+Rows_cathode
+$EndSCHEMATC
