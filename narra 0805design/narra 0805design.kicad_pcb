@@ -196,7 +196,7 @@
     )
   )
 
-  (module LEDs:LED_0805 (layer F.Cu) (tedit 57FE93EC) (tstamp 58E1FC24)
+  (module LEDs:LED_0805 (layer F.Cu) (tedit 58E22B5D) (tstamp 58E1FC24)
     (at 165.1 88.646 270)
     (descr "LED 0805 smd package")
     (tags "LED led 0805 SMD smd SMT smt smdled SMDLED smtled SMTLED")
@@ -205,7 +205,7 @@
     (fp_text reference D2 (at 4.191 0 270) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (fp_text value LED (at 0 1.55 270) (layer F.Fab)
+    (fp_text value LED (at 0 1.55 270) (layer F.Fab) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_line (start -1.8 -0.7) (end -1.8 0.7) (layer F.SilkS) (width 0.12))
@@ -234,7 +234,7 @@
     )
   )
 
-  (module LEDs:LED_0805 (layer F.Cu) (tedit 57FE93EC) (tstamp 58E1FC2A)
+  (module LEDs:LED_0805 (layer F.Cu) (tedit 58E22BA3) (tstamp 58E1FC2A)
     (at 172.212 88.646 90)
     (descr "LED 0805 smd package")
     (tags "LED led 0805 SMD smd SMT smt smdled SMDLED smtled SMTLED")
@@ -243,7 +243,7 @@
     (fp_text reference D3 (at 4.064 0 90) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (fp_text value LED (at 0 1.55 90) (layer F.Fab)
+    (fp_text value LED (at 0 1.55 90) (layer F.Fab) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_line (start -1.8 -0.7) (end -1.8 0.7) (layer F.SilkS) (width 0.12))
@@ -272,7 +272,7 @@
     )
   )
 
-  (module LEDs:LED_0805 (layer F.Cu) (tedit 57FE93EC) (tstamp 58E1FC30)
+  (module LEDs:LED_0805 (layer F.Cu) (tedit 58E22BB9) (tstamp 58E1FC30)
     (at 179.578 88.646 270)
     (descr "LED 0805 smd package")
     (tags "LED led 0805 SMD smd SMT smt smdled SMDLED smtled SMTLED")
@@ -281,7 +281,7 @@
     (fp_text reference D4 (at 4.318 -0.127 270) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (fp_text value LED (at 0 1.55 270) (layer F.Fab)
+    (fp_text value LED (at 0 1.55 270) (layer F.Fab) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_line (start -1.8 -0.7) (end -1.8 0.7) (layer F.SilkS) (width 0.12))
@@ -310,7 +310,7 @@
     )
   )
 
-  (module LEDs:LED_0805 (layer F.Cu) (tedit 57FE93EC) (tstamp 58E1FC36)
+  (module LEDs:LED_0805 (layer F.Cu) (tedit 58E22C00) (tstamp 58E1FC36)
     (at 186.944 88.646 90)
     (descr "LED 0805 smd package")
     (tags "LED led 0805 SMD smd SMT smt smdled SMDLED smtled SMTLED")
@@ -319,7 +319,7 @@
     (fp_text reference D5 (at 4.064 0 90) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (fp_text value LED (at 0 1.55 90) (layer F.Fab)
+    (fp_text value LED (at 0 1.55 90) (layer F.Fab) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_line (start -1.8 -0.7) (end -1.8 0.7) (layer F.SilkS) (width 0.12))
@@ -348,7 +348,7 @@
     )
   )
 
-  (module LEDs:LED_0805 (layer F.Cu) (tedit 57FE93EC) (tstamp 58E1FC3C)
+  (module LEDs:LED_0805 (layer F.Cu) (tedit 58E22C08) (tstamp 58E1FC3C)
     (at 194.31 88.646 270)
     (descr "LED 0805 smd package")
     (tags "LED led 0805 SMD smd SMT smt smdled SMDLED smtled SMTLED")
@@ -357,7 +357,7 @@
     (fp_text reference D6 (at 4.318 0 270) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (fp_text value LED (at 0 1.55 270) (layer F.Fab)
+    (fp_text value LED (at 0 1.55 270) (layer F.Fab) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_line (start -1.8 -0.7) (end -1.8 0.7) (layer F.SilkS) (width 0.12))
@@ -386,7 +386,7 @@
     )
   )
 
-  (module LEDs:LED_0805 (layer F.Cu) (tedit 57FE93EC) (tstamp 58E1FC42)
+  (module LEDs:LED_0805 (layer F.Cu) (tedit 58E22C53) (tstamp 58E1FC42)
     (at 201.168 88.646 90)
     (descr "LED 0805 smd package")
     (tags "LED led 0805 SMD smd SMT smt smdled SMDLED smtled SMTLED")
@@ -395,7 +395,7 @@
     (fp_text reference D7 (at 4.064 0 90) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (fp_text value LED (at 0 1.55 90) (layer F.Fab)
+    (fp_text value LED (at 0 1.55 90) (layer F.Fab) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_line (start -1.8 -0.7) (end -1.8 0.7) (layer F.SilkS) (width 0.12))
@@ -433,7 +433,7 @@
     (fp_text reference D8 (at -4.318 0 270) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (fp_text value LED (at 0 1.55 270) (layer F.Fab)
+    (fp_text value LED (at 0 1.55 270) (layer F.Fab) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_line (start -1.8 -0.7) (end -1.8 0.7) (layer F.SilkS) (width 0.12))
@@ -491,7 +491,7 @@
     (fp_text reference J2 (at -2.032 -2.032) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (fp_text value Columns (at 0 2) (layer F.Fab)
+    (fp_text value Columns (at 0 2) (layer F.Fab) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_line (start -1 -1) (end 1 -1) (layer F.CrtYd) (width 0.05))
@@ -510,7 +510,7 @@
     (fp_text reference R2 (at 4.064 0) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (fp_text value 37 (at 3.81 2.31 270) (layer F.Fab)
+    (fp_text value 37 (at 3.81 2.31 270) (layer F.Fab) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_line (start 0.66 -1.25) (end 0.66 1.25) (layer F.Fab) (width 0.1))
@@ -540,7 +540,7 @@
     )
   )
 
-  (module Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal (layer F.Cu) (tedit 5874F706) (tstamp 58E1FC64)
+  (module Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal (layer F.Cu) (tedit 58E22B80) (tstamp 58E1FC64)
     (at 168.656 92.456 90)
     (descr "Resistor, Axial_DIN0207 series, Axial, Horizontal, pin pitch=7.62mm, 0.25W = 1/4W, length*diameter=6.3*2.5mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf")
     (tags "Resistor Axial_DIN0207 series Axial Horizontal pin pitch 7.62mm 0.25W = 1/4W length 6.3mm diameter 2.5mm")
@@ -548,7 +548,7 @@
     (fp_text reference R3 (at 3.556 -0.127 180) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (fp_text value 37 (at 3.81 2.31 90) (layer F.Fab)
+    (fp_text value 37 (at 3.81 2.31 90) (layer F.Fab) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_line (start 0.66 -1.25) (end 0.66 1.25) (layer F.Fab) (width 0.1))
@@ -578,7 +578,7 @@
     )
   )
 
-  (module Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal (layer F.Cu) (tedit 5874F706) (tstamp 58E1FC6A)
+  (module Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal (layer F.Cu) (tedit 58E22BBE) (tstamp 58E1FC6A)
     (at 175.768 84.836 270)
     (descr "Resistor, Axial_DIN0207 series, Axial, Horizontal, pin pitch=7.62mm, 0.25W = 1/4W, length*diameter=6.3*2.5mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf")
     (tags "Resistor Axial_DIN0207 series Axial Horizontal pin pitch 7.62mm 0.25W = 1/4W length 6.3mm diameter 2.5mm")
@@ -586,7 +586,7 @@
     (fp_text reference R4 (at 4.064 0) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (fp_text value 37 (at 3.81 2.31 270) (layer F.Fab)
+    (fp_text value 37 (at 3.81 2.31 270) (layer F.Fab) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_line (start 0.66 -1.25) (end 0.66 1.25) (layer F.Fab) (width 0.1))
@@ -616,7 +616,7 @@
     )
   )
 
-  (module Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal (layer F.Cu) (tedit 5874F706) (tstamp 58E1FC70)
+  (module Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal (layer F.Cu) (tedit 58E22BEE) (tstamp 58E1FC70)
     (at 183.388 92.456 90)
     (descr "Resistor, Axial_DIN0207 series, Axial, Horizontal, pin pitch=7.62mm, 0.25W = 1/4W, length*diameter=6.3*2.5mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf")
     (tags "Resistor Axial_DIN0207 series Axial Horizontal pin pitch 7.62mm 0.25W = 1/4W length 6.3mm diameter 2.5mm")
@@ -624,7 +624,7 @@
     (fp_text reference R5 (at 3.556 0 180) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (fp_text value 37 (at 3.81 2.31 90) (layer F.Fab)
+    (fp_text value 37 (at 3.81 2.31 90) (layer F.Fab) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_line (start 0.66 -1.25) (end 0.66 1.25) (layer F.Fab) (width 0.1))
@@ -654,7 +654,7 @@
     )
   )
 
-  (module Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal (layer F.Cu) (tedit 5874F706) (tstamp 58E1FC76)
+  (module Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal (layer F.Cu) (tedit 58E22C0D) (tstamp 58E1FC76)
     (at 191.008 84.836 270)
     (descr "Resistor, Axial_DIN0207 series, Axial, Horizontal, pin pitch=7.62mm, 0.25W = 1/4W, length*diameter=6.3*2.5mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf")
     (tags "Resistor Axial_DIN0207 series Axial Horizontal pin pitch 7.62mm 0.25W = 1/4W length 6.3mm diameter 2.5mm")
@@ -662,7 +662,7 @@
     (fp_text reference R6 (at 4.064 0) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (fp_text value 37 (at 3.81 2.31 270) (layer F.Fab)
+    (fp_text value 37 (at 3.81 2.31 270) (layer F.Fab) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_line (start 0.66 -1.25) (end 0.66 1.25) (layer F.Fab) (width 0.1))
@@ -692,7 +692,7 @@
     )
   )
 
-  (module Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal (layer F.Cu) (tedit 5874F706) (tstamp 58E1FC7C)
+  (module Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal (layer F.Cu) (tedit 58E22C33) (tstamp 58E1FC7C)
     (at 197.612 92.456 90)
     (descr "Resistor, Axial_DIN0207 series, Axial, Horizontal, pin pitch=7.62mm, 0.25W = 1/4W, length*diameter=6.3*2.5mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf")
     (tags "Resistor Axial_DIN0207 series Axial Horizontal pin pitch 7.62mm 0.25W = 1/4W length 6.3mm diameter 2.5mm")
@@ -700,7 +700,7 @@
     (fp_text reference R7 (at 3.556 0 180) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (fp_text value 37 (at 3.81 2.31 90) (layer F.Fab)
+    (fp_text value 37 (at 3.81 2.31 90) (layer F.Fab) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_line (start 0.66 -1.25) (end 0.66 1.25) (layer F.Fab) (width 0.1))
@@ -738,7 +738,7 @@
     (fp_text reference R8 (at 4.064 0) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (fp_text value 37 (at 3.81 2.31 270) (layer F.Fab)
+    (fp_text value 37 (at 3.81 2.31 270) (layer F.Fab) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_line (start 0.66 -1.25) (end 0.66 1.25) (layer F.Fab) (width 0.1))
@@ -943,7 +943,7 @@
       )
     )
     (filled_polygon
-      (pts
+      (pt
         (xy 178.33056 89.573362) (xy 178.33056 90.346) (xy 178.379843 90.593765) (xy 178.520191 90.803809) (xy 178.730235 90.944157)
         (xy 178.978 90.99344) (xy 180.178 90.99344) (xy 180.425765 90.944157) (xy 180.635809 90.803809) (xy 180.776157 90.593765)
         (xy 180.793614 90.506) (xy 184.744 90.506) (xy 185.034839 90.448148) (xy 185.281401 90.283401) (xy 185.69656 89.868242)
@@ -984,6 +984,29 @@
         (xy 158.690148 91.730839) (xy 158.748 91.44) (xy 158.748 91.215614) (xy 158.835765 91.198157) (xy 159.045809 91.057809)
         (xy 159.186157 90.847765) (xy 159.23544 90.6) (xy 159.23544 89.4) (xy 159.186157 89.152235) (xy 159.045809 88.942191)
         (xy 158.982666 88.9) (xy 159.045809 88.857809) (xy 159.186157 88.647765) (xy 159.203614 88.56) (xy 162.839198 88.56)
+      )
+    )
+    (filled_polygon
+      (pts
+        (xy 196.874577 83.604959) (xy 196.459611 83.980866) (xy 196.220086 84.486959) (xy 196.341371 84.709) (xy 197.485 84.709)
+        (xy 197.485 84.689) (xy 197.739 84.689) (xy 197.739 84.709) (xy 198.882629 84.709) (xy 199.003914 84.486959)
+        (xy 198.764389 83.980866) (xy 198.349423 83.604959) (xy 198.069454 83.489) (xy 204.226236 83.489) (xy 203.9122 83.618757)
+        (xy 203.508176 84.022077) (xy 203.28925 84.549309) (xy 203.288752 85.120187) (xy 203.506757 85.6478) (xy 203.910077 86.051824)
+        (xy 204.437309 86.27075) (xy 205.008187 86.271248) (xy 205.5358 86.053243) (xy 205.939824 85.649923) (xy 205.962215 85.596)
+        (xy 207.52 85.596) (xy 207.52 86.17156) (xy 207.426 86.17156) (xy 207.190683 86.215838) (xy 206.974559 86.35491)
+        (xy 206.829569 86.56711) (xy 206.77856 86.819) (xy 206.77856 87.169758) (xy 206.617401 87.008599) (xy 206.370839 86.843852)
+        (xy 206.08 86.786) (xy 202.385334 86.786) (xy 202.371162 86.710683) (xy 202.23209 86.494559) (xy 202.01989 86.349569)
+        (xy 201.768 86.29856) (xy 200.568 86.29856) (xy 200.332683 86.342838) (xy 200.116559 86.48191) (xy 199.971569 86.69411)
+        (xy 199.92056 86.946) (xy 199.92056 87.718638) (xy 198.653198 88.986) (xy 195.527334 88.986) (xy 195.513162 88.910683)
+        (xy 195.37409 88.694559) (xy 195.304289 88.646866) (xy 195.361441 88.61009) (xy 195.506431 88.39789) (xy 195.55744 88.146)
+        (xy 195.55744 86.946) (xy 195.513162 86.710683) (xy 195.37409 86.494559) (xy 195.16189 86.349569) (xy 195.07 86.330961)
+        (xy 195.07 85.185041) (xy 196.220086 85.185041) (xy 196.459611 85.691134) (xy 196.874577 86.067041) (xy 197.262961 86.227904)
+        (xy 197.485 86.105915) (xy 197.485 84.963) (xy 197.739 84.963) (xy 197.739 86.105915) (xy 197.961039 86.227904)
+        (xy 198.349423 86.067041) (xy 198.764389 85.691134) (xy 199.003914 85.185041) (xy 198.882629 84.963) (xy 197.739 84.963)
+        (xy 197.485 84.963) (xy 196.341371 84.963) (xy 196.220086 85.185041) (xy 195.07 85.185041) (xy 195.07 85.09)
+        (xy 195.012148 84.799161) (xy 195.012148 84.79916) (xy 194.847401 84.552599) (xy 194.593401 84.298599) (xy 194.346839 84.133852)
+        (xy 194.056 84.076) (xy 192.246646 84.076) (xy 192.225243 84.0242) (xy 191.821923 83.620176) (xy 191.506016 83.489)
+        (xy 197.154546 83.489)
       )
     )
     (filled_polygon

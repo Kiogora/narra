@@ -196,7 +196,7 @@
     )
   )
 
-  (module LEDs:LED_0805 (layer F.Cu) (tedit 57FE93EC) (tstamp 58E1FC24)
+  (module LEDs:LED_0805 (layer F.Cu) (tedit 58E22B5D) (tstamp 58E1FC24)
     (at 165.1 88.646 270)
     (descr "LED 0805 smd package")
     (tags "LED led 0805 SMD smd SMT smt smdled SMDLED smtled SMTLED")
@@ -205,7 +205,7 @@
     (fp_text reference D2 (at 4.191 0 270) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (fp_text value LED (at 0 1.55 270) (layer F.Fab)
+    (fp_text value LED (at 0 1.55 270) (layer F.Fab) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_line (start -1.8 -0.7) (end -1.8 0.7) (layer F.SilkS) (width 0.12))
@@ -234,7 +234,7 @@
     )
   )
 
-  (module LEDs:LED_0805 (layer F.Cu) (tedit 57FE93EC) (tstamp 58E1FC2A)
+  (module LEDs:LED_0805 (layer F.Cu) (tedit 58E22BA3) (tstamp 58E1FC2A)
     (at 172.212 88.646 90)
     (descr "LED 0805 smd package")
     (tags "LED led 0805 SMD smd SMT smt smdled SMDLED smtled SMTLED")
@@ -243,7 +243,7 @@
     (fp_text reference D3 (at 4.064 0 90) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (fp_text value LED (at 0 1.55 90) (layer F.Fab)
+    (fp_text value LED (at 0 1.55 90) (layer F.Fab) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_line (start -1.8 -0.7) (end -1.8 0.7) (layer F.SilkS) (width 0.12))
@@ -272,7 +272,7 @@
     )
   )
 
-  (module LEDs:LED_0805 (layer F.Cu) (tedit 57FE93EC) (tstamp 58E1FC30)
+  (module LEDs:LED_0805 (layer F.Cu) (tedit 58E22BB9) (tstamp 58E1FC30)
     (at 179.578 88.646 270)
     (descr "LED 0805 smd package")
     (tags "LED led 0805 SMD smd SMT smt smdled SMDLED smtled SMTLED")
@@ -281,7 +281,7 @@
     (fp_text reference D4 (at 4.318 -0.127 270) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (fp_text value LED (at 0 1.55 270) (layer F.Fab)
+    (fp_text value LED (at 0 1.55 270) (layer F.Fab) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_line (start -1.8 -0.7) (end -1.8 0.7) (layer F.SilkS) (width 0.12))
@@ -510,7 +510,7 @@
     (fp_text reference R2 (at 4.064 0) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (fp_text value 37 (at 3.81 2.31 270) (layer F.Fab)
+    (fp_text value 37 (at 3.81 2.31 270) (layer F.Fab) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_line (start 0.66 -1.25) (end 0.66 1.25) (layer F.Fab) (width 0.1))
@@ -540,7 +540,7 @@
     )
   )
 
-  (module Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal (layer F.Cu) (tedit 5874F706) (tstamp 58E1FC64)
+  (module Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal (layer F.Cu) (tedit 58E22B80) (tstamp 58E1FC64)
     (at 168.656 92.456 90)
     (descr "Resistor, Axial_DIN0207 series, Axial, Horizontal, pin pitch=7.62mm, 0.25W = 1/4W, length*diameter=6.3*2.5mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf")
     (tags "Resistor Axial_DIN0207 series Axial Horizontal pin pitch 7.62mm 0.25W = 1/4W length 6.3mm diameter 2.5mm")
@@ -548,7 +548,7 @@
     (fp_text reference R3 (at 3.556 -0.127 180) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (fp_text value 37 (at 3.81 2.31 90) (layer F.Fab)
+    (fp_text value 37 (at 3.81 2.31 90) (layer F.Fab) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_line (start 0.66 -1.25) (end 0.66 1.25) (layer F.Fab) (width 0.1))
@@ -578,7 +578,7 @@
     )
   )
 
-  (module Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal (layer F.Cu) (tedit 5874F706) (tstamp 58E1FC6A)
+  (module Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal (layer F.Cu) (tedit 58E22BBE) (tstamp 58E1FC6A)
     (at 175.768 84.836 270)
     (descr "Resistor, Axial_DIN0207 series, Axial, Horizontal, pin pitch=7.62mm, 0.25W = 1/4W, length*diameter=6.3*2.5mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf")
     (tags "Resistor Axial_DIN0207 series Axial Horizontal pin pitch 7.62mm 0.25W = 1/4W length 6.3mm diameter 2.5mm")
@@ -586,7 +586,7 @@
     (fp_text reference R4 (at 4.064 0) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (fp_text value 37 (at 3.81 2.31 270) (layer F.Fab)
+    (fp_text value 37 (at 3.81 2.31 270) (layer F.Fab) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_line (start 0.66 -1.25) (end 0.66 1.25) (layer F.Fab) (width 0.1))
@@ -616,7 +616,7 @@
     )
   )
 
-  (module Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal (layer F.Cu) (tedit 5874F706) (tstamp 58E1FC70)
+  (module Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal (layer F.Cu) (tedit 58E22BC3) (tstamp 58E1FC70)
     (at 183.388 92.456 90)
     (descr "Resistor, Axial_DIN0207 series, Axial, Horizontal, pin pitch=7.62mm, 0.25W = 1/4W, length*diameter=6.3*2.5mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf")
     (tags "Resistor Axial_DIN0207 series Axial Horizontal pin pitch 7.62mm 0.25W = 1/4W length 6.3mm diameter 2.5mm")
