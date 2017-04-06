@@ -1,4 +1,4 @@
-update=Thu 06 Apr 2017 10:00:00 AM EAT
+update=Thu 06 Apr 2017 04:29:47 PM EAT
 version=1
 last_client=kicad
 [pcbnew]
@@ -59,3 +59,13 @@ LibName27=atmel
 LibName28=contrib
 LibName29=valves
 LibName30=/home/bigbitsoko/Desktop/Pochi_files/component_libraries/pochi
+[schematic_editor]
+version=1
+PageLayoutDescrFile=
+PlotDirectoryName=
+SubpartIdSeparator=0
+SubpartFirstId=65
+NetFmtName=
+SpiceAjustPassiveValues=0
+LabSize=39
+ERC_TestSimilarLabels=1
