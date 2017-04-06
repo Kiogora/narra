@@ -1,4 +1,4 @@
-update=Thu 06 Apr 2017 09:07:54 AM EAT
+update=Thu 06 Apr 2017 10:00:00 AM EAT
 version=1
 last_client=kicad
 [pcbnew]
@@ -23,6 +23,8 @@ ModuleOutlineThickness=0.150000000000
 [cvpcb]
 version=1
 NetIExt=net
+[general]
+version=1
 [eeschema]
 version=1
 LibDir=
@@ -56,5 +58,4 @@ LibName26=opto
 LibName27=atmel
 LibName28=contrib
 LibName29=valves
-[general]
-version=1
+LibName30=/home/bigbitsoko/Desktop/Pochi_files/component_libraries/pochi

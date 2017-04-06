@@ -1,0 +1,206 @@
+EESchema Schematic File Version 2
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:pochi
+LIBS:ND-01-cache
+EELAYER 26 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 2 3
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L HIROSE-USB-MICROB J?
+U 1 1 58E5E79F
+P 2100 4800
+F 0 "J?" H 2100 5397 60  0000 C CNN
+F 1 "HIROSE-USB-MICROB" H 2100 5291 60  0000 C CNN
+F 2 "" H 2100 4800 60  0001 C CNN
+F 3 "" H 2100 4800 60  0001 C CNN
+	1    2100 4800
+	-1   0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 58E5EAD0
+P 2550 5400
+F 0 "#PWR?" H 2550 5150 50  0001 C CNN
+F 1 "GND" H 2555 5227 50  0000 C CNN
+F 2 "" H 2550 5400 50  0001 C CNN
+F 3 "" H 2550 5400 50  0001 C CNN
+	1    2550 5400
+	1    0    0    -1  
+$EndComp
+Text Label 1550 4800 0    39   ~ 0
+GND
+Text Label 2550 5250 0    39   ~ 0
+GND
+$Comp
+L CONN_01X02 J?
+U 1 1 58E5ED61
+P 2000 3450
+F 0 "J?" H 1919 3175 50  0000 C CNN
+F 1 "CONN_01X02" H 1919 3266 50  0000 C CNN
+F 2 "" H 2000 3450 50  0001 C CNN
+F 3 "" H 2000 3450 50  0001 C CNN
+	1    2000 3450
+	-1   0    0    1   
+$EndComp
+Text Label 2300 3500 0    39   ~ 0
+GND
+Text Label 2300 3400 0    39   ~ 0
+5V
+Text Notes 1800 3650 0    39   ~ 0
+TEST POWER INPUT
+Text Notes 1700 5400 0    39   ~ 0
+MICRO-USB POWER INPUT
+Text Label 2600 4450 0    39   ~ 0
+5V
+$Comp
+L D_Zener D?
+U 1 1 58E5F2D5
+P 5300 4400
+F 0 "D?" V 5250 4150 50  0000 L CNN
+F 1 "D_Zener" V 5350 4000 50  0000 L CNN
+F 2 "" H 5300 4400 50  0001 C CNN
+F 3 "" H 5300 4400 50  0001 C CNN
+	1    5300 4400
+	0    1    1    0   
+$EndComp
+$Comp
+L CP1 C?
+U 1 1 58E5F3F0
+P 5750 4400
+F 0 "C?" H 5865 4446 50  0000 L CNN
+F 1 "CP1" H 5865 4355 50  0000 L CNN
+F 2 "" H 5750 4400 50  0001 C CNN
+F 3 "" H 5750 4400 50  0001 C CNN
+	1    5750 4400
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 58E5F47E
+P 5750 4850
+F 0 "#PWR?" H 5750 4600 50  0001 C CNN
+F 1 "GND" H 5755 4677 50  0000 C CNN
+F 2 "" H 5750 4850 50  0001 C CNN
+F 3 "" H 5750 4850 50  0001 C CNN
+	1    5750 4850
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R?
+U 1 1 58E5F57B
+P 6200 4300
+F 0 "R?" H 6270 4346 50  0000 L CNN
+F 1 "R" H 6270 4255 50  0000 L CNN
+F 2 "" V 6130 4300 50  0001 C CNN
+F 3 "" H 6200 4300 50  0001 C CNN
+	1    6200 4300
+	1    0    0    -1  
+$EndComp
+$Comp
+L LED D?
+U 1 1 58E5F5EF
+P 6200 4600
+F 0 "D?" V 6238 4483 50  0000 R CNN
+F 1 "LED" V 6147 4483 50  0000 R CNN
+F 2 "" H 6200 4600 50  0001 C CNN
+F 3 "" H 6200 4600 50  0001 C CNN
+	1    6200 4600
+	0    -1   -1   0   
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 58E5F794
+P 6200 4850
+F 0 "#PWR?" H 6200 4600 50  0001 C CNN
+F 1 "GND" H 6205 4677 50  0000 C CNN
+F 2 "" H 6200 4850 50  0001 C CNN
+F 3 "" H 6200 4850 50  0001 C CNN
+	1    6200 4850
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 58E5F7E1
+P 5300 4850
+F 0 "#PWR?" H 5300 4600 50  0001 C CNN
+F 1 "GND" H 5305 4677 50  0000 C CNN
+F 2 "" H 5300 4850 50  0001 C CNN
+F 3 "" H 5300 4850 50  0001 C CNN
+	1    5300 4850
+	1    0    0    -1  
+$EndComp
+Text GLabel 6800 4000 2    39   Output ~ 0
+VCC
+Text Notes 6050 5200 2    39   ~ 0
+POWER CONDITIONING
+Wire Wire Line
+	1550 4800 1700 4800
+Wire Wire Line
+	2500 5200 2550 5200
+Wire Wire Line
+	2550 5200 2550 5400
+Wire Wire Line
+	2500 4450 2600 4450
+Wire Wire Line
+	2200 3500 2300 3500
+Wire Wire Line
+	2200 3400 2300 3400
+Wire Wire Line
+	5300 4000 5300 4250
+Wire Wire Line
+	5750 4000 5750 4250
+Connection ~ 5300 4000
+Wire Wire Line
+	5300 4550 5300 4850
+Wire Wire Line
+	5750 4550 5750 4850
+Wire Wire Line
+	6200 4000 6200 4150
+Connection ~ 5750 4000
+Wire Wire Line
+	6200 4850 6200 4750
+Connection ~ 6200 4000
+Wire Wire Line
+	4900 4000 6800 4000
+Text Label 4900 4000 2    39   ~ 0
+5V
+$EndSCHEMATC

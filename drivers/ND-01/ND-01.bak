@@ -45,7 +45,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Sheet
-S 2600 4950 1500 1050
+S 2600 3350 1500 1050
 U 58E5E636
 F0 "ND01 power" 60
 F1 "ND01 power.sch" 60
@@ -73,10 +73,10 @@ F16 "COL[64:71]" O R 6200 4450 39
 F17 "COL[72:79]" O R 6200 4550 39 
 F18 "COL[80:87]" O R 6200 4650 39 
 $EndSheet
-Text Notes 3600 5500 2    39   ~ 0
+Text Notes 3600 3900 2    39   ~ 0
 POWER SUBSYSTEM
 Text Notes 5700 4000 2    39   ~ 0
 CONTROL CIRCUITRY
-Text Notes 3650 5600 2    39   ~ 0
+Text Notes 3650 4000 2    39   ~ 0
 GLOBAL POWER OUPUT
 $EndSCHEMATC
