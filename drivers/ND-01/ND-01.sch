@@ -144,4 +144,6 @@ Wire Wire Line
 	6200 4550 6800 4550
 Wire Wire Line
 	6200 4650 6800 4650
+Text Notes 3000 4050 0    60   ~ 0
+MCU interface
 $EndSCHEMATC
