@@ -1,5 +1,4 @@
 EESchema Schematic File Version 2
-LIBS:ND-01-rescue
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -900,8 +899,6 @@ Wire Notes Line
 Wire Notes Line
 	500  2050 11200 2050
 Entry Wire Line
-	1650 5400 1750 5500
-Entry Wire Line
 	1650 5500 1750 5600
 Entry Wire Line
 	1650 5600 1750 5700
@@ -916,7 +913,7 @@ Entry Wire Line
 Entry Wire Line
 	1650 6100 1750 6200
 Entry Wire Line
-	1650 6400 1750 6500
+	1650 6200 1750 6300
 Entry Wire Line
 	1650 6500 1750 6600
 Entry Wire Line
@@ -931,14 +928,18 @@ Entry Wire Line
 	1650 7000 1750 7100
 Entry Wire Line
 	1650 7100 1750 7200
+Entry Wire Line
+	1650 7200 1750 7300
 Wire Bus Line
-	1650 7250 1650 6300
+	1650 7350 1650 6400
 Wire Bus Line
-	1650 6300 1500 6300
+	1650 6400 1500 6400
 Wire Bus Line
-	1650 6200 1650 5300
+	1650 6300 1650 5400
 Wire Bus Line
-	1650 5300 1500 5300
+	1650 5400 1500 5400
+Entry Wire Line
+	3150 6300 3250 6200
 Entry Wire Line
 	3150 6200 3250 6100
 Entry Wire Line
@@ -954,10 +955,6 @@ Entry Wire Line
 Entry Wire Line
 	3150 5600 3250 5500
 Entry Wire Line
-	3150 5500 3250 5400
-Entry Wire Line
-	3150 6500 3250 6400
-Entry Wire Line
 	3150 6600 3250 6500
 Entry Wire Line
 	3150 6700 3250 6600
@@ -971,24 +968,24 @@ Entry Wire Line
 	3150 7100 3250 7000
 Entry Wire Line
 	3150 7200 3250 7100
+Entry Wire Line
+	3150 7300 3250 7200
 Wire Bus Line
-	3250 7250 3250 6250
+	3250 7350 3250 6350
 Wire Bus Line
-	3250 6250 3400 6250
+	3250 6350 3400 6350
 Wire Bus Line
-	3250 6200 3250 5250
+	3250 6300 3250 5350
 Wire Bus Line
-	3250 5250 3400 5250
-Text HLabel 1500 5300 0    39   Input ~ 0
+	3250 5350 3400 5350
+Text HLabel 1500 5400 0    39   Input ~ 0
 COL[0:7]
-Text HLabel 1500 6300 0    39   Input ~ 0
+Text HLabel 1500 6400 0    39   Input ~ 0
 COL[8:15]
-Text HLabel 3400 5250 2    39   Input ~ 0
+Text HLabel 3400 5350 2    39   Input ~ 0
 COL[16:23]
-Text HLabel 3400 6250 2    39   Input ~ 0
+Text HLabel 3400 6350 2    39   Input ~ 0
 COL[24:31]
-Wire Wire Line
-	1850 5500 1750 5500
 Wire Wire Line
 	1850 5600 1750 5600
 Wire Wire Line
@@ -1004,7 +1001,7 @@ Wire Wire Line
 Wire Wire Line
 	1850 6200 1750 6200
 Wire Wire Line
-	1850 6500 1750 6500
+	1850 6300 1750 6300
 Wire Wire Line
 	1850 6600 1750 6600
 Wire Wire Line
@@ -1020,11 +1017,11 @@ Wire Wire Line
 Wire Wire Line
 	1850 7200 1750 7200
 Wire Wire Line
-	3150 5500 3050 5500
+	1850 7300 1750 7300
 Wire Wire Line
-	3050 5600 3150 5600
+	3150 5600 3050 5600
 Wire Wire Line
-	3150 5700 3050 5700
+	3050 5700 3150 5700
 Wire Wire Line
 	3150 5800 3050 5800
 Wire Wire Line
@@ -1036,142 +1033,144 @@ Wire Wire Line
 Wire Wire Line
 	3150 6200 3050 6200
 Wire Wire Line
-	3150 6500 3050 6500
+	3150 6300 3050 6300
 Wire Wire Line
 	3150 6600 3050 6600
 Wire Wire Line
 	3150 6700 3050 6700
 Wire Wire Line
-	3150 6900 3050 6900
-Wire Wire Line
 	3150 6800 3050 6800
 Wire Wire Line
 	3150 7000 3050 7000
 Wire Wire Line
+	3150 6900 3050 6900
+Wire Wire Line
 	3150 7100 3050 7100
 Wire Wire Line
 	3150 7200 3050 7200
-Text Label 1750 5500 0    39   ~ 0
-C0
+Wire Wire Line
+	3150 7300 3050 7300
 Text Label 1750 5600 0    39   ~ 0
-C1
+C0
 Text Label 1750 5700 0    39   ~ 0
-C2
+C1
 Text Label 1750 5800 0    39   ~ 0
-C3
+C2
 Text Label 1750 5900 0    39   ~ 0
-C4
+C3
 Text Label 1750 6000 0    39   ~ 0
-C5
+C4
 Text Label 1750 6100 0    39   ~ 0
-C6
+C5
 Text Label 1750 6200 0    39   ~ 0
+C6
+Text Label 1750 6300 0    39   ~ 0
 C7
-Text Label 1750 6500 0    39   ~ 0
-C8
 Text Label 1750 6600 0    39   ~ 0
-C9
+C8
 Text Label 1750 6700 0    39   ~ 0
-C10
+C9
 Text Label 1750 6800 0    39   ~ 0
-C11
+C10
 Text Label 1750 6900 0    39   ~ 0
-C12
+C11
 Text Label 1750 7000 0    39   ~ 0
-C13
+C12
 Text Label 1750 7100 0    39   ~ 0
-C14
+C13
 Text Label 1750 7200 0    39   ~ 0
+C14
+Text Label 1750 7300 0    39   ~ 0
 C15
-Text Label 3050 5500 0    39   ~ 0
-C16
 Text Label 3050 5600 0    39   ~ 0
-C17
+C16
 Text Label 3050 5700 0    39   ~ 0
-C18
+C17
 Text Label 3050 5800 0    39   ~ 0
-C19
+C18
 Text Label 3050 5900 0    39   ~ 0
-C20
+C19
 Text Label 3050 6000 0    39   ~ 0
-C21
+C20
 Text Label 3050 6100 0    39   ~ 0
-C22
+C21
 Text Label 3050 6200 0    39   ~ 0
+C22
+Text Label 3050 6300 0    39   ~ 0
 C23
-Text Label 3050 6500 0    39   ~ 0
-C24
 Text Label 3050 6600 0    39   ~ 0
-C25
+C24
 Text Label 3050 6700 0    39   ~ 0
-C26
+C25
 Text Label 3050 6800 0    39   ~ 0
-C27
+C26
 Text Label 3050 6900 0    39   ~ 0
-C28
+C27
 Text Label 3050 7000 0    39   ~ 0
-C29
+C28
 Text Label 3050 7100 0    39   ~ 0
-C30
+C29
 Text Label 3050 7200 0    39   ~ 0
+C30
+Text Label 3050 7300 0    39   ~ 0
 C31
 Entry Wire Line
-	2100 4850 2200 4750
+	2100 4650 2200 4550
 Entry Wire Line
-	2200 4850 2300 4750
+	2200 4650 2300 4550
 Entry Wire Line
-	2300 4850 2400 4750
+	2300 4650 2400 4550
 Entry Wire Line
-	2400 4850 2500 4750
+	2400 4650 2500 4550
 Entry Wire Line
-	2500 4850 2600 4750
+	2500 4650 2600 4550
 Entry Wire Line
-	2600 4850 2700 4750
+	2600 4650 2700 4550
 Entry Wire Line
-	2700 4850 2800 4750
+	2700 4650 2800 4550
 Entry Wire Line
-	2800 4850 2900 4750
+	2800 4650 2900 4550
 Wire Bus Line
-	2050 4750 3000 4750
+	2050 4550 3000 4550
 Wire Bus Line
-	2050 4750 2050 4650
+	2050 4550 2050 4450
 Wire Bus Line
-	2050 4650 1950 4650
-Text HLabel 1950 4650 0    39   Input ~ 0
+	2050 4450 1950 4450
+Text HLabel 1950 4450 0    39   Input ~ 0
 ROW[0:7]
 Wire Wire Line
-	2100 4850 2100 4950
+	2100 4650 2100 4750
 Wire Wire Line
-	2200 4850 2200 4950
+	2200 4650 2200 4750
 Wire Wire Line
-	2300 4850 2300 4950
+	2300 4650 2300 4750
 Wire Wire Line
-	2400 4850 2400 4950
+	2400 4650 2400 4750
 Wire Wire Line
-	2500 4850 2500 4950
+	2500 4650 2500 4750
 Wire Wire Line
-	2600 4850 2600 4950
+	2600 4650 2600 4750
 Wire Wire Line
-	2700 4850 2700 4950
+	2700 4650 2700 4750
 Wire Wire Line
-	2800 4850 2800 4950
+	2800 4650 2800 4750
 Wire Notes Line
 	500  4400 11200 4400
-Text Label 2100 4950 1    39   ~ 0
+Text Label 2100 4750 1    39   ~ 0
 R0
-Text Label 2200 4950 1    39   ~ 0
+Text Label 2200 4750 1    39   ~ 0
 R1
-Text Label 2300 4950 1    39   ~ 0
+Text Label 2300 4750 1    39   ~ 0
 R2
-Text Label 2400 4950 1    39   ~ 0
+Text Label 2400 4750 1    39   ~ 0
 R3
-Text Label 2500 4950 1    39   ~ 0
+Text Label 2500 4750 1    39   ~ 0
 R4
-Text Label 2600 4950 1    39   ~ 0
+Text Label 2600 4750 1    39   ~ 0
 R5
-Text Label 2700 4950 1    39   ~ 0
+Text Label 2700 4750 1    39   ~ 0
 R6
-Text Label 2800 4950 1    39   ~ 0
+Text Label 2800 4750 1    39   ~ 0
 R7
 Text Notes 2350 4500 0    60   ~ 0
 MATRIX OUTPUT(For device driver use)
@@ -5940,14 +5939,102 @@ $EndBitmap
 $Comp
 L MATRIX M?
 U 1 1 58ED21AF
-P 2950 6350
+P 2950 6450
 AR Path="/58ED21AF" Ref="M?"  Part="1" 
 AR Path="/58E75CFC/58ED21AF" Ref="M?"  Part="1" 
-F 0 "M?" V 4130 6850 60  0000 C CNN
-F 1 "MATRIX" V 4236 6850 60  0000 C CNN
-F 2 "pochi:Dot_matrix_CC_2088-AS" H 3050 6850 60  0001 C CNN
-F 3 "" H 2250 6800 60  0001 C CNN
-	1    2950 6350
+F 0 "M?" V 4130 6950 60  0000 C CNN
+F 1 "MATRIX" V 4236 6950 60  0000 C CNN
+F 2 "pochi:Dot_matrix_CC_2088-AS" H 3050 6950 60  0001 C CNN
+F 3 "" H 2250 6900 60  0001 C CNN
+	1    2950 6450
 	0    -1   1    0   
+$EndComp
+$Comp
+L R R?
+U 1 1 58ECF1A7
+P 2100 4900
+F 0 "R?" H 2050 4950 50  0000 L CNN
+F 1 "R" H 2050 4850 50  0000 L CNN
+F 2 "" V 2030 4900 50  0001 C CNN
+F 3 "" H 2100 4900 50  0001 C CNN
+	1    2100 4900
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R?
+U 1 1 58ECF2DF
+P 2200 4900
+F 0 "R?" H 2150 4950 50  0000 L CNN
+F 1 "R" H 2150 4850 50  0000 L CNN
+F 2 "" V 2130 4900 50  0001 C CNN
+F 3 "" H 2200 4900 50  0001 C CNN
+	1    2200 4900
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R?
+U 1 1 58ECF317
+P 2300 4900
+F 0 "R?" H 2250 4950 50  0000 L CNN
+F 1 "R" H 2250 4850 50  0000 L CNN
+F 2 "" V 2230 4900 50  0001 C CNN
+F 3 "" H 2300 4900 50  0001 C CNN
+	1    2300 4900
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R?
+U 1 1 58ECF349
+P 2400 4900
+F 0 "R?" H 2350 4950 50  0000 L CNN
+F 1 "R" H 2350 4850 50  0000 L CNN
+F 2 "" V 2330 4900 50  0001 C CNN
+F 3 "" H 2400 4900 50  0001 C CNN
+	1    2400 4900
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R?
+U 1 1 58ECF37D
+P 2500 4900
+F 0 "R?" H 2450 4950 50  0000 L CNN
+F 1 "R" H 2450 4850 50  0000 L CNN
+F 2 "" V 2430 4900 50  0001 C CNN
+F 3 "" H 2500 4900 50  0001 C CNN
+	1    2500 4900
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R?
+U 1 1 58ECF3B3
+P 2600 4900
+F 0 "R?" H 2550 4950 50  0000 L CNN
+F 1 "R" H 2550 4850 50  0000 L CNN
+F 2 "" V 2530 4900 50  0001 C CNN
+F 3 "" H 2600 4900 50  0001 C CNN
+	1    2600 4900
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R?
+U 1 1 58ECF3EB
+P 2700 4900
+F 0 "R?" H 2650 4950 50  0000 L CNN
+F 1 "R" H 2650 4850 50  0000 L CNN
+F 2 "" V 2630 4900 50  0001 C CNN
+F 3 "" H 2700 4900 50  0001 C CNN
+	1    2700 4900
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R?
+U 1 1 58ECF425
+P 2800 4900
+F 0 "R?" H 2750 4950 50  0000 L CNN
+F 1 "R" H 2750 4850 50  0000 L CNN
+F 2 "" V 2730 4900 50  0001 C CNN
+F 3 "" H 2800 4900 50  0001 C CNN
+	1    2800 4900
+	1    0    0    -1  
 $EndComp
 $EndSCHEMATC
