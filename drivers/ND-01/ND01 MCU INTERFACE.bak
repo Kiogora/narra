@@ -45,15 +45,15 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-Text HLabel 5700 1000 2    39   Output ~ 0
-ROW_RST
 Text HLabel 5700 1100 2    39   Output ~ 0
-ROW_CLK
+ROW_RST
 Text HLabel 5700 1200 2    39   Output ~ 0
-COL-DATA
+ROW_CLK
 Text HLabel 5700 1300 2    39   Output ~ 0
-COL-SRCLK
+COL-DATA
 Text HLabel 5700 1400 2    39   Output ~ 0
+COL-SRCLK
+Text HLabel 5700 1500 2    39   Output ~ 0
 COL-RCK
 $Comp
 L CONN_01X08 J3
@@ -61,13 +61,11 @@ U 1 1 58E79D53
 P 5350 1350
 F 0 "J3" H 5428 1391 50  0000 L CNN
 F 1 "CONN_01X08" H 5428 1300 50  0000 L CNN
-F 2 "" H 5350 1350 50  0001 C CNN
+F 2 "Connectors_Molex:Molex_KK-6410-08_08x2.54mm_Straight" H 5350 1350 50  0001 C CNN
 F 3 "" H 5350 1350 50  0001 C CNN
 	1    5350 1350
 	-1   0    0    -1  
 $EndComp
-Wire Wire Line
-	5700 1000 5550 1000
 Wire Wire Line
 	5700 1100 5550 1100
 Wire Wire Line
@@ -76,21 +74,19 @@ Wire Wire Line
 	5700 1300 5550 1300
 Wire Wire Line
 	5700 1400 5550 1400
+Wire Wire Line
+	5700 1500 5550 1500
 $Comp
-L GND #PWR5
+L GND #PWR7
 U 1 1 58E79E5E
 P 5700 1800
-F 0 "#PWR5" H 5700 1550 50  0001 C CNN
+F 0 "#PWR7" H 5700 1550 50  0001 C CNN
 F 1 "GND" H 5705 1627 50  0000 C CNN
 F 2 "" H 5700 1800 50  0001 C CNN
 F 3 "" H 5700 1800 50  0001 C CNN
 	1    5700 1800
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	5700 1800 5700 1500
-Wire Wire Line
-	5700 1500 5550 1500
 Wire Wire Line
 	5700 1600 5550 1600
 Connection ~ 5700 1600
@@ -4863,4 +4859,10 @@ Text Notes 10650 600  0    60   ~ 0
 CONNECTOR
 Wire Notes Line
 	650  2250 11200 2250
+Wire Wire Line
+	5700 1800 5700 1600
+Text GLabel 5700 1000 2    39   Input ~ 0
+VCC
+Wire Wire Line
+	5700 1000 5550 1000
 $EndSCHEMATC
