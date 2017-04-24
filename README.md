@@ -9,7 +9,7 @@ This repository contains hardware designs and software for Narra, a portable, lo
 ![Narra](/doc/Images/ND-01-top.jpg)
 
 
-##Principal authors (unordered): 
+## Principal authors (unordered): 
 
 1. Alois Mbutura <alois@bitsoko.io> 
 
