@@ -1,6 +1,6 @@
 ![Logo](/doc/Images/Narra-logo.jpg)
 
-# Narra - An LED Signage Development Project
+## Narra - An LED Signage Development Project
 
 This repository contains hardware designs and software for Narra, a portable, low cost and open source LED signage platform.
 

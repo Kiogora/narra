@@ -1,5 +1,5 @@
 ![Logo](../doc/Images/Narra-logo.jpg)
 
-# Narra - An LED Signage Development Project
+## Narra - An LED Signage Development Project
 
-##Hardware
+### Hardware
