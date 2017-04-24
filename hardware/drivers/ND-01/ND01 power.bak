@@ -80,12 +80,8 @@ F 1 "CONN_01X02" H 1319 1166 50  0000 C CNN
 F 2 "Connectors:Banana_Jack_2Pin" H 1400 1350 50  0001 C CNN
 F 3 "" H 1400 1350 50  0001 C CNN
 	1    1400 1350
-	-1   0    0    1   
+	-1   0    0    -1  
 $EndComp
-Text Label 1700 1400 0    39   ~ 0
-GND
-Text Label 1700 1300 0    39   ~ 0
-TEST
 Text Notes 1900 600  0    60   ~ 0
 TEST POWER INPUT
 Text Notes 1600 1950 0    60   ~ 0
@@ -5053,4 +5049,8 @@ F 3 "" H 4300 1850 50  0001 C CNN
 	1    4300 1850
 	1    0    0    -1  
 $EndComp
+Text Label 1700 1300 0    39   ~ 0
+TEST
+Text Label 1700 1400 0    39   ~ 0
+GND
 $EndSCHEMATC

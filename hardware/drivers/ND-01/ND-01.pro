@@ -1,4 +1,4 @@
-update=Tue 11 Apr 2017 03:31:32 AM EAT
+update=Mon 24 Apr 2017 05:43:33 PM EAT
 version=1
 last_client=kicad
 [pcbnew]
@@ -63,7 +63,7 @@ LibName31=/home/bigbitsoko/Desktop/Pochi_files/component_libraries/pochi
 LibName32=/home/bigbitsoko/Desktop/Pochi_files/component_libraries/narra
 [schematic_editor]
 version=1
-PageLayoutDescrFile=
+PageLayoutDescrFile=/home/bigbitsoko/Documents/narra/hardware/kicad/kicad-page-layout.kicad_wks
 PlotDirectoryName=
 SubpartIdSeparator=0
 SubpartFirstId=65
