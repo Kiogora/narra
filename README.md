@@ -4,8 +4,6 @@
 
 This repository contains hardware designs and software for Narra, a portable, low cost and open source LED signage platform.
 
-![Narra](/doc/Images/ND-01-main.jpg)
-
 ![Narra](/doc/Images/ND-01-top.jpg)
 
 
