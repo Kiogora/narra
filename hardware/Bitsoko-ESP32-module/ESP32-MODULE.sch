@@ -1,0 +1,400 @@
+EESchema Schematic File Version 2
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:narra
+LIBS:Bitsoko-ESP32-module-cache
+EELAYER 26 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 4 6
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L ESP32-WROOM32-MODULE U?
+U 1 1 59510DA6
+P 4000 3000
+F 0 "U?" H 4000 4087 60  0000 C CNN
+F 1 "ESP32-WROOM32-MODULE" H 4000 3981 60  0000 C CNN
+F 2 "narra:ESP-WROOM32-MODULE" H 3900 2900 60  0001 C CNN
+F 3 "" H 3900 2900 60  0001 C CNN
+	1    4000 3000
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C?
+U 1 1 59510E8D
+P 1650 3150
+F 0 "C?" H 1765 3196 50  0000 L CNN
+F 1 "C" H 1765 3105 50  0000 L CNN
+F 2 "" H 1688 3000 50  0001 C CNN
+F 3 "" H 1650 3150 50  0001 C CNN
+	1    1650 3150
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 59510F34
+P 1650 3350
+F 0 "#PWR?" H 1650 3100 50  0001 C CNN
+F 1 "GND" H 1655 3177 50  0000 C CNN
+F 2 "" H 1650 3350 50  0001 C CNN
+F 3 "" H 1650 3350 50  0001 C CNN
+	1    1650 3350
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C?
+U 1 1 59510F96
+P 1150 3150
+F 0 "C?" H 1265 3196 50  0000 L CNN
+F 1 "C" H 1265 3105 50  0000 L CNN
+F 2 "" H 1188 3000 50  0001 C CNN
+F 3 "" H 1150 3150 50  0001 C CNN
+	1    1150 3150
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 59510FF0
+P 1150 3350
+F 0 "#PWR?" H 1150 3100 50  0001 C CNN
+F 1 "GND" H 1155 3177 50  0000 C CNN
+F 2 "" H 1150 3350 50  0001 C CNN
+F 3 "" H 1150 3350 50  0001 C CNN
+	1    1150 3350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	850  2650 3050 2650
+Wire Wire Line
+	1650 2650 1650 3000
+Wire Wire Line
+	1650 3350 1650 3300
+Connection ~ 1650 2650
+Wire Wire Line
+	1150 3350 1150 3300
+Connection ~ 1150 2650
+Wire Wire Line
+	4950 2550 5850 2550
+Wire Wire Line
+	4950 2650 5300 2650
+Wire Wire Line
+	4950 2750 5300 2750
+Wire Wire Line
+	4950 2850 5300 2850
+Wire Wire Line
+	4950 2950 5300 2950
+Wire Wire Line
+	4950 3050 5300 3050
+Wire Wire Line
+	4950 3250 5300 3250
+Wire Wire Line
+	4950 3350 5300 3350
+Wire Wire Line
+	4950 3450 5300 3450
+Wire Wire Line
+	4950 3550 5300 3550
+Wire Wire Line
+	4950 3650 5300 3650
+Wire Wire Line
+	4950 3750 5300 3750
+Wire Wire Line
+	4950 3850 5350 3850
+Wire Wire Line
+	4500 4250 4500 4600
+Wire Wire Line
+	4400 4250 4400 4600
+Wire Wire Line
+	4300 4250 4300 4600
+Wire Wire Line
+	4200 4250 4200 4600
+Wire Wire Line
+	4100 4250 4100 4600
+Wire Wire Line
+	4000 4250 4000 4600
+Wire Wire Line
+	3900 4250 3900 4600
+Wire Wire Line
+	3800 4250 3800 4600
+Wire Wire Line
+	3700 4250 3700 4600
+Wire Wire Line
+	3600 4250 3600 4650
+Wire Wire Line
+	2700 3850 3050 3850
+Wire Wire Line
+	2700 3750 3050 3750
+Wire Wire Line
+	2700 3650 3050 3650
+Wire Wire Line
+	2700 3550 3050 3550
+Wire Wire Line
+	2700 3450 3050 3450
+Wire Wire Line
+	2700 3350 3050 3350
+Wire Wire Line
+	2700 3250 3050 3250
+Wire Wire Line
+	2700 3150 3050 3150
+Wire Wire Line
+	2700 3050 3050 3050
+Wire Wire Line
+	2700 2950 3050 2950
+Wire Wire Line
+	2700 2850 3050 2850
+Wire Wire Line
+	2700 2750 3050 2750
+Wire Wire Line
+	2700 2550 3050 2550
+Wire Wire Line
+	4950 3150 5150 3150
+Wire Wire Line
+	5150 3150 5150 2650
+Connection ~ 5150 2650
+Text Label 5350 3850 0    60   ~ 0
+IO0
+Text Label 2700 2750 0    60   ~ 0
+EN
+Wire Notes Line
+	6970 6535 6970 475 
+$Comp
+L R R?
+U 1 1 59512C19
+P 9050 950
+F 0 "R?" H 9120 996 50  0000 L CNN
+F 1 "R" H 9120 905 50  0000 L CNN
+F 2 "" V 8980 950 50  0001 C CNN
+F 3 "" H 9050 950 50  0001 C CNN
+	1    9050 950 
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9050 800  9050 700 
+Wire Wire Line
+	9050 700  8750 700 
+Text Label 8750 700  2    60   Italic 12
+VDD_33
+$Comp
+L C C?
+U 1 1 59512D85
+P 9050 1450
+F 0 "C?" H 9165 1496 50  0000 L CNN
+F 1 "C" H 9165 1405 50  0000 L CNN
+F 2 "" H 9088 1300 50  0001 C CNN
+F 3 "" H 9050 1450 50  0001 C CNN
+	1    9050 1450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9050 1100 9050 1300
+$Comp
+L GND #PWR?
+U 1 1 59512E5D
+P 9050 1700
+F 0 "#PWR?" H 9050 1450 50  0001 C CNN
+F 1 "GND" H 9055 1527 50  0000 C CNN
+F 2 "" H 9050 1700 50  0001 C CNN
+F 3 "" H 9050 1700 50  0001 C CNN
+	1    9050 1700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9050 1700 9050 1600
+Wire Wire Line
+	8700 1200 9550 1200
+Connection ~ 9050 1200
+Text Label 9550 1200 2    60   Italic 12
+EN
+Text HLabel 8700 1200 0    60   Input ~ 0
+EN
+Wire Notes Line
+	6970 2045 11220 2045
+$Comp
+L R R?
+U 1 1 59520AA6
+P 9100 2850
+F 0 "R?" H 9170 2896 50  0000 L CNN
+F 1 "R" H 9170 2805 50  0000 L CNN
+F 2 "" V 9030 2850 50  0001 C CNN
+F 3 "" H 9100 2850 50  0001 C CNN
+	1    9100 2850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9100 2700 9100 2600
+Wire Wire Line
+	9100 2600 8800 2600
+Text Label 8800 2600 2    60   Italic 12
+VDD_33
+$Comp
+L C C?
+U 1 1 59520AAF
+P 9100 3350
+F 0 "C?" H 9215 3396 50  0000 L CNN
+F 1 "C" H 9215 3305 50  0000 L CNN
+F 2 "" H 9138 3200 50  0001 C CNN
+F 3 "" H 9100 3350 50  0001 C CNN
+	1    9100 3350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9100 3000 9100 3200
+$Comp
+L GND #PWR?
+U 1 1 59520AB6
+P 9100 3600
+F 0 "#PWR?" H 9100 3350 50  0001 C CNN
+F 1 "GND" H 9105 3427 50  0000 C CNN
+F 2 "" H 9100 3600 50  0001 C CNN
+F 3 "" H 9100 3600 50  0001 C CNN
+	1    9100 3600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9100 3600 9100 3500
+Wire Wire Line
+	8750 3100 9600 3100
+Connection ~ 9100 3100
+Text Label 9600 3100 2    60   Italic 12
+IO0
+Text HLabel 5300 2650 2    60   BiDi ~ 0
+IO23
+Text HLabel 5300 2750 2    60   BiDi ~ 0
+IO22
+Text HLabel 5300 2850 2    60   BiDi ~ 0
+TXD0
+Text HLabel 5300 2950 2    60   BiDi ~ 0
+RXD0
+Text HLabel 5300 3050 2    60   BiDi ~ 0
+IO21
+Text GLabel 850  2650 0    60   Input ~ 0
+3v3
+Text HLabel 5300 3250 2    60   BiDi ~ 0
+IO19
+Text HLabel 5300 3350 2    60   BiDi ~ 0
+IO18
+Text HLabel 5300 3450 2    60   BiDi ~ 0
+IO5
+Text HLabel 5300 3550 2    60   BiDi ~ 0
+IO17
+Text HLabel 5300 3650 2    60   BiDi ~ 0
+IO16
+Text HLabel 5300 3750 2    60   BiDi ~ 0
+IO4
+Text HLabel 4500 4600 3    60   BiDi ~ 0
+IO2
+Text HLabel 4400 4600 3    60   BiDi ~ 0
+IO15
+Text HLabel 4300 4600 3    60   BiDi ~ 0
+SD1
+Text HLabel 4200 4600 3    60   BiDi ~ 0
+SD0
+Text HLabel 4100 4600 3    60   BiDi ~ 0
+CLK
+Text HLabel 4000 4600 3    60   BiDi ~ 0
+CMD
+Text HLabel 3900 4600 3    60   BiDi ~ 0
+SD3
+Text HLabel 3800 4600 3    60   BiDi ~ 0
+SD2
+Text HLabel 3700 4600 3    60   BiDi ~ 0
+IO13
+$Comp
+L GND #PWR?
+U 1 1 595298F2
+P 5850 2600
+F 0 "#PWR?" H 5850 2350 50  0001 C CNN
+F 1 "GND" H 5855 2427 50  0000 C CNN
+F 2 "" H 5850 2600 50  0001 C CNN
+F 3 "" H 5850 2600 50  0001 C CNN
+	1    5850 2600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5850 2550 5850 2600
+$Comp
+L GND #PWR?
+U 1 1 595299D7
+P 3600 4650
+F 0 "#PWR?" H 3600 4400 50  0001 C CNN
+F 1 "GND" H 3450 4550 50  0000 C CNN
+F 2 "" H 3600 4650 50  0001 C CNN
+F 3 "" H 3600 4650 50  0001 C CNN
+	1    3600 4650
+	1    0    0    -1  
+$EndComp
+Text HLabel 2700 3850 0    60   BiDi ~ 0
+IO12
+Text HLabel 2700 3750 0    60   BiDi ~ 0
+IO14
+Text HLabel 2700 3650 0    60   BiDi ~ 0
+IO27
+Text HLabel 2700 3550 0    60   BiDi ~ 0
+IO26
+Text HLabel 2700 3450 0    60   BiDi ~ 0
+IO25
+Text HLabel 2700 3350 0    60   BiDi ~ 0
+IO33
+Text HLabel 2700 3250 0    60   BiDi ~ 0
+IO32
+Text HLabel 2700 3150 0    60   BiDi ~ 0
+IO35
+Text HLabel 2700 3050 0    60   BiDi ~ 0
+IO34
+Text HLabel 2700 2950 0    60   BiDi ~ 0
+SENSOR_VN
+Text HLabel 2700 2850 0    60   BiDi ~ 0
+SENSOR_VP
+$Comp
+L GND #PWR?
+U 1 1 5952A100
+P 2350 2400
+F 0 "#PWR?" H 2350 2150 50  0001 C CNN
+F 1 "GND" H 2355 2227 50  0000 C CNN
+F 2 "" H 2350 2400 50  0001 C CNN
+F 3 "" H 2350 2400 50  0001 C CNN
+	1    2350 2400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2350 2400 2700 2400
+Wire Wire Line
+	2700 2400 2700 2550
+Text HLabel 8750 3100 0    60   Input ~ 0
+IO0
+$EndSCHEMATC
