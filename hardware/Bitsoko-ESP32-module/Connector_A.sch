@@ -53,7 +53,7 @@ AR Path="/59531D77/59540EC0/59513823" Ref="J2"  Part="1"
 AR Path="/5955270D/59513823" Ref="J2"  Part="1" 
 F 0 "J2" H 5728 3741 50  0000 L CNN
 F 1 "CONN_01X20" H 5728 3650 50  0000 L CNN
-F 2 "Pin_Headers:Pin_Header_Straight_1x20_Pitch2.54mm" H 5650 3700 50  0001 C CNN
+F 2 "narra:Pin_Header_5mil_staggered_1x20_2.54mm" H 5650 3700 50  0001 C CNN
 F 3 "" H 5650 3700 50  0001 C CNN
 	1    5650 3700
 	1    0    0    -1  
