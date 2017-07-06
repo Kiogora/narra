@@ -40,8 +40,8 @@ static void shift_and_latch(Matrix* matrixInstance, uint32_t row_data)
         }
         /*Quick temporay toggle to a high state on GPIO connected to serial_pin bus*/
         /*Shift data on rising edge*/
-        gpio_set_level(matrixInstance->latch_pin, HIGH);
-        gpio_set_level(matrixInstance->latch_pin, LOW);
+        gpio_set_level(matrixInstance->shift_pin, HIGH);
+        gpio_set_level(matrixInstance->shift_pin, LOW);
 #ifdef FLIP_MATRIX
         Mask<<=1;
 #else
