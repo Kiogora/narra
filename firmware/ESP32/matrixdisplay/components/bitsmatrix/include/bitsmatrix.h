@@ -14,16 +14,6 @@ extern "C" {
 */
 //#define FLIP_MATRIX
 
-/**@def NUMROWS
-   @brief Macro that defines the number of rows in a matrix device.
-*/
-#define NUMROWS 8U
-
-/**@def CHAR_WIDTH
-   @brief Macro that defines the width of the font in bits.
-*/
-#define CHAR_WIDTH 8U
-
 /**@def True
    @brief Macro that defines the width of the font in bits.
 */
