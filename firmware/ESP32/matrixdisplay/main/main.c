@@ -1,34 +1,37 @@
+#include <string.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/gpio.h"
 #include "bitsmatrix.h"
 
-#ifdef DEBUG_PROG
-#include <stdio.h>
-#endif
-
 void app_main(void)
 {
+    Matrix matrix;
 
-    char message[] = "BITCOIN   ";
-    uint8_t speed=3;
+    /*num_rows x num_cols matrix*/
+    matrix.num_rows=8;
+    matrix.num_cols=8;
 
-    gpio_pad_select_gpio(CD4017_RST);
-    gpio_set_direction(CD4017_RST, GPIO_MODE_OUTPUT);
+    /*Number of num_rows x num_cols matrix, per manufacturable unit*/ 
+    matrix.unit_per_matrix=4;
+
+    /*Font choice width*/
+    matrix.fontwidth=8;
+
+    /*Matrix control pins*/
+    matrix.serial_pin=GPIO_NUM_25;
+    matrix.shift_pin=GPIO_NUM_26;
+    matrix.latch_pin=GPIO_NUM_27;
+    matrix.rowclk_pin=GPIO_NUM_12;
+    matrix.rowrst_pin=GPIO_NUM_14;
+
+    strcpy(matrix.message,"BITSOKO   ");
+    matrix.speed=8;
+
+    matrix_init(&matrix);
     
-    gpio_pad_select_gpio(CD4017_CLK);
-    gpio_set_direction(CD4017_CLK, GPIO_MODE_OUTPUT);
-
-    gpio_pad_select_gpio(SH_CLK);
-    gpio_set_direction(SH_CLK, GPIO_MODE_OUTPUT);
-
-    gpio_pad_select_gpio(ST_CLK);
-    gpio_set_direction(ST_CLK, GPIO_MODE_OUTPUT);
-
-    gpio_pad_select_gpio(SER);
-    gpio_set_direction(SER, GPIO_MODE_OUTPUT);
-    while(1)
+    while(TRUE)
     {
-        display(message,speed);
+        display(&matrix);
     }
 }

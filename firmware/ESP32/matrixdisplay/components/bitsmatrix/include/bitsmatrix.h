@@ -5,20 +5,110 @@
 extern "C" {
 #endif
 
-#define DEBUG_PROG
-#define USE_ESPIDF
+/***********************************************************************************/
+/*Defines*/
+/***********************************************************************************/
 
+/**@def FLIP_MATRIX
+   @brief Compilation directive to control display flipping. Uncomment to enable.
+*/
+//#define FLIP_MATRIX
+
+/**@def NUMROWS
+   @brief Macro that defines the number of rows in a matrix device.
+*/
 #define NUMROWS 8U
+
+/**@def CHAR_WIDTH
+   @brief Macro that defines the width of the font in bits.
+*/
 #define CHAR_WIDTH 8U
 
-#define SER GPIO_NUM_25
-#define SH_CLK GPIO_NUM_26
-#define ST_CLK GPIO_NUM_27
-#define CD4017_CLK GPIO_NUM_12
-#define CD4017_RST GPIO_NUM_14 
+/**@def True
+   @brief Macro that defines the width of the font in bits.
+*/
+#define TRUE 1
+#define HIGH 1
 
-/*Function prototypes go here*/
-void display(char message[], uint8_t speed);
+/**@def True
+   @brief Macro that defines the width of the font in bits.
+*/
+
+#define FALSE 0
+#define LOW 0
+
+/***********************************************************************************/
+/*Typedefs*/
+/***********************************************************************************/
+
+/**@typedef matrix_pin_t
+   @brief Define the type of the set of control pins - bytes in this case.
+*/
+typedef uint8_t matrix_pin_t;
+
+/**@typedef messageTypedef
+   @brief Define the type of the message.
+*/
+typedef char messageTypedef;
+
+/**@typedef speed_t
+   @brief Define the speed of the message.
+*/
+typedef uint8_t speed_t;
+
+/**@typedef xristics_t
+   @brief Declare the type of the set of row/col width - bytes in this case.
+*/
+
+typedef uint8_t xristics_t;
+/**@typedef font_t 
+   @brief Declare the type of the font width - bytes in this case.
+*/
+
+typedef uint8_t font_t ;
+
+/**@typedef struct Matrix
+   @brief Allows several matrix to be setup and allocated memory. Each accessed individually by a common API.
+*/
+typedef struct
+{
+    matrix_pin_t serial_pin;
+    matrix_pin_t shift_pin;
+    matrix_pin_t latch_pin;
+    matrix_pin_t rowclk_pin;
+    matrix_pin_t rowrst_pin;
+    xristics_t   num_rows;
+    xristics_t   num_cols;
+    xristics_t   unit_per_matrix;
+    font_t       fontwidth;
+    speed_t      speed;
+    messageTypedef message[11];
+} Matrix;
+
+/***********************************************************************************/
+/*Public function prototypes go here*/
+/***********************************************************************************/
+
+/**@fn matrix_setup
+   @brief setup the matrix control pins
+   @param[in] serial_pin
+   @param[in] shift_pin
+   @param[in] latch_pin
+   @param[in] rowclk_pin
+   @param[in] rowrst_pin
+   @return Status of the call
+   @retval void
+*/
+void matrix_init(Matrix* matrixInstance);
+
+/**@fn display
+   @brief display message at a given speed
+   @param[in] message
+   @param[in] speed
+   @return Status of the call
+   @retval void
+*/
+void display(Matrix* matrixInstance);
 
 #ifdef __cplusplus
 }

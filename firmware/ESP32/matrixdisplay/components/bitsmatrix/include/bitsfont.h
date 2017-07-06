@@ -6,8 +6,9 @@
 extern "C" {
 #endif
 
-/* CharData is a two dimensional constant array that holds the 8-bit column values of
-   individual row for ASCII characters that are to be displayed on a 8x8 matrix format.
+/* 
+    CharData is a two dimensional constant array that holds the 8-bit column values of
+        individual row for ASCII characters that are to be displayed on a 8x8 matrix format.
 */
 
 //Character top => Bottom == Check this
@@ -103,7 +104,15 @@ const uint8_t CharData[][8] =
  0b00000100,
  0b00001000},
 
-{0b00010101, 0b00001110, 0b00011111, 0b00001110, 0b00010101, 0b00000000, 0b00000000, 0b00000000},
+{0b00010101,
+ 0b00001110,
+ 0b00011111,
+ 0b00001110,
+ 0b00010101,
+ 0b00000000,
+ 0b00000000,
+ 0b00000000},
+
 {0b00000000, 0b00000000, 0b00000100, 0b00000100, 0b00011111, 0b00000100, 0b00000100, 0b00000000},
 {0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000110, 0b00000100, 0b00001000},
 {0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00001110, 0b00000000, 0b00000000, 0b00000000},
