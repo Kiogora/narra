@@ -79,6 +79,7 @@ void matrix_setup(Matrix* matrixInstance, matrix_pin_t _serial_pin, matrix_pin_t
 /*Hardcoded characteristics*/
 /*Number of num_rows x num_cols matrix, per manufacturable unit*/ 
     matrixInstance->unit_per_matrix=4;
+
 /*Preliminary sanity checks*/
 /*******************************************************************************/
 /*Speed check*/
@@ -91,31 +92,31 @@ void matrix_setup(Matrix* matrixInstance, matrix_pin_t _serial_pin, matrix_pin_t
         matrixInstance->speed=scroll_speed_5;
     }
 /*fontwidth check*/
-    if (IS_FONT(_fontwidth))
+    if (IS_FONTWIDTH(_fontwidth))
     {
-        matrixInstance->speed=_fontwidth;
+        matrixInstance->fontwidth=fontwidth_8;
     }    
     else
     {
-        matrixInstance->speed=fontwidth_8;
+        matrixInstance->fontwidth=fontwidth_8;
     }
 /*numcols check*/
     if (IS_NUMROWS(_numrows))
     {
-        matrixInstance->numrows=numrow_8;
+        matrixInstance->num_rows=numrow_8;
     }    
     else
     {
-        matrixInstance->numrows=numrow_8;
+        matrixInstance->num_rows=numrow_8;
     }
 /*numrows check*/
     if (IS_NUMCOLS(_numrows))
     {
-        matrixInstance->numcols=numcol_8;
+        matrixInstance->num_cols=numcol_8;
     }    
     else
     {
-        matrixInstance->numcols=numcol_8;
+        matrixInstance->num_cols=numcol_8;
     }
 /*******************************************************************************/
 /*Matrix control pins*/
@@ -137,7 +138,7 @@ void matrix_setup(Matrix* matrixInstance, matrix_pin_t _serial_pin, matrix_pin_t
 //Row representation and row control function.
 void display(Matrix* matrixInstance)
 {
-    uint32_t buffer[NUMROWS]={0,0,0,0,0,0,0,0};
+    uint32_t buffer[numrow_8]={0,0,0,0,0,0,0,0};
     uint32_t  temp;
     uint8_t shift_step=1;
     uint16_t string_length;

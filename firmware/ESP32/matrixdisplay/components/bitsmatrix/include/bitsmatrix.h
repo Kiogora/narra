@@ -57,9 +57,15 @@ extern "C" {
 */
 #define IS_FONTWIDTH(FONT) ((FONT) == fontwidth_8)
 
+/**@def IS_NUMROWS(ROWS)
+   @brief Checks that the row number is valid.
+*/
 #define IS_NUMROWS(ROWS) ((ROWS) == numrow_8)
 
-#define IS_NUMCOLS(COLS) ((COLS) == numcols_8)
+/**@def IS_NUMCOLS(ROWS)
+   @brief Checks that the column number is valid.
+*/
+#define IS_NUMCOLS(COLS) ((COLS) == numcol_8)
 /***********************************************************************************/
 /*Typedefs*/
 /***********************************************************************************/
@@ -200,7 +206,7 @@ void display(Matrix* matrixInstance);
 /*TODO-Implement error checking on pins based on API given by espressif.*/
 void matrix_setup(Matrix* matrixInstance, matrix_pin_t _serial_pin, matrix_pin_t _shift_pin, matrix_pin_t _latch_pin,
                   matrix_pin_t _rowclk_pin, matrix_pin_t _rowrst_pin, speedtype_enum _speed, font_t _fontwidth,
-                  xristics_t _numrows, xristics_t _numcols)
+                  xristics_t _numrows, xristics_t _numcols);
 #ifdef __cplusplus
 }
 #endif
