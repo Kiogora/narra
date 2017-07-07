@@ -11,6 +11,20 @@
 
 /*Private functions*/
 /*******************/
+static void matrix_init(Matrix* matrixInstance)
+{
+    gpio_pad_select_gpio(matrixInstance->serial_pin);
+    gpio_pad_select_gpio(matrixInstance->shift_pin);
+    gpio_pad_select_gpio(matrixInstance->latch_pin);
+    gpio_pad_select_gpio(matrixInstance->rowclk_pin);
+    gpio_pad_select_gpio(matrixInstance->rowrst_pin);
+    gpio_set_direction(matrixInstance->serial_pin, GPIO_MODE_OUTPUT);
+    gpio_set_direction(matrixInstance->shift_pin, GPIO_MODE_OUTPUT);
+    gpio_set_direction(matrixInstance->latch_pin, GPIO_MODE_OUTPUT);
+    gpio_set_direction(matrixInstance->rowclk_pin, GPIO_MODE_OUTPUT);
+    gpio_set_direction(matrixInstance->rowrst_pin, GPIO_MODE_OUTPUT); 
+}
+
 //Column control function.
 static void shift_and_latch(Matrix* matrixInstance, uint32_t row_data)
 {
@@ -57,18 +71,67 @@ static void shift_and_latch(Matrix* matrixInstance, uint32_t row_data)
 /*Public functions*/
 /******************/
 
-void matrix_init(Matrix* matrixInstance)
+//setup matrix
+void matrix_setup(Matrix* matrixInstance, matrix_pin_t _serial_pin, matrix_pin_t _shift_pin, matrix_pin_t _latch_pin,
+                  matrix_pin_t _rowclk_pin, matrix_pin_t _rowrst_pin, speedtype_enum _speed, font_t _fontwidth,
+                  xristics_t _numrows, xristics_t _numcols)
 {
-    gpio_pad_select_gpio(matrixInstance->serial_pin);
-    gpio_pad_select_gpio(matrixInstance->shift_pin);
-    gpio_pad_select_gpio(matrixInstance->latch_pin);
-    gpio_pad_select_gpio(matrixInstance->rowclk_pin);
-    gpio_pad_select_gpio(matrixInstance->rowrst_pin);
-    gpio_set_direction(matrixInstance->serial_pin, GPIO_MODE_OUTPUT);
-    gpio_set_direction(matrixInstance->shift_pin, GPIO_MODE_OUTPUT);
-    gpio_set_direction(matrixInstance->latch_pin, GPIO_MODE_OUTPUT);
-    gpio_set_direction(matrixInstance->rowclk_pin, GPIO_MODE_OUTPUT);
-    gpio_set_direction(matrixInstance->rowrst_pin, GPIO_MODE_OUTPUT); 
+/*Hardcoded characteristics*/
+/*Number of num_rows x num_cols matrix, per manufacturable unit*/ 
+    matrixInstance->unit_per_matrix=4;
+/*Preliminary sanity checks*/
+/*******************************************************************************/
+/*Speed check*/
+    if (IS_SPEED(_speed))
+    {
+        matrixInstance->speed=_speed;
+    }    
+    else
+    {
+        matrixInstance->speed=scroll_speed_5;
+    }
+/*fontwidth check*/
+    if (IS_FONT(_fontwidth))
+    {
+        matrixInstance->speed=_fontwidth;
+    }    
+    else
+    {
+        matrixInstance->speed=fontwidth_8;
+    }
+/*numcols check*/
+    if (IS_NUMROWS(_numrows))
+    {
+        matrixInstance->numrows=numrow_8;
+    }    
+    else
+    {
+        matrixInstance->numrows=numrow_8;
+    }
+/*numrows check*/
+    if (IS_NUMCOLS(_numrows))
+    {
+        matrixInstance->numcols=numcol_8;
+    }    
+    else
+    {
+        matrixInstance->numcols=numcol_8;
+    }
+/*******************************************************************************/
+/*Matrix control pins*/
+    matrixInstance->serial_pin=_serial_pin;
+    matrixInstance->shift_pin=_shift_pin;
+    matrixInstance->latch_pin=_latch_pin;
+    matrixInstance->rowclk_pin=_rowclk_pin;
+    matrixInstance->rowrst_pin=_rowrst_pin;
+
+
+    strcpy(matrixInstance->message,"BITSOKO   ");
+
+    matrix_init(matrixInstance);
+
+/* Set/reset setup flag*/
+    matrixInstance->is_setup=yes;
 }
 
 //Row representation and row control function.
