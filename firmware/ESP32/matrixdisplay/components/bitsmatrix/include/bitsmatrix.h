@@ -187,7 +187,7 @@ typedef struct
    @return Status of the call
    @retval void
 */
-void display(Matrix* matrixInstance);
+void display(Matrix* matrixInstanceptr);
 
 /**@fn matrix_setup
    @brief display message at a given speed
@@ -204,9 +204,7 @@ void display(Matrix* matrixInstance);
    @retval void
 */
 /*TODO-Implement error checking on pins based on API given by espressif.*/
-void matrix_setup(Matrix* matrixInstance, matrix_pin_t _serial_pin, matrix_pin_t _shift_pin, matrix_pin_t _latch_pin,
-                  matrix_pin_t _rowclk_pin, matrix_pin_t _rowrst_pin, speedtype_enum _speed, font_t _fontwidth,
-                  xristics_t _numrows, xristics_t _numcols);
+void matrix_setup(Matrix* matrixInstanceptr, matrix_pin_t _serial_pin, matrix_pin_t _shift_pin, matrix_pin_t _latch_pin, matrix_pin_t _rowclk_pin, matrix_pin_t _rowrst_pin, speedtype_enum _speed);
 #ifdef __cplusplus
 }
 #endif

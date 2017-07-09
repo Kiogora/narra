@@ -11,22 +11,22 @@
 
 /*Private functions*/
 /*******************/
-static void matrix_init(Matrix* matrixInstance)
+static void matrix_init(Matrix* matrixInstanceptr)
 {
-    gpio_pad_select_gpio(matrixInstance->serial_pin);
-    gpio_pad_select_gpio(matrixInstance->shift_pin);
-    gpio_pad_select_gpio(matrixInstance->latch_pin);
-    gpio_pad_select_gpio(matrixInstance->rowclk_pin);
-    gpio_pad_select_gpio(matrixInstance->rowrst_pin);
-    gpio_set_direction(matrixInstance->serial_pin, GPIO_MODE_OUTPUT);
-    gpio_set_direction(matrixInstance->shift_pin, GPIO_MODE_OUTPUT);
-    gpio_set_direction(matrixInstance->latch_pin, GPIO_MODE_OUTPUT);
-    gpio_set_direction(matrixInstance->rowclk_pin, GPIO_MODE_OUTPUT);
-    gpio_set_direction(matrixInstance->rowrst_pin, GPIO_MODE_OUTPUT); 
+    gpio_pad_select_gpio(matrixInstanceptr->serial_pin);
+    gpio_pad_select_gpio(matrixInstanceptr->shift_pin);
+    gpio_pad_select_gpio(matrixInstanceptr->latch_pin);
+    gpio_pad_select_gpio(matrixInstanceptr->rowclk_pin);
+    gpio_pad_select_gpio(matrixInstanceptr->rowrst_pin);
+    gpio_set_direction(matrixInstanceptr->serial_pin, GPIO_MODE_OUTPUT);
+    gpio_set_direction(matrixInstanceptr->shift_pin, GPIO_MODE_OUTPUT);
+    gpio_set_direction(matrixInstanceptr->latch_pin, GPIO_MODE_OUTPUT);
+    gpio_set_direction(matrixInstanceptr->rowclk_pin, GPIO_MODE_OUTPUT);
+    gpio_set_direction(matrixInstanceptr->rowrst_pin, GPIO_MODE_OUTPUT); 
 }
 
 //Column control function.
-static void shift_and_latch(Matrix* matrixInstance, uint32_t row_data)
+static void shift_and_latch(Matrix* matrixInstanceptr, uint32_t row_data)
 {
     /*Bitbangs the data on the shit registers by controlling the data and shift and latch clocks*/
     /* The effect of clockskew should be accounted for,to ensure the clock pulse has effectively propagated*/ 
@@ -45,17 +45,17 @@ static void shift_and_latch(Matrix* matrixInstance, uint32_t row_data)
         if((flag & Mask) != Mask)
         {
             /*If queried bit is reset, output a low state '0' on GPIO connected to serial_pin line*/         
-            gpio_set_level(matrixInstance->serial_pin, LOW);
+            gpio_set_level(matrixInstanceptr->serial_pin, LOW);
         }
         else
         {
             /*If queried bit is set, output a high state '1' on GPIO connected to serial_pin line*/         
-            gpio_set_level(matrixInstance->serial_pin, HIGH);
+            gpio_set_level(matrixInstanceptr->serial_pin, HIGH);
         }
         /*Quick temporay toggle to a high state on GPIO connected to serial_pin bus*/
         /*Shift data on rising edge*/
-        gpio_set_level(matrixInstance->shift_pin, HIGH);
-        gpio_set_level(matrixInstance->shift_pin, LOW);
+        gpio_set_level(matrixInstanceptr->shift_pin, HIGH);
+        gpio_set_level(matrixInstanceptr->shift_pin, LOW);
 #ifdef FLIP_MATRIX
         Mask<<=1;
 #else
@@ -64,79 +64,55 @@ static void shift_and_latch(Matrix* matrixInstance, uint32_t row_data)
     }
     /*Quick temporay toggle to a high state on GPIO connected to latch_pin bus*/
     /*latch data on rising edge*/
-    gpio_set_level(matrixInstance->latch_pin, HIGH);
-    gpio_set_level(matrixInstance->latch_pin, LOW);
+    gpio_set_level(matrixInstanceptr->latch_pin, HIGH);
+    gpio_set_level(matrixInstanceptr->latch_pin, LOW);
 }
 
 /*Public functions*/
 /******************/
 
 //setup matrix
-void matrix_setup(Matrix* matrixInstance, matrix_pin_t _serial_pin, matrix_pin_t _shift_pin, matrix_pin_t _latch_pin,
-                  matrix_pin_t _rowclk_pin, matrix_pin_t _rowrst_pin, speedtype_enum _speed, font_t _fontwidth,
-                  xristics_t _numrows, xristics_t _numcols)
+void matrix_setup(Matrix* matrixInstanceptr, matrix_pin_t _serial_pin, matrix_pin_t _shift_pin, matrix_pin_t _latch_pin,
+                  matrix_pin_t _rowclk_pin, matrix_pin_t _rowrst_pin, speedtype_enum _speed)
 {
-/*Hardcoded characteristics*/
-/*Number of num_rows x num_cols matrix, per manufacturable unit*/ 
-    matrixInstance->unit_per_matrix=4;
+/*Hardcoded characteristics*/ 
+/*******************************************************************************/
+    matrixInstanceptr->unit_per_matrix=4;
+    matrixInstanceptr->fontwidth=fontwidth_8;
+    matrixInstanceptr->num_rows=numrow_8;
+    matrixInstanceptr->num_cols=numcol_8;
 
-/*Preliminary sanity checks*/
+/*Preliminary sanity check(s)*/
 /*******************************************************************************/
 /*Speed check*/
     if (IS_SPEED(_speed))
     {
-        matrixInstance->speed=_speed;
+        matrixInstanceptr->speed=_speed;
     }    
     else
     {
-        matrixInstance->speed=scroll_speed_5;
+        matrixInstanceptr->speed=scroll_speed_5;
     }
-/*fontwidth check*/
-    if (IS_FONTWIDTH(_fontwidth))
-    {
-        matrixInstance->fontwidth=fontwidth_8;
-    }    
-    else
-    {
-        matrixInstance->fontwidth=fontwidth_8;
-    }
-/*numcols check*/
-    if (IS_NUMROWS(_numrows))
-    {
-        matrixInstance->num_rows=numrow_8;
-    }    
-    else
-    {
-        matrixInstance->num_rows=numrow_8;
-    }
-/*numrows check*/
-    if (IS_NUMCOLS(_numrows))
-    {
-        matrixInstance->num_cols=numcol_8;
-    }    
-    else
-    {
-        matrixInstance->num_cols=numcol_8;
-    }
+
 /*******************************************************************************/
 /*Matrix control pins*/
-    matrixInstance->serial_pin=_serial_pin;
-    matrixInstance->shift_pin=_shift_pin;
-    matrixInstance->latch_pin=_latch_pin;
-    matrixInstance->rowclk_pin=_rowclk_pin;
-    matrixInstance->rowrst_pin=_rowrst_pin;
+    matrixInstanceptr->serial_pin=_serial_pin;
+    matrixInstanceptr->shift_pin=_shift_pin;
+    matrixInstanceptr->latch_pin=_latch_pin;
+    matrixInstanceptr->rowclk_pin=_rowclk_pin;
+    matrixInstanceptr->rowrst_pin=_rowrst_pin;
 
 
-    strcpy(matrixInstance->message,"BITSOKO   ");
+    strcpy(matrixInstanceptr->message,"BITSOKO    ");
 
-    matrix_init(matrixInstance);
+    matrix_init(matrixInstanceptr);
 
 /* Set/reset setup flag*/
-    matrixInstance->is_setup=yes;
+    matrixInstanceptr->is_setup=yes;
 }
 
 //Row representation and row control function.
-void display(Matrix* matrixInstance)
+void display(Matrix* matrixInstanceptr)
 {
     uint32_t buffer[numrow_8]={0,0,0,0,0,0,0,0};
     uint32_t  temp;
@@ -145,54 +121,54 @@ void display(Matrix* matrixInstance)
     char index;
 
     /*Obtain message length*/
-    string_length = strlen(matrixInstance->message);
+    string_length = strlen(matrixInstanceptr->message);
     for (unsigned int k=0; k<string_length; k++)
     {
-        for (unsigned int scroll=0; scroll<(matrixInstance->fontwidth/shift_step); scroll++)
+        for (unsigned int scroll=0; scroll<(matrixInstanceptr->fontwidth/shift_step); scroll++)
         {
-            for (unsigned int row=0; row<matrixInstance->num_rows; row++)
+            for (unsigned int row=0; row<matrixInstanceptr->num_rows; row++)
             {
                 /*Obtain current letter from the message*/
-                index = matrixInstance->message[k];
+                index = matrixInstanceptr->message[k];
                 /*Obtain the letter's dot matrix representation in CharData matrix.*/
                 temp = CharData[index-32][row];
                 /*Fill Display buffer based on it's shift amount.*/
 #ifdef FLIP_MATRIX
                 buffer[row] = (buffer[row] << shift_step)|(temp << (scroll*shift_step));
 #else
-                buffer[row] = (buffer[row] << shift_step)|(temp >> ((matrixInstance->fontwidth-shift_step)-(scroll*shift_step)));
+                buffer[row] = (buffer[row] << shift_step)|(temp >> ((matrixInstanceptr->fontwidth-shift_step)-(scroll*shift_step)));
 #endif
             }
-            for(unsigned int l=0; l<matrixInstance->speed;l++)
+            for(unsigned int l=0; l<matrixInstanceptr->speed;l++)
             {
-                for (unsigned int i=0; i<matrixInstance->num_rows; i++)
+                for (unsigned int i=0; i<matrixInstanceptr->num_rows; i++)
                 {
 #ifdef FLIP_MATRIX
                     if(i==7)
                     {
-                        shift_and_latch(matrixInstance, buffer[7]);
+                        shift_and_latch(matrixInstanceptr, buffer[7]);
                     }
                     else
                     {
-                        shift_and_latch(matrixInstance, buffer[i+1]);
+                        shift_and_latch(matrixInstanceptr, buffer[i+1]);
                     }
 #else
                     if(i==7)
                     {
-                        shift_and_latch(matrixInstance, buffer[0]);
+                        shift_and_latch(matrixInstanceptr, buffer[0]);
                     }
                     else
                     {
-                        shift_and_latch(matrixInstance, buffer[i+1]);
+                        shift_and_latch(matrixInstanceptr, buffer[i+1]);
                     }
 #endif                   
-                    gpio_set_level(matrixInstance->rowclk_pin, HIGH);
-                    gpio_set_level(matrixInstance->rowclk_pin, LOW);
+                    gpio_set_level(matrixInstanceptr->rowclk_pin, HIGH);
+                    gpio_set_level(matrixInstanceptr->rowclk_pin, LOW);
                     vTaskDelay(1 / portTICK_PERIOD_MS);
                 }
                 /*pulse the decade counter reset line before it reaches the 9th count*/
-                gpio_set_level(matrixInstance->rowrst_pin, HIGH);
-                gpio_set_level(matrixInstance->rowrst_pin, LOW);
+                gpio_set_level(matrixInstanceptr->rowrst_pin, HIGH);
+                gpio_set_level(matrixInstanceptr->rowrst_pin, LOW);
             }
         }
     }
