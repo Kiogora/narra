@@ -121,13 +121,13 @@ Wire Wire Line
 	5455 3675 5280 3500
 Connection ~ 5455 3675
 Text HLabel 5190 2590 1    40   Output ~ 0
-RX_EXT
-Text HLabel 5275 2720 1    40   Input ~ 0
-TX_EXT
-Text HLabel 5370 2990 1    40   Output ~ 0
-IO0_EXT
-Text HLabel 5430 3225 1    40   Output ~ 0
 EN_EXT
+Text HLabel 5275 2720 1    40   Input ~ 0
+IO0_EXT
+Text HLabel 5370 2990 1    40   Output ~ 0
+TX_EXT
+Text HLabel 5430 3225 1    40   Output ~ 0
+RX_EXT
 Wire Wire Line
 	5280 3500 5225 3440
 Wire Wire Line
