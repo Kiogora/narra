@@ -1,5 +1,5 @@
-#ifndef __bitsmatrix_h_
-#define __bitsmatrix_h_
+#ifndef __DISPLAY_CONTROLLER_H_
+#define __DISPLAY_CONTROLLER_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -20,7 +20,7 @@ extern "C" {
 #define TRUE 1
 #define HIGH 1
 
-/**@def True
+/**@def False
    @brief Macro that defines the width of the font in bits.
 */
 
@@ -66,6 +66,19 @@ extern "C" {
    @brief Checks that the column number is valid.
 */
 #define IS_NUMCOLS(COLS) ((COLS) == numcol_8)
+
+/**@def IS_UTF8_CODEPOINT_IMPLEMENTED(UTF8_CODEPOINT)
+   @brief Checks that the codepoint implemented.
+*/
+#define IS_UTF8_CODEPOINT_IMPLEMENTED(UTF8_CODEPOINT) (((UTF8_CODEPOINT) >= 0x20U) && ((UTF8_CODEPOINT) <= 0x7EU))
+
+
+/**@def implemented codepoint limits
+   @brief codepoint limits of implemented codepoints.
+*/
+#define CODEPOINT_BASE_0X20 0x20U
+#define CODEPOINT_LIMIT_0X7E 0x7EU
+
 /***********************************************************************************/
 /*Typedefs*/
 /***********************************************************************************/
@@ -119,7 +132,7 @@ typedef enum
     scroll_speed_17 = (speed_t)0x04,
     scroll_speed_18 = (speed_t)0x03,
     scroll_speed_19 = (speed_t)0x02,
-    scroll_speed_20 = (speed_t)0x01
+        scroll_speed_20 = (speed_t)0x01
 }speedtype_enum;
 
 /**@typedef fontwidth_enum
