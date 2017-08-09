@@ -1,5 +1,12 @@
 #include <stdint.h>
+#include <stddef.h>
+#include "utf8.h"
 #include "displaycontroller.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "driver/gpio.h"
+#include "glyphmap.h"
+#include "renderchaser.h"
 
 static void shift_and_latch(Matrix* matrixInstanceptr, uint32_t row_data)
 {
@@ -38,13 +45,13 @@ void renderchaser(Matrix* matrixInstanceptr, uint32_t* _utf8string, size_t _utf8
     uint8_t shift_step=1;
     size_t index;
 
-    for (uint32_t k=0; k<utf8_length; k++)
+    for (uint32_t k=0; k<_utf8_length; k++)
     {
         for (unsigned int scroll=0; scroll<(matrixInstanceptr->fontwidth/shift_step); scroll++)
         {
             for (unsigned int row=0; row<matrixInstanceptr->num_rows; row++)
             {
-                index = utf8string[k*sizeof(utf8string)];
+                index = _utf8string[k*sizeof(_utf8string)];
                 /*Obtain the codepoint's glyph*/
                 if(IS_UTF8_CODEPOINT_IMPLEMENTED(index))
                 {

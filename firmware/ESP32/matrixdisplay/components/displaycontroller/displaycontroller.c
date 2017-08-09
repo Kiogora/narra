@@ -6,10 +6,9 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/gpio.h"
+#include "displaycontroller.h"
 #include "utf8.h"
 #include "renderchaser.h"
-#include "glyphmap.h"
-#include "displaycontroller.h"
 
 /*Private functions*/
 /*******************/
