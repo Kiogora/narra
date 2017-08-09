@@ -9,11 +9,6 @@ extern "C" {
 /*Defines*/
 /***********************************************************************************/
 
-/**@def FLIP_MATRIX
-   @brief Compilation directive to control display flipping. Uncomment to enable.
-*/
-//#define FLIP_MATRIX
-
 /**@def True
    @brief Macro that defines the width of the font in bits.
 */
@@ -73,11 +68,16 @@ extern "C" {
 #define IS_UTF8_CODEPOINT_IMPLEMENTED(UTF8_CODEPOINT) (((UTF8_CODEPOINT) >= 0x20U) && ((UTF8_CODEPOINT) <= 0x7EU))
 
 
-/**@def implemented codepoint limits
-   @brief codepoint limits of implemented codepoints.
+/**@def implemented UTF-8 codepoint limits
+   @brief codepoint range limits of implemented codepoints.
 */
 #define CODEPOINT_BASE_0X20 0x20U
 #define CODEPOINT_LIMIT_0X7E 0x7EU
+
+/**@def BYTE_LIMIT
+   @brief Maximum size limit on the null terminated byte string. Set to 512 bytes including NUL character.
+*/
+#define BYTE_LIMIT 512U
 
 /***********************************************************************************/
 /*Typedefs*/
@@ -110,7 +110,8 @@ typedef uint8_t font_t;
 
 /**@typedef speedtype_enum
    @brief matrix scroll speeds
-*/  
+*/
+
 typedef enum
 {
     scroll_speed_1  = (speed_t)0x20,
@@ -132,7 +133,7 @@ typedef enum
     scroll_speed_17 = (speed_t)0x04,
     scroll_speed_18 = (speed_t)0x03,
     scroll_speed_19 = (speed_t)0x02,
-        scroll_speed_20 = (speed_t)0x01
+    scroll_speed_20 = (speed_t)0x01
 }speedtype_enum;
 
 /**@typedef fontwidth_enum
@@ -164,9 +165,10 @@ typedef enum
     yes  = (xristics_t)0x01
 }is_setup;
 
-/**@typedef matrix_type_TypeDef
-   @brief Matrix type in use.
-*/
+typedef enum
+{
+    scroll = (xristics_t)0x01
+}rendertype;
 
 
 /**@typedef struct Matrix
@@ -186,7 +188,7 @@ typedef struct
     xristics_t   is_setup;
     font_t       fontwidth;
     speed_t      speed;
-    messageTypedef message[11];
+    messageTypedef bytesequence[11];
 } Matrix;
 
 /***********************************************************************************/
@@ -196,11 +198,11 @@ typedef struct
 /**@fn display
    @brief display message at a given speed
    @param[in] message
-   @param[in] speed
+   @param[in] rendertype
    @return Status of the call
    @retval void
 */
-void display(Matrix* matrixInstanceptr);
+void display(Matrix* matrixInstanceptr, rendertype _renderx);
 
 /**@fn matrix_setup
    @brief display message at a given speed

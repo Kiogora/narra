@@ -1,5 +1,5 @@
-#ifndef __BITSFONT_H_
-#define __BITSFONT_H_
+#ifndef __UTF_8_H_
+#define __UTF_8_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -25,7 +25,9 @@ static const uint8_t utf8d[] = {
   1,3,1,1,1,1,1,3,1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1, // s7..s8
 };
 
-uint32_t decode(uint32_t* state, uint32_t* codep, uint32_t byte);
+int check_valid_UTF8(char* _bytestring, size_t* _count);
+
+void utf8string_create(uint32_t* _codepointbuffer, char* _bytestring);
 
 #ifdef __cplusplus
 }

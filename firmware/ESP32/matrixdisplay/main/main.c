@@ -18,7 +18,7 @@ void app_main(void)
     while(TRUE)
     {
         /*Check if matrix instance is setup and display only if*/
-        if (matrix.is_setup){ display(matrixptr); }
+        if (matrix.is_setup){ display(matrixptr, scroll); }
     }
 }
 
