@@ -51,19 +51,17 @@ void renderchaser(Matrix* matrixInstanceptr, uint32_t* _utf8string, size_t _utf8
         {
             for (unsigned int row=0; row<matrixInstanceptr->num_rows; row++)
             {
-                index = _utf8string[k*sizeof(_utf8string)];
+                index = _utf8string[k * sizeof(*_utf8string)];
                 /*Obtain the codepoint's glyph*/
                 if(IS_UTF8_CODEPOINT_IMPLEMENTED(index))
                 {
-//                        if(index >= CODEPOINT_BASE_0X20 && index <= CODEPOINT_LIMIT_0X7E)
-//                        {
-//                        printf("Code implemented");
-                    temp = utf8_0020_007E[index-CODEPOINT_BASE_0X20][row];
-//                        }
+                    //if (index >= CODEPOINT_BASE_0X20 && index <= CODEPOINT_LIMIT_0X7E)
+                    //{
+                        temp = utf8_0020_007E[index-CODEPOINT_BASE_0X20][row];
+                    //}
                 }
                 else
                 {
-//                        printf("Code NOT implemented");
                     temp = unimplemented[row];
                 }
                 /*Fill Display buffer based on it's shift amount.*/

@@ -36,7 +36,7 @@ void utf8string_create(uint32_t* _codepointbuffer, char* _bytestring)
     {
         if (!decode(&state, &codepoint, *_bytestring))
         {
-            *(_codepointbuffer + (sizeof(uint32_t) * k) )  = codepoint;
+            *(_codepointbuffer + (sizeof(*_codepointbuffer) * k) )  = codepoint;
             k++;
         }
     }

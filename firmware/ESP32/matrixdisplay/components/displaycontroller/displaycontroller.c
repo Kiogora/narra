@@ -55,7 +55,7 @@ void matrix_setup(Matrix* matrixInstanceptr, matrix_pin_t _serial_pin, matrix_pi
     matrixInstanceptr->rowclk_pin=_rowclk_pin;
     matrixInstanceptr->rowrst_pin=_rowrst_pin;
 
-    strcpy(matrixInstanceptr->bytesequence,"C®26HOE    ");
+    strcpy(matrixInstanceptr->bytesequence,"C®26     ");
     matrix_init(matrixInstanceptr);
 
 /* Set/reset setup flag*/
@@ -80,8 +80,8 @@ void display(Matrix* matrixInstanceptr, rendertype _renderx)
         switch(_renderx)
         {
             case scroll:
-            renderchaser(matrixInstanceptr, utf8string, utf8_length);
-            break;
+                renderchaser(matrixInstanceptr, utf8string, utf8_length);
+                break;
         }
         free(utf8string);
     }

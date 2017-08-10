@@ -9,17 +9,15 @@ extern "C" {
 /*Defines*/
 /***********************************************************************************/
 
-/**@def True
-   @brief Macro that defines the width of the font in bits.
+/**@def High
+   @brief Macro that defines the macro low as 1
 */
-#define TRUE 1
 #define HIGH 1
 
-/**@def False
-   @brief Macro that defines the width of the font in bits.
+/**@def low
+   @brief Macro that defines macro low as 0.
 */
 
-#define FALSE 0
 #define LOW 0
 
 /**@def IS_SPEED(SPEED)
@@ -87,11 +85,6 @@ extern "C" {
    @brief Define the type of the set of control pins - bytes in this case.
 */
 typedef uint8_t matrix_pin_t;
-
-/**@typedef messageTypedef
-   @brief Define the type of the message.
-*/
-typedef char messageTypedef;
 
 /**@typedef speed_t
    @brief Define the speed of the message.
@@ -183,12 +176,11 @@ typedef struct
     matrix_pin_t rowrst_pin;
     xristics_t   num_rows;
     xristics_t   num_cols;
-    /*units_per_matrix implicitely defined during setup procedure*/
     xristics_t   unit_per_matrix;
     xristics_t   is_setup;
     font_t       fontwidth;
     speed_t      speed;
-    messageTypedef bytesequence[11];
+    char bytesequence[11];
 } Matrix;
 
 /***********************************************************************************/
