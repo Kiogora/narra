@@ -7,7 +7,7 @@
 #include "freertos/task.h"
 #include "driver/gpio.h"
 #include "displaycontroller.h"
-#include "utf8.h"
+#include "utf8_decoder.h"
 #include "renderchaser.h"
 
 /*Private functions*/
@@ -66,8 +66,6 @@ void matrix_setup(Matrix* matrixInstanceptr, matrix_pin_t _serial_pin, matrix_pi
 void display(Matrix* matrixInstanceptr, rendertype _renderx)
 {
     size_t utf8_length;
-    /*Add delay in order to feed task watchdog*/
-    vTaskDelay(1 / portTICK_PERIOD_MS);
     /*check byte buffer for UTF8 validity*/
     uint8_t invalid = check_valid_UTF8(matrixInstanceptr->bytesequence, &utf8_length);
 

@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include <stddef.h>
-#include "utf8.h"
+#include "utf8_decoder.h"
 #include "displaycontroller.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -51,7 +51,7 @@ void renderchaser(Matrix* matrixInstanceptr, uint32_t* _utf8string, size_t _utf8
         {
             for (unsigned int row=0; row<matrixInstanceptr->num_rows; row++)
             {
-                index = _utf8string[k * sizeof(*_utf8string)];
+                index = _utf8string[k];
                 /*Obtain the codepoint's glyph*/
                 if(IS_UTF8_CODEPOINT_IMPLEMENTED(index))
                 {
