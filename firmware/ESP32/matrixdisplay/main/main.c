@@ -1,10 +1,13 @@
-#include <string.h>
+
+/*ESP-IDF libs*/
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/gpio.h"
-#include "displaycontroller.h"
+
 //#include "crc.h"
-#include <stdio.h>
+
+/*Project libs*/
+#include "controller.h"
 
 void app_main(void)
 {

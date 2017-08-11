@@ -60,17 +60,21 @@ extern "C" {
 */
 #define IS_NUMCOLS(COLS) ((COLS) == numcol_8)
 
-/**@def IS_UTF8_CODEPOINT_IMPLEMENTED(UTF8_CODEPOINT)
-   @brief Checks that the codepoint implemented.
-*/
-#define IS_UTF8_CODEPOINT_IMPLEMENTED(UTF8_CODEPOINT) (((UTF8_CODEPOINT) >= 0x20U) && ((UTF8_CODEPOINT) <= 0x7EU))
-
-
 /**@def implemented UTF-8 codepoint limits
    @brief codepoint range limits of implemented codepoints.
 */
-#define CODEPOINT_BASE_0X20 0x20U
-#define CODEPOINT_LIMIT_0X7E 0x7EU
+#define codepoint_base_0x20  0x20U
+#define codepoint_limit_0x7E  0x7EU
+#define codepoint_base_0xA1  0xA1U
+#define codepoint_limit_0xAE  0xAEU
+
+/**@def IS_UTF8_CODEPOINT_IMPLEMENTED(UTF8_CODEPOINT)
+   @brief Checks that the codepoint implemented.
+*/
+#define IS_UTF8_CODEPOINT_IMPLEMENTED(UTF8_CODEPOINT) \
+((((UTF8_CODEPOINT) >= codepoint_base_0x20) && ((UTF8_CODEPOINT) <= codepoint_limit_0x7E)) || \
+(((UTF8_CODEPOINT) >= codepoint_base_0xA1) && ((UTF8_CODEPOINT) <= codepoint_limit_0xAE)))
+
 
 /**@def BYTE_LIMIT
    @brief Maximum size limit on the null terminated byte string. Set to 512 bytes including NUL character.
@@ -180,7 +184,7 @@ typedef struct
     xristics_t   is_setup;
     font_t       fontwidth;
     speed_t      speed;
-    char bytesequence[11];
+    char bytesequence[17];
 } Matrix;
 
 /***********************************************************************************/
@@ -216,5 +220,5 @@ void matrix_setup(Matrix* matrixInstanceptr, matrix_pin_t _serial_pin, matrix_pi
 }
 #endif
 
-#endif /*__BITSMATRIX_H_*/
+#endif /*__CONTROLLER_H_*/
 

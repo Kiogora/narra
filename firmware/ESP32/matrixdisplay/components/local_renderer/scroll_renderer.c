@@ -1,12 +1,18 @@
+
+/*Standard C libs*/
 #include <stdint.h>
 #include <stddef.h>
-#include "utf8_decoder.h"
-#include "displaycontroller.h"
+
+/*ESP-IDF libs*/
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/gpio.h"
+
+/*project libs*/
 #include "glyphmap.h"
-#include "renderchaser.h"
+#include "controller.h"
+#include "utf8_decoder.h"
+#include "scroll_renderer.h"
 
 static void shift_and_latch(Matrix* matrixInstanceptr, uint32_t row_data)
 {
@@ -41,9 +47,9 @@ static void shift_and_latch(Matrix* matrixInstanceptr, uint32_t row_data)
 void renderchaser(Matrix* matrixInstanceptr, uint32_t* _utf8string, size_t _utf8_length)
 {
     uint32_t buffer[numrow_8]={0,0,0,0,0,0,0,0};
-    uint32_t  temp;
+    uint32_t  temp=0;
     uint8_t shift_step=1;
-    size_t index;
+    size_t index=0;
 
     for (uint32_t k=0; k<_utf8_length; k++)
     {
@@ -55,17 +61,21 @@ void renderchaser(Matrix* matrixInstanceptr, uint32_t* _utf8string, size_t _utf8
                 /*Obtain the codepoint's glyph*/
                 if(IS_UTF8_CODEPOINT_IMPLEMENTED(index))
                 {
-                    //if (index >= CODEPOINT_BASE_0X20 && index <= CODEPOINT_LIMIT_0X7E)
-                    //{
-                        temp = utf8_0020_007E[index-CODEPOINT_BASE_0X20][row];
-                    //}
+                    if (index >= codepoint_base_0x20 && index <= codepoint_limit_0x7E)
+                    {
+                        temp = utf8_0020_007E[index-codepoint_base_0x20][row];
+                    }
+                    else if (index >= codepoint_base_0xA1 && index <= codepoint_limit_0xAE)
+                    {
+                        temp = utf8_00A1_00AE[index-codepoint_base_0xA1][row];    
+                    }
                 }
                 else
                 {
                     temp = unimplemented[row];
                 }
                 /*Fill Display buffer based on it's shift amount.*/
-                buffer[row] = (buffer[row] << shift_step)|(temp >> ((matrixInstanceptr->fontwidth-shift_step)-(scroll*shift_step)));
+buffer[row] = (buffer[row] << shift_step)|(temp >> ((matrixInstanceptr->fontwidth-shift_step)-(scroll*shift_step)));
             }
             for(unsigned int l=0; l<matrixInstanceptr->speed;l++)
             {

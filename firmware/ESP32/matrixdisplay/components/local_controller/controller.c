@@ -1,14 +1,17 @@
-/* Thread aware FREERTOS-ESP IDF compatible matrix control library */
-/* Author: Alois Mbutura*/
 
+/*Standard C libs*/
 #include <stdint.h>
 #include <string.h>
+
+/*ESP-IDF libs*/
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/gpio.h"
-#include "displaycontroller.h"
+
+/*project libs*/
+#include "controller.h"
 #include "utf8_decoder.h"
-#include "renderchaser.h"
+#include "scroll_renderer.h"
 
 /*Private functions*/
 /*******************/
@@ -55,7 +58,7 @@ void matrix_setup(Matrix* matrixInstanceptr, matrix_pin_t _serial_pin, matrix_pi
     matrixInstanceptr->rowclk_pin=_rowclk_pin;
     matrixInstanceptr->rowrst_pin=_rowrst_pin;
 
-    strcpy(matrixInstanceptr->bytesequence,"C®26     ");
+    strcpy(matrixInstanceptr->bytesequence,"©ALOIS 2015    ");
     matrix_init(matrixInstanceptr);
 
 /* Set/reset setup flag*/
