@@ -57,7 +57,6 @@ void system_setup(Matrix* matrixInstanceptr, System_variables* system_variables,
     matrixInstanceptr->current_message=NULL;
     system_init(matrixInstanceptr);
 /* Set/reset setup flag*/
-    matrixInstanceptr->enable_state=enabled;
     
     system_display(matrixInstanceptr,system_variables,scroll);
 
@@ -73,13 +72,12 @@ void system_deactivate(Matrix* matrixInstanceptr, System_variables* system_varia
 {
     matrixInstanceptr->system_state=shutdown;
     system_display(matrixInstanceptr,system_variables,scroll);
-    matrixInstanceptr->enable_state=disabled;
 }
     
 /*Matrix display function*/
 void system_display(Matrix* matrixInstanceptr, System_variables* system_variables, rendertype _renderx)
 {
-    if (matrixInstanceptr->enable_state==enabled)
+    if (matrixInstanceptr->system_state== startup || matrixInstanceptr->system_state== active)
     {
         if(matrixInstanceptr->system_state==startup)
         {
