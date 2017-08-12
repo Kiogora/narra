@@ -10,9 +10,8 @@
 
 /*project libs*/
 #include "glyphmap.h"
-#include "controller.h"
+#include "system_controller.h"
 #include "utf8_decoder.h"
-#include "scroll_renderer.h"
 
 static void shift_and_latch(Matrix* matrixInstanceptr, uint32_t row_data)
 {
@@ -46,11 +45,10 @@ static void shift_and_latch(Matrix* matrixInstanceptr, uint32_t row_data)
 
 void renderchaser(Matrix* matrixInstanceptr, uint32_t* _utf8string, size_t _utf8_length)
 {
-    uint32_t buffer[numrow_8]={0,0,0,0,0,0,0,0};
+    uint32_t buffer[8]={0,0,0,0,0,0,0,0};
     uint32_t  temp=0;
     uint8_t shift_step=1;
     size_t index=0;
-
     for (uint32_t k=0; k<_utf8_length; k++)
     {
         for (unsigned int scroll=0; scroll<(matrixInstanceptr->fontwidth/shift_step); scroll++)
@@ -78,7 +76,7 @@ void renderchaser(Matrix* matrixInstanceptr, uint32_t* _utf8string, size_t _utf8
 buffer[row] = (buffer[row] << shift_step)|(temp >> ((matrixInstanceptr->fontwidth-shift_step)-(scroll*shift_step)));
             }
             for(unsigned int l=0; l<matrixInstanceptr->speed;l++)
-            {
+            {             
                 for (unsigned int i=0; i<matrixInstanceptr->num_rows; i++)
                 {
                     if(i==7)
