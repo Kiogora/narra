@@ -125,11 +125,10 @@ typedef enum
 
 typedef enum
 {
-    startup = (xristics_t)0x04,
-    active = (xristics_t)0x03,
-    shutdown = (xristics_t)0x02,
-    error = (xristics_t)0x01
-}matrix_message_state;
+    startup = (xristics_t)0x03,
+    active = (xristics_t)0x02,
+    shutdown = (xristics_t)0x01,
+}matrix_state;
 
 /**@typedef struct Matrix
    @brief Allows several matrix to be setup and allocated memory. Each accessed individually by a common API.
@@ -152,7 +151,7 @@ typedef struct
     font_t       fontwidth;
     speed_t      speed;
 
-    matrix_message_state  message_state;
+    matrix_state  system_state;
  
 } Matrix;
 
@@ -160,12 +159,16 @@ typedef struct
 /*Public function prototypes go here*/
 /***********************************************************************************/
 
-void system_display(Matrix* matrixInstanceptr, rendertype _renderx);
-
 /*TODO-Implement error checking on pins based on API given by espressif.*/
 
 void system_setup(Matrix* matrixInstanceptr, System_variables* system_variables, matrix_pin_t _serial_pin, matrix_pin_t _shift_pin, matrix_pin_t _latch_pin, matrix_pin_t _rowclk_pin, matrix_pin_t _rowrst_pin, speedtype_enum _speed);
 
+
+void system_display(Matrix* matrixInstanceptr, System_variables* system_variables, rendertype _renderx);
+
+void system_activate(Matrix* matrixInstanceptr);
+
+void system_deactivate(Matrix* matrixInstanceptr, System_variables* system_variables);
 #ifdef __cplusplus
 }
 #endif

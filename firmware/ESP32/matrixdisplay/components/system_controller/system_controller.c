@@ -53,40 +53,71 @@ void system_setup(Matrix* matrixInstanceptr, System_variables* system_variables,
     
     matrixInstanceptr->speed=_speed;
 
-    matrixInstanceptr->message_state=startup;
+    matrixInstanceptr->system_state=startup;
     matrixInstanceptr->current_message=NULL;
     system_init(matrixInstanceptr);
 /* Set/reset setup flag*/
     matrixInstanceptr->enable_state=enabled;
+    
+    system_display(matrixInstanceptr,system_variables,scroll);
+
+    system_activate(matrixInstanceptr);
+}
+
+void system_activate(Matrix* matrixInstanceptr)
+{
+    matrixInstanceptr->system_state=active;
+}
+
+void system_deactivate(Matrix* matrixInstanceptr, System_variables* system_variables)
+{
+    matrixInstanceptr->system_state=shutdown;
+    system_display(matrixInstanceptr,system_variables,scroll);
+    matrixInstanceptr->enable_state=disabled;
 }
     
 /*Matrix display function*/
-void system_display(Matrix* matrixInstanceptr, rendertype _renderx)
+void system_display(Matrix* matrixInstanceptr, System_variables* system_variables, rendertype _renderx)
 {
-    size_t utf8_length;
-    char* narra_spacer="     ";
-    char* unprocessed_string=(char*)malloc(strlen(matrixInstanceptr->current_message)+strlen(narra_spacer)+1);
-    strcpy(unprocessed_string,matrixInstanceptr->current_message);
-    strcat(unprocessed_string, narra_spacer);
-    /*check byte buffer for UTF8 validity*/
-    uint8_t invalid = check_valid_UTF8(unprocessed_string, &utf8_length);
-    if(!invalid)
+    if (matrixInstanceptr->enable_state==enabled)
     {
-        uint32_t* utf8string = (uint32_t*)malloc(sizeof(uint32_t)*utf8_length);
-        memset(utf8string, 0, sizeof(uint32_t)*utf8_length);
-
-        utf8string_create(utf8string,unprocessed_string);
-        switch(_renderx)
+        if(matrixInstanceptr->system_state==startup)
         {
-            case scroll:
-                renderchaser(matrixInstanceptr, utf8string, utf8_length);
-                break;
+           matrixInstanceptr->current_message=system_variables->startup_msg;
         }
-        free(utf8string);
-        free(unprocessed_string);
-    }
-    else
-    {
-        //implement something
+        else if(matrixInstanceptr->system_state==active)
+        {
+           matrixInstanceptr->current_message=system_variables->active_msg;
+        }
+        else if(matrixInstanceptr->system_state==shutdown)
+        {
+           matrixInstanceptr->current_message=system_variables->shutdown_msg;
+        }
+        size_t utf8_length;
+        char* narra_spacer="     ";
+        char* unprocessed_string=(char*)malloc(strlen(matrixInstanceptr->current_message)+strlen(narra_spacer)+1);
+        strcpy(unprocessed_string,matrixInstanceptr->current_message);
+        strcat(unprocessed_string, narra_spacer);
+        /*check byte buffer for UTF8 validity*/
+        uint8_t invalid = check_valid_UTF8(unprocessed_string, &utf8_length);
+        if(!invalid)
+        {
+            uint32_t* utf8string = (uint32_t*)malloc(sizeof(uint32_t)*utf8_length);
+            memset(utf8string, 0, sizeof(uint32_t)*utf8_length);
+
+            utf8string_create(utf8string,unprocessed_string);
+            switch(_renderx)
+            {
+                case scroll:
+                    renderchaser(matrixInstanceptr, utf8string, utf8_length);
+                    break;
+            }
+            free(utf8string);
+            free(unprocessed_string);
+        }
+        else
+        {
+            //implement something
+        }
     }
 }
