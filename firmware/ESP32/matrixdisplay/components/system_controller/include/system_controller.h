@@ -4,7 +4,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+#include "system_loader.h"
 /***********************************************************************************/
 /*Defines*/
 /***********************************************************************************/
@@ -23,26 +23,26 @@ extern "C" {
    @brief Checks that the speed is a valid speed.
 */
 #define IS_SPEED(SPEED) \
-  (((SPEED) == scroll_speed_1)        || \
-   ((SPEED) == scroll_speed_2)        || \
-   ((SPEED) == scroll_speed_3)        || \
-   ((SPEED) == scroll_speed_4)        || \
-   ((SPEED) == scroll_speed_5)        || \
-   ((SPEED) == scroll_speed_6)        || \
-   ((SPEED) == scroll_speed_7)        || \
-   ((SPEED) == scroll_speed_8)        || \
-   ((SPEED) == scroll_speed_9)        || \
-   ((SPEED) == scroll_speed_10)       || \
-   ((SPEED) == scroll_speed_11)       || \
-   ((SPEED) == scroll_speed_12)       || \
-   ((SPEED) == scroll_speed_13)       || \
-   ((SPEED) == scroll_speed_14)       || \
-   ((SPEED) == scroll_speed_15)       || \
-   ((SPEED) == scroll_speed_16)       || \
-   ((SPEED) == scroll_speed_17)       || \
-   ((SPEED) == scroll_speed_18)       || \
-   ((SPEED) == scroll_speed_19)       || \
-   ((SPEED) == scroll_speed_20))
+  (((SPEED) == system_speed_1)        || \
+   ((SPEED) == system_speed_2)        || \
+   ((SPEED) == system_speed_3)        || \
+   ((SPEED) == system_speed_4)        || \
+   ((SPEED) == system_speed_5)        || \
+   ((SPEED) == system_speed_6)        || \
+   ((SPEED) == system_speed_7)        || \
+   ((SPEED) == system_speed_8)        || \
+   ((SPEED) == system_speed_9)        || \
+   ((SPEED) == system_speed_10)       || \
+   ((SPEED) == system_speed_11)       || \
+   ((SPEED) == system_speed_12)       || \
+   ((SPEED) == system_speed_13)       || \
+   ((SPEED) == system_speed_14)       || \
+   ((SPEED) == system_speed_15)       || \
+   ((SPEED) == system_speed_16)       || \
+   ((SPEED) == system_speed_17)       || \
+   ((SPEED) == system_speed_18)       || \
+   ((SPEED) == system_speed_19)       || \
+   ((SPEED) == system_speed_20))
 
 /**@def implemented UTF-8 codepoint limits
    @brief codepoint range limits of implemented codepoints.
@@ -89,33 +89,34 @@ typedef uint8_t font_t;
 
 typedef enum
 {
-    scroll_speed_1  = (speed_t)0x20,
-    scroll_speed_2  = (speed_t)0x19,
-    scroll_speed_3  = (speed_t)0x18,
-    scroll_speed_4  = (speed_t)0x17,
-    scroll_speed_5  = (speed_t)0x16,
-    scroll_speed_6  = (speed_t)0x15,
-    scroll_speed_7  = (speed_t)0x14,
-    scroll_speed_8  = (speed_t)0x13,
-    scroll_speed_9  = (speed_t)0x12,
-    scroll_speed_10 = (speed_t)0x11,
-    scroll_speed_11 = (speed_t)0x10,
-    scroll_speed_12 = (speed_t)0x09,
-    scroll_speed_13 = (speed_t)0x08,
-    scroll_speed_14 = (speed_t)0x07,
-    scroll_speed_15 = (speed_t)0x06,
-    scroll_speed_16 = (speed_t)0x05,
-    scroll_speed_17 = (speed_t)0x04,
-    scroll_speed_18 = (speed_t)0x03,
-    scroll_speed_19 = (speed_t)0x02,
-    scroll_speed_20 = (speed_t)0x01
+    system_speed_1  = (speed_t)0x20,
+    system_speed_2  = (speed_t)0x19,
+    system_speed_3  = (speed_t)0x18,
+    system_speed_4  = (speed_t)0x17,
+    system_speed_5  = (speed_t)0x16,
+    system_speed_6  = (speed_t)0x15,
+    system_speed_7  = (speed_t)0x14,
+    system_speed_8  = (speed_t)0x13,
+    system_speed_9  = (speed_t)0x12,
+    system_speed_10 = (speed_t)0x11,
+    system_speed_11 = (speed_t)0x10,
+    system_speed_12 = (speed_t)0x09,
+    system_speed_13 = (speed_t)0x08,
+    system_speed_14 = (speed_t)0x07,
+    system_speed_15 = (speed_t)0x06,
+    system_speed_16 = (speed_t)0x05,
+    system_speed_17 = (speed_t)0x04,
+    system_speed_18 = (speed_t)0x03,
+    system_speed_19 = (speed_t)0x02,
+    system_speed_20 = (speed_t)0x01
 }speedtype_enum;
 
 
 typedef enum
 {
-    yes  = (xristics_t)0x01
-}is_setup;
+    enabled  = (xristics_t)0x01,
+    disabled=(xristics_t)0x00
+}enable_state;
 
 typedef enum
 {
@@ -124,10 +125,10 @@ typedef enum
 
 typedef enum
 {
-    startup = (xristics_t)0x01,
-    active = (xristics_t)0x02,
-    shutdown = (xristics_t)0x03,
-    error = (xristics_t)0x04
+    startup = (xristics_t)0x04,
+    active = (xristics_t)0x03,
+    shutdown = (xristics_t)0x02,
+    error = (xristics_t)0x01
 }matrix_message_state;
 
 /**@typedef struct Matrix
@@ -135,6 +136,10 @@ typedef enum
 */
 typedef struct
 {
+    xristics_t  enable_state;
+
+    char* current_message;
+
     matrix_pin_t serial_pin;
     matrix_pin_t shift_pin;
     matrix_pin_t latch_pin;
@@ -148,22 +153,18 @@ typedef struct
     speed_t      speed;
 
     matrix_message_state  message_state;
-
-    char* current_message;
-
-    xristics_t  is_setup; 
-
+ 
 } Matrix;
 
 /***********************************************************************************/
 /*Public function prototypes go here*/
 /***********************************************************************************/
 
-void display(Matrix* matrixInstanceptr, rendertype _renderx);
+void system_display(Matrix* matrixInstanceptr, rendertype _renderx);
 
 /*TODO-Implement error checking on pins based on API given by espressif.*/
 
-void matrix_setup(Matrix* matrixInstanceptr, matrix_pin_t _serial_pin, matrix_pin_t _shift_pin, matrix_pin_t _latch_pin, matrix_pin_t _rowclk_pin, matrix_pin_t _rowrst_pin, speedtype_enum _speed);
+void system_setup(Matrix* matrixInstanceptr, System_variables* system_variables, matrix_pin_t _serial_pin, matrix_pin_t _shift_pin, matrix_pin_t _latch_pin, matrix_pin_t _rowclk_pin, matrix_pin_t _rowrst_pin, speedtype_enum _speed);
 
 #ifdef __cplusplus
 }
