@@ -20,7 +20,20 @@ static uint32_t decode(uint32_t* state, uint32_t* codep, uint32_t byte)
 
 /*Public functions*/
 /******************/
-int check_valid_UTF8(char* _bytestring, size_t* _count)
+
+int simple_check_UTF8(char* _bytestring)
+{
+    uint32_t codepoint;
+    uint32_t state = 0;
+
+    for (; *_bytestring; ++_bytestring)
+    {
+        if (!decode(&state, &codepoint, *_bytestring)){;}
+    }
+    return state != UTF8_ACCEPT;
+}
+
+int check_count_valid_UTF8(char* _bytestring, size_t* _count)
 {
     uint32_t codepoint;
     uint32_t state = 0;

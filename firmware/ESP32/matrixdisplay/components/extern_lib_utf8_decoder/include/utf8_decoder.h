@@ -37,7 +37,9 @@ static const uint8_t utf8d[] = {
   1,3,1,1,1,1,1,3,1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1, // s7..s8
 };
 
-int check_valid_UTF8(char* _bytestring, size_t* _count);
+int simple_check_UTF8(char* _bytestring);
+
+int check_count_valid_UTF8(char* _bytestring, size_t* _count);
 
 void utf8string_create(uint32_t* _codepointbuffer, char* _bytestring);
 

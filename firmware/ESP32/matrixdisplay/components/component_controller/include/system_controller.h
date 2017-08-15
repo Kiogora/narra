@@ -4,7 +4,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include "system_loader.h"
+#include "narra_parameters.h"
 /***********************************************************************************/
 /*Defines*/
 /***********************************************************************************/
@@ -111,13 +111,6 @@ typedef enum
     system_speed_20 = (speed_t)0x01
 }speedtype_enum;
 
-
-typedef enum
-{
-    enabled  = (xristics_t)0x01,
-    disabled=(xristics_t)0x00
-}enable_state;
-
 typedef enum
 {
     scroll = (xristics_t)0x01
@@ -135,7 +128,6 @@ typedef enum
 */
 typedef struct
 {
-    xristics_t  enable_state;
 
     char* current_message;
 

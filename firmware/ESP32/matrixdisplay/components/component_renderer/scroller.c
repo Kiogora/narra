@@ -12,6 +12,7 @@
 #include "glyphmap.h"
 #include "system_controller.h"
 #include "utf8_decoder.h"
+#include "scroller.h"
 
 static void shift_and_latch(Matrix* matrixInstanceptr, uint32_t row_data)
 {

@@ -3,33 +3,23 @@
 #include "esp_partition.h"
 #include "esp_err.h"
 #include "nvs_flash.h"
-#include "system_loader.h"
+#include "narra_parameters.h"
 #include <string.h>
 #include "nvs.h"
-#ifdef DEBUG
+#include "narra_nvs.h"
+#include "system_loader.h"
+#ifdef DEBUG_LOADER
 #include "stdio.h"
 #endif
-static esp_err_t narra_nvs_init(void)
-{
-    esp_err_t err = nvs_flash_init();
 
-    if (err == ESP_ERR_NVS_NO_FREE_PAGES)
-    {
-        const esp_partition_t* nvs_partition = esp_partition_find_first(ESP_PARTITION_TYPE_DATA,
-                                                                        ESP_PARTITION_SUBTYPE_DATA_NVS,
-                                                                        NULL);
-        esp_partition_erase_range(nvs_partition, 0, nvs_partition->size);
-        err = nvs_flash_init();
-    }
 
-    return err;
-}
+//static void string_load(System_variables* instanceptr, char* key);
 
 static esp_err_t narra_load_startup_msg(System_variables* instanceptr)
 {
     nvs_handle system_loader;
     esp_err_t err = nvs_open("system", NVS_READONLY, &system_loader);
-#ifdef DEBUG
+#ifdef DEBUG_LOADER
     if(err == ESP_ERR_NVS_NOT_FOUND)
     {
         printf("The system namespace was not found in read only mode\n");
@@ -55,7 +45,7 @@ static esp_err_t narra_load_startup_msg(System_variables* instanceptr)
     {
         instanceptr->startup_msg = malloc(string_size);
         err = nvs_get_str(system_loader, "startup_msg", instanceptr->startup_msg, &string_size);
-#ifdef DEBUG
+#ifdef DEBUG_LOADER
         printf("Startup message is %s\n", instanceptr->startup_msg);
 #endif
     }
@@ -63,7 +53,7 @@ static esp_err_t narra_load_startup_msg(System_variables* instanceptr)
     {
         instanceptr->startup_msg = malloc(strlen("ERROR!")+1);
         strcpy(instanceptr->startup_msg,"ERROR!");
-#ifdef DEBUG
+#ifdef DEBUG_LOADER
         printf("Startup message is %s\n", instanceptr->startup_msg);
 #endif
     }
@@ -75,7 +65,7 @@ static esp_err_t narra_load_shutdown_msg(System_variables* instanceptr)
 {
     nvs_handle system_loader;
     esp_err_t err = nvs_open("system", NVS_READONLY, &system_loader);
-#ifdef DEBUG
+#ifdef DEBUG_LOADER
     if(err == ESP_ERR_NVS_NOT_FOUND)
     {
         printf("The system namespace was not found in read only mode\n");
@@ -101,7 +91,7 @@ static esp_err_t narra_load_shutdown_msg(System_variables* instanceptr)
     {
         instanceptr->shutdown_msg = malloc(string_size);
         err = nvs_get_str(system_loader, "shutdown_msg", instanceptr->shutdown_msg, &string_size);
-#ifdef DEBUG
+#ifdef DEBUG_LOADER
         printf("Shutdown message is %s\n", instanceptr->shutdown_msg);
 #endif
     }
@@ -109,7 +99,7 @@ static esp_err_t narra_load_shutdown_msg(System_variables* instanceptr)
     {
         instanceptr->shutdown_msg = malloc(strlen("ERROR!")+1);
         strcpy(instanceptr->shutdown_msg,"ERROR!");
-#ifdef DEBUG
+#ifdef DEBUG_LOADER
         printf("Shutdown message is %s\n", instanceptr->shutdown_msg);
 #endif
     }
@@ -121,7 +111,7 @@ static esp_err_t narra_load_active_msg(System_variables* instanceptr)
 {
     nvs_handle system_loader;
     esp_err_t err = nvs_open("system", NVS_READONLY, &system_loader);
-#ifdef DEBUG
+#ifdef DEBUG_LOADER
     if(err == ESP_ERR_NVS_NOT_FOUND)
     {
         printf("The system namespace was not found in read only mode\n");
@@ -147,7 +137,7 @@ static esp_err_t narra_load_active_msg(System_variables* instanceptr)
     {
         instanceptr->active_msg = malloc(string_size);
         err = nvs_get_str(system_loader, "active_msg", instanceptr->active_msg, &string_size);
-#ifdef DEBUG
+#ifdef DEBUG_LOADER
         printf("Active message is %s\n", instanceptr->active_msg);
 #endif
     }
@@ -155,7 +145,7 @@ static esp_err_t narra_load_active_msg(System_variables* instanceptr)
     {
         instanceptr->active_msg = malloc(strlen("ERROR!")+1);
         strcpy(instanceptr->active_msg,"ERROR!");
-#ifdef DEBUG
+#ifdef DEBUG_LOADER
         printf("Active message is %s\n", instanceptr->active_msg);
 #endif
     }

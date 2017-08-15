@@ -9,10 +9,11 @@
 #include "driver/gpio.h"
 
 /*project libs*/
+#include "narra_parameters.h"
 #include "system_loader.h"
 #include "system_controller.h"
 #include "utf8_decoder.h"
-#include "scroll_renderer.h"
+#include "scroller.h"
 
 /*Private functions*/
 /*******************/
@@ -56,9 +57,8 @@ void system_setup(Matrix* matrixInstanceptr, System_variables* system_variables,
     matrixInstanceptr->system_state=startup;
     matrixInstanceptr->current_message=NULL;
     system_init(matrixInstanceptr);
-/* Set/reset setup flag*/
     
-    system_display(matrixInstanceptr,system_variables,scroll);
+    system_display(matrixInstanceptr, system_variables, scroll);
 
     system_activate(matrixInstanceptr);
 }
@@ -71,7 +71,7 @@ void system_activate(Matrix* matrixInstanceptr)
 void system_deactivate(Matrix* matrixInstanceptr, System_variables* system_variables)
 {
     matrixInstanceptr->system_state=shutdown;
-    system_display(matrixInstanceptr,system_variables,scroll);
+    system_display(matrixInstanceptr, system_variables, scroll);
 }
     
 /*Matrix display function*/
@@ -79,31 +79,31 @@ void system_display(Matrix* matrixInstanceptr, System_variables* system_variable
 {
     if (matrixInstanceptr->system_state== startup || matrixInstanceptr->system_state== active)
     {
-        if(matrixInstanceptr->system_state==startup)
+        switch(matrixInstanceptr->system_state)
         {
-           matrixInstanceptr->current_message=system_variables->startup_msg;
-        }
-        else if(matrixInstanceptr->system_state==active)
-        {
-           matrixInstanceptr->current_message=system_variables->active_msg;
-        }
-        else if(matrixInstanceptr->system_state==shutdown)
-        {
-           matrixInstanceptr->current_message=system_variables->shutdown_msg;
+            case(startup):
+                matrixInstanceptr->current_message=system_variables->startup_msg;
+                break;                
+            case(active):
+                matrixInstanceptr->current_message=system_variables->active_msg;
+                break;
+            case(shutdown):
+                matrixInstanceptr->current_message=system_variables->shutdown_msg;
+                break;
         }
         size_t utf8_length;
         char* narra_spacer="     ";
         char* unprocessed_string=(char*)malloc(strlen(matrixInstanceptr->current_message)+strlen(narra_spacer)+1);
-        strcpy(unprocessed_string,matrixInstanceptr->current_message);
+        strcpy(unprocessed_string, matrixInstanceptr->current_message);
         strcat(unprocessed_string, narra_spacer);
         /*check byte buffer for UTF8 validity*/
-        uint8_t invalid = check_valid_UTF8(unprocessed_string, &utf8_length);
+        uint8_t invalid = check_count_valid_UTF8(unprocessed_string, &utf8_length);
         if(!invalid)
         {
             uint32_t* utf8string = (uint32_t*)malloc(sizeof(uint32_t)*utf8_length);
             memset(utf8string, 0, sizeof(uint32_t)*utf8_length);
 
-            utf8string_create(utf8string,unprocessed_string);
+            utf8string_create(utf8string, unprocessed_string);
             switch(_renderx)
             {
                 case scroll:
@@ -119,3 +119,19 @@ void system_display(Matrix* matrixInstanceptr, System_variables* system_variable
         }
     }
 }
+
+//TODO-Add check if the active CRC = realtime calculated CRC. If not display recovery.
+/*
+        if(crcFast(test_buffer, strlen(test_buffer)) == crcFast(new_startup_msg, strlen(new_startup_msg)))
+        {
+            //cleanup code
+            return ESP_OK;
+        }
+        else
+        {
+            nvs_set_str(system_updater, "active_msg", new_active_msg);
+            return CRC_ERROR;
+            //return crc error update failed
+        }
+
+*/
