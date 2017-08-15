@@ -17,6 +17,7 @@ extern "C" {
 
 //#define NARRA_CRC16
 /*Choose one of the following CRC options to change the CRC nature in crc.h*/
+/*
 #if defined (NARRA_CRC32)
 #define CRC32
 #elif defined (NARRA_CRC16)
@@ -24,6 +25,7 @@ extern "C" {
 #elif defined (NARRA_CRC_CCITT)
 #define CRC_CCITT
 #endif
+*/
 
 //system-updater error codes
 

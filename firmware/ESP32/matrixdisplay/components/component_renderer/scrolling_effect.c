@@ -12,7 +12,7 @@
 #include "glyphmap.h"
 #include "system_controller.h"
 #include "utf8_decoder.h"
-#include "scroller.h"
+#include "scrolling_effect.h"
 
 static void shift_and_latch(Matrix* matrixInstanceptr, uint32_t row_data)
 {
@@ -44,7 +44,7 @@ static void shift_and_latch(Matrix* matrixInstanceptr, uint32_t row_data)
     gpio_set_level(matrixInstanceptr->latch_pin, LOW);
 }
 
-void renderchaser(Matrix* matrixInstanceptr, uint32_t* _utf8string, size_t _utf8_length)
+void scrolling_effect(Matrix* matrixInstanceptr, uint32_t* _utf8string, size_t _utf8_length)
 {
     uint32_t buffer[8]={0,0,0,0,0,0,0,0};
     uint32_t  temp=0;

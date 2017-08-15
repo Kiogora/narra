@@ -161,6 +161,8 @@ void system_display(Matrix* matrixInstanceptr, System_variables* system_variable
 void system_activate(Matrix* matrixInstanceptr);
 
 void system_deactivate(Matrix* matrixInstanceptr, System_variables* system_variables);
+
+void system_reboot(void);
 #ifdef __cplusplus
 }
 #endif

@@ -7,17 +7,19 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/gpio.h"
+#include "esp_system.h"
 
 /*project libs*/
 #include "narra_parameters.h"
 #include "system_loader.h"
 #include "system_controller.h"
 #include "utf8_decoder.h"
-#include "scroller.h"
+#include "scrolling_effect.h"
 
 /*Private functions*/
 /*******************/
-static void system_init(Matrix* matrixInstanceptr)
+/* You can change this function's contents depending on the embedded platform*/
+static void system_initialise(Matrix* matrixInstanceptr)
 {
     gpio_pad_select_gpio(matrixInstanceptr->serial_pin);
     gpio_pad_select_gpio(matrixInstanceptr->shift_pin);
@@ -29,6 +31,14 @@ static void system_init(Matrix* matrixInstanceptr)
     gpio_set_direction(matrixInstanceptr->latch_pin, GPIO_MODE_OUTPUT);
     gpio_set_direction(matrixInstanceptr->rowclk_pin, GPIO_MODE_OUTPUT);
     gpio_set_direction(matrixInstanceptr->rowrst_pin, GPIO_MODE_OUTPUT); 
+}
+
+static char* add_txt_spacer(Matrix* matrixInstanceptr, char* spacer)
+{
+    char* spaced_string=(char*)malloc(strlen(matrixInstanceptr->current_message)+strlen(spacer)+1);
+    strcpy(spaced_string, matrixInstanceptr->current_message);
+    strcat(spaced_string, spacer);
+    return spaced_string;
 }
 
 
@@ -44,22 +54,19 @@ void system_setup(Matrix* matrixInstanceptr, System_variables* system_variables,
     matrixInstanceptr->fontwidth=0x08;
     matrixInstanceptr->num_rows=0x08;
     matrixInstanceptr->num_cols=0x08;
+    matrixInstanceptr->speed=_speed;
 
-/*Matrix control pins*/
     matrixInstanceptr->serial_pin=_serial_pin;
     matrixInstanceptr->shift_pin=_shift_pin;
     matrixInstanceptr->latch_pin=_latch_pin;
     matrixInstanceptr->rowclk_pin=_rowclk_pin;
     matrixInstanceptr->rowrst_pin=_rowrst_pin;
     
-    matrixInstanceptr->speed=_speed;
-
     matrixInstanceptr->system_state=startup;
     matrixInstanceptr->current_message=NULL;
-    system_init(matrixInstanceptr);
-    
-    system_display(matrixInstanceptr, system_variables, scroll);
 
+    system_initialise(matrixInstanceptr);    
+    system_display(matrixInstanceptr, system_variables, scroll);
     system_activate(matrixInstanceptr);
 }
 
@@ -72,6 +79,11 @@ void system_deactivate(Matrix* matrixInstanceptr, System_variables* system_varia
 {
     matrixInstanceptr->system_state=shutdown;
     system_display(matrixInstanceptr, system_variables, scroll);
+}
+
+void system_reboot(void)
+{
+    esp_restart();
 }
     
 /*Matrix display function*/
@@ -91,13 +103,12 @@ void system_display(Matrix* matrixInstanceptr, System_variables* system_variable
                 matrixInstanceptr->current_message=system_variables->shutdown_msg;
                 break;
         }
-        size_t utf8_length;
-        char* narra_spacer="     ";
-        char* unprocessed_string=(char*)malloc(strlen(matrixInstanceptr->current_message)+strlen(narra_spacer)+1);
-        strcpy(unprocessed_string, matrixInstanceptr->current_message);
-        strcat(unprocessed_string, narra_spacer);
+        char* unprocessed_string = add_txt_spacer(matrixInstanceptr, "    ");
+
         /*check byte buffer for UTF8 validity*/
+        size_t utf8_length;
         uint8_t invalid = check_count_valid_UTF8(unprocessed_string, &utf8_length);
+
         if(!invalid)
         {
             uint32_t* utf8string = (uint32_t*)malloc(sizeof(uint32_t)*utf8_length);
@@ -107,7 +118,7 @@ void system_display(Matrix* matrixInstanceptr, System_variables* system_variable
             switch(_renderx)
             {
                 case scroll:
-                    renderchaser(matrixInstanceptr, utf8string, utf8_length);
+                    scrolling_effect(matrixInstanceptr, utf8string, utf8_length);
                     break;
             }
             free(utf8string);
@@ -115,23 +126,9 @@ void system_display(Matrix* matrixInstanceptr, System_variables* system_variable
         }
         else
         {
-            //implement something
+            //implement exception handling here.
         }
     }
 }
 
 //TODO-Add check if the active CRC = realtime calculated CRC. If not display recovery.
-/*
-        if(crcFast(test_buffer, strlen(test_buffer)) == crcFast(new_startup_msg, strlen(new_startup_msg)))
-        {
-            //cleanup code
-            return ESP_OK;
-        }
-        else
-        {
-            nvs_set_str(system_updater, "active_msg", new_active_msg);
-            return CRC_ERROR;
-            //return crc error update failed
-        }
-
-*/
