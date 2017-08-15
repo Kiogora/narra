@@ -21,7 +21,7 @@ typedef struct
     uint32_t* shutdown_crc_checksum;
 #endif
     char* active_msg;
-#ifdef ALLOW_NO_SIMPLE_UPDATE
+#ifndef ALLOW_SIMPLE_ACTIVE_UPDATE
     char* active_recovery;
     uint32_t* active_crc_checksum;
 #endif

@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-
+#define ALLOW_SIMPLE_ACTIVE_UPDATE
 #define ALLOW_STARTUP_MSG_UPDATE
 #define ALLOW_SHUTDOWN_MSG_UPDATE
 
