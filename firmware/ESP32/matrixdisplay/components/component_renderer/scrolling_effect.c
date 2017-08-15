@@ -10,7 +10,7 @@
 
 /*project libs*/
 #include "glyphmap.h"
-#include "system_controller.h"
+#include "narra_system.h"
 #include "utf8_decoder.h"
 #include "scrolling_effect.h"
 

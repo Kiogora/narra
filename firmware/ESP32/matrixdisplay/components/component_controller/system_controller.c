@@ -10,9 +10,10 @@
 #include "esp_system.h"
 
 /*project libs*/
-#include "narra_parameters.h"
-#include "system_loader.h"
 #include "system_controller.h"
+#include "narra_parameters.h"
+#include "narra_system.h"
+#include "system_loader.h"
 #include "utf8_decoder.h"
 #include "scrolling_effect.h"
 
