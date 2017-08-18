@@ -2,10 +2,7 @@
 
 ## Narra - An LED Signage Development Project
 
-This repository contains hardware designs and software for Narra, an open source, low cost and portable wireless control LED signage platform.
-
-![Narra](/doc/Images/ND-01-perspective.jpg)
-
+This repository contains hardware designs and software for Narra, an open source, wireless control LED signage platform.
 
 ## Principal authors (unordered): 
 
