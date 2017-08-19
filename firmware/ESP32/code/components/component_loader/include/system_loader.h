@@ -1,11 +1,6 @@
 #ifndef __SYSTEM_LOADER_H_
 #define __SYSTEM_LOADER_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-
 #define DEBUG_LOADER
 
 /**@def system loader error codes
@@ -19,9 +14,5 @@ extern "C" {
   
 /*load system variables on boot*/
 int32_t system_loader(System_variables* instanceptr);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /*__SYSTEM_LOADER_H_*/

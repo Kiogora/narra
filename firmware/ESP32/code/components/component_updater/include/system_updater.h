@@ -1,10 +1,6 @@
 #ifndef __SYSTEM_UPDATER_H_
 #define __SYSTEM_UPDATER_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define ALLOW_SIMPLE_ACTIVE_UPDATE
 #define ALLOW_STARTUP_MSG_UPDATE
 #define ALLOW_SHUTDOWN_MSG_UPDATE
@@ -36,10 +32,5 @@ int32_t system_update_active(char* new_active_msg);
 #ifdef ALLOW_SHUTDOWN_MSG_UPDATE
 int32_t system_update_shutdown(char* new_shutdown_msg);
 #endif
-
-
-#ifdef __cplusplus
-}
-#endif /*__SYSTEM_UPDATER_H_*/
 
 #endif /*__SYSTEM_UPDATER_H_*/

@@ -1,10 +1,6 @@
 #ifndef __GLYPH_MAP_H_
 #define __GLYPH_MAP_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 const uint8_t utf8_0020_007E[95][8] =
 {
 //SPACE U+0020
@@ -1241,7 +1237,4 @@ const uint8_t unimplemented[8] =
 0b00011100
 };
 
-#ifdef __cplusplus
-}
-#endif
 #endif

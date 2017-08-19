@@ -1,10 +1,6 @@
 #ifndef __UTF_8_H_
 #define __UTF_8_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /**@def BYTE_LIMIT
    @brief Maximum size limit on the null terminated byte string. Set to 512 bytes including NUL character.
 */
@@ -42,9 +38,5 @@ int simple_check_UTF8(char* _bytestring);
 int check_count_valid_UTF8(char* _bytestring, size_t* _count);
 
 void utf8string_create(uint32_t* _codepointbuffer, char* _bytestring);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

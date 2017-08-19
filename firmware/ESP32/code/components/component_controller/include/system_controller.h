@@ -1,9 +1,6 @@
 #ifndef __DISPLAY_CONTROLLER_H_
 #define __DISPLAY_CONTROLLER_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 #include "narra_system.h"
 #include "narra_parameters.h"
 
@@ -23,9 +20,6 @@ void system_activate(Matrix* matrixInstanceptr);
 void system_deactivate(Matrix* matrixInstanceptr, System_variables* system_variables);
 
 void system_reboot(void);
-#ifdef __cplusplus
-}
-#endif
 
 #endif /*__CONTROLLER_H_*/
 
