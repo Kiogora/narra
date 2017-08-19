@@ -14,6 +14,8 @@
 #include "utf8_decoder.h"
 #include "scrolling_effect.h"
 
+static const char* TAG = "Component_renderer_scrolling_effect";
+
 static void shift_and_latch(Matrix* matrixInstanceptr, uint32_t row_data)
 {
     /* The effect of clockskew should be accounted for,to ensure the clock pulse has effectively propagated*/ 

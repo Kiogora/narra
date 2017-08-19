@@ -4,9 +4,9 @@
 #include "utf8_decoder.h"
 #include "nvs.h"
 #include "narra_nvs.h"
-#ifdef DEBUG_UPDATER
-#include "stdio.h"
-#endif
+#include "esp_log.h"
+
+static const char* TAG = "Component_updater";
 
 #ifdef ALLOW_STARTUP_MSG_UPDATE
 int32_t system_update_startup(char* new_startup_msg)
@@ -22,25 +22,19 @@ int32_t system_update_startup(char* new_startup_msg)
         /*Write to the active section of the nvs with the new message*/
         if(err == ESP_OK)
         {
-#ifdef DEBUG_UPDATER
-            printf("Write startup success\n");
-#endif
+            ESP_LOGI(TAG, "Write startup success");
             return ESP_OK;
         }
 
         else
         {
-#ifdef DEBUG_UPDATER
-            printf("Write error code %d!\n",err);
-#endif
+            ESP_LOGE(TAG, "Write error code %d!", err);
             return WRITE_ERROR;
         }
     }
     else
     {
-#ifdef DEBUG_UPDATER
-        printf("UTF-8 error!\n");
-#endif
+        ESP_LOGE(TAG, "UTF-8 error!");
         //return invalid UTF-8 error update failed
         return UTF8_ERROR;
     }
@@ -60,24 +54,18 @@ int32_t system_update_active(char* new_active_msg)
         esp_err_t err = nvs_set_str(system_updater, "active_msg", new_active_msg);
         if(err == ESP_OK)
         {
-#ifdef DEBUG_UPDATER
-            printf("Write active success\n");
-#endif
+            ESP_LOGI(TAG, "Write active success");
             return ESP_OK;
         }
         else
         {
-#ifdef DEBUG_UPDATER
-            printf("Write error code %d!\n",err);
-#endif
+            ESP_LOGE(TAG, "Write error code %d!", err);
             return WRITE_ERROR;
         }
     }
     else
     {
-#ifdef DEBUG_UPDATER
-        printf("UTF-8 error!\n");
-#endif
+        ESP_LOGE(TAG, "UTF-8 error!");
         //return invalid UTF-8 error update failed
         return UTF8_ERROR;
     }
@@ -97,24 +85,18 @@ int32_t system_update_shutdown(char* new_shutdown_msg)
         /*Write to the active section of the nvs with the new message*/
         if (err == ESP_OK)
         {
-#ifdef DEBUG_UPDATER
-            printf("Write shutdown success\n");
-#endif
+            ESP_LOGI(TAG, "Write active success");
             return ESP_OK;
         }
         else
         {
-#ifdef DEBUG_UPDATER
-            printf("Write error code %d!\n",err);
-#endif
+            ESP_LOGE(TAG, "Write error code %d!", err);
             return WRITE_ERROR;
         }
     }
     else
     {
-#ifdef DEBUG_UPDATER
-        printf("UTF-8 error!\n");
-#endif
+        ESP_LOGE(TAG, "UTF-8 error!");
         //return invalid UTF-8 error update failed
         return UTF8_ERROR;
     }

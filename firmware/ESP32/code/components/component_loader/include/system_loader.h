@@ -1,8 +1,6 @@
 #ifndef __SYSTEM_LOADER_H_
 #define __SYSTEM_LOADER_H_
 
-#define DEBUG_LOADER
-
 /**@def system loader error codes
    @brief Different loader error codes.
 */

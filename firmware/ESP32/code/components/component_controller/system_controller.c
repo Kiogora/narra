@@ -17,6 +17,8 @@
 #include "utf8_decoder.h"
 #include "scrolling_effect.h"
 
+static const char* TAG = "Component_controller";
+
 /*Private functions*/
 /*******************/
 /* You can change this function's contents depending on the embedded platform*/
