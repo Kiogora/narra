@@ -38,10 +38,26 @@ static void system_initialise(Matrix* matrixInstanceptr)
 
 static char* add_txt_spacer(Matrix* matrixInstanceptr, char* spacer)
 {
-    char* spaced_string=(char*)malloc(strlen(matrixInstanceptr->current_message)+strlen(spacer)+1);
-    strcpy(spaced_string, matrixInstanceptr->current_message);
-    strcat(spaced_string, spacer);
-    return spaced_string;
+    if(spacer != NULL && matrixInstanceptr->current_message != NULL)
+    {
+/*
+        Pointer OK!
+*/
+        char* spaced_string=(char*)malloc(strlen(matrixInstanceptr->current_message)+strlen(spacer)+1);
+
+        strcpy(spaced_string, matrixInstanceptr->current_message);
+
+        strcat(spaced_string, spacer);
+
+        return spaced_string;
+    }
+    else
+    {
+/*        
+        Pointer BAAAD!
+*/
+        return matrixInstanceptr->current_message;
+    }
 }
 
 
@@ -107,29 +123,31 @@ void system_display(Matrix* matrixInstanceptr, System_variables* system_variable
                 break;
         }
         char* unprocessed_string = add_txt_spacer(matrixInstanceptr, "    ");
-
-        /*check byte buffer for UTF8 validity*/
-        size_t utf8_length;
-        uint8_t invalid = check_count_valid_UTF8(unprocessed_string, &utf8_length);
-
-        if(!invalid)
+        if(unprocessed_string != NULL)
         {
-            uint32_t* utf8string = (uint32_t*)malloc(sizeof(uint32_t)*utf8_length);
-            memset(utf8string, 0, sizeof(uint32_t)*utf8_length);
+            /*check byte buffer for UTF8 validity*/
+            size_t utf8_length;
+            uint8_t invalid = check_count_valid_UTF8(unprocessed_string, &utf8_length);
 
-            utf8string_create(utf8string, unprocessed_string);
-            switch(_renderx)
+            if(!invalid)
             {
-                case scroll:
-                    scrolling_effect(matrixInstanceptr, utf8string, utf8_length);
-                    break;
+                uint32_t* utf8string = (uint32_t*)malloc(sizeof(uint32_t)*utf8_length);
+                memset(utf8string, 0, sizeof(uint32_t)*utf8_length);
+
+                utf8string_create(utf8string, unprocessed_string);
+                switch(_renderx)
+                {
+                    case scroll:
+                        scrolling_effect(matrixInstanceptr, utf8string, utf8_length);
+                        break;
+                }
+                free(utf8string);
+                free(unprocessed_string);
             }
-            free(utf8string);
-            free(unprocessed_string);
-        }
-        else
-        {
-            //implement exception handling here.
+            else
+            {
+                //implement invalid UTF8 exception handling here.
+            }
         }
     }
 }
