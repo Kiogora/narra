@@ -161,7 +161,7 @@ U 1 1 59956261
 P 2950 3100
 F 0 "J2" H 2950 3765 50  0000 C CNN
 F 1 "CONN_02X10" H 2950 3674 50  0000 C CNN
-F 2 "narra:Pin_Header_Straight_2x10_Pitch2.54mm_staggered" H 2950 1900 50  0001 C CNN
+F 2 "narra:Pin_Header_Straight_2x10_Pitch2.54mm_8mil_staggered" H 2950 1900 50  0001 C CNN
 F 3 "" H 2950 1900 50  0001 C CNN
 	1    2950 3100
 	1    0    0    -1  
@@ -172,7 +172,7 @@ U 1 1 59956326
 P 7700 3050
 F 0 "J1" H 7700 3715 50  0000 C CNN
 F 1 "CONN_02X10" H 7700 3624 50  0000 C CNN
-F 2 "narra:Pin_Header_Straight_2x10_Pitch2.54mm_staggered" H 7700 1850 50  0001 C CNN
+F 2 "narra:Pin_Header_Straight_2x10_Pitch2.54mm_8mil_staggered" H 7700 1850 50  0001 C CNN
 F 3 "" H 7700 1850 50  0001 C CNN
 	1    7700 3050
 	1    0    0    -1  
