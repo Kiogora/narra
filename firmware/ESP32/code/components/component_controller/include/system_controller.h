@@ -1,25 +1,23 @@
-#ifndef __DISPLAY_CONTROLLER_H_
-#define __DISPLAY_CONTROLLER_H_
+#ifndef __SYSTEM_CONTROLLER_H_
+#define __SYSTEM_CONTROLLER_H_
 
 #include "narra_system.h"
 #include "narra_parameters.h"
+#include "narra_types.h"
 
 /***********************************************************************************/
 /*Public function prototypes go here*/
 /***********************************************************************************/
 
-/*TODO-Implement error checking on pins based on API given by espressif.*/
+esp_err_t matrix_init(Matrix* matrixInstanceptr, System_variables* system_variables, narra_speed_enum _speed);
 
-void system_setup(Matrix* matrixInstanceptr, System_variables* system_variables, matrix_pin_t _serial_pin, matrix_pin_t _shift_pin, matrix_pin_t _latch_pin, matrix_pin_t _rowclk_pin, matrix_pin_t _rowrst_pin, speedtype_enum _speed);
+void matrix_display(Matrix* matrixInstanceptr, System_variables* system_variables, narra_rendertype_enum _renderx);
 
+void matrix_activate(Matrix* matrixInstanceptr);
 
-void system_display(Matrix* matrixInstanceptr, System_variables* system_variables, rendertype _renderx);
+void matrix_deactivate(Matrix* matrixInstanceptr, System_variables* system_variables);
 
-void system_activate(Matrix* matrixInstanceptr);
+void matrix_reboot(void);
 
-void system_deactivate(Matrix* matrixInstanceptr, System_variables* system_variables);
-
-void system_reboot(void);
-
-#endif /*__CONTROLLER_H_*/
+#endif /*__SYSTEM_CONTROLLER_H_*/
 

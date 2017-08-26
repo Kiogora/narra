@@ -8,21 +8,26 @@
 #include "freertos/task.h"
 #include "driver/gpio.h"
 #include "esp_system.h"
+#include "esp_err.h"
+#include "esp_log.h"
 
 /*project libs*/
-#include "system_controller.h"
+#include "narra_types.h"
 #include "narra_parameters.h"
 #include "narra_system.h"
+#include "narra_defines.h"
+
+#include "system_controller.h"
 #include "system_loader.h"
-#include "utf8_decoder.h"
 #include "scrolling_effect.h"
+#include "utf8_decoder.h"
 
 static const char* TAG = "Component_controller";
 
 /*Private functions*/
 /*******************/
 /* You can change this function's contents depending on the embedded platform*/
-static void system_initialise(Matrix* matrixInstanceptr)
+static esp_err_t init_pin_interface(Matrix* matrixInstanceptr)
 {
     gpio_pad_select_gpio(matrixInstanceptr->serial_pin);
     gpio_pad_select_gpio(matrixInstanceptr->shift_pin);
@@ -33,7 +38,9 @@ static void system_initialise(Matrix* matrixInstanceptr)
     gpio_set_direction(matrixInstanceptr->shift_pin, GPIO_MODE_OUTPUT);
     gpio_set_direction(matrixInstanceptr->latch_pin, GPIO_MODE_OUTPUT);
     gpio_set_direction(matrixInstanceptr->rowclk_pin, GPIO_MODE_OUTPUT);
-    gpio_set_direction(matrixInstanceptr->rowrst_pin, GPIO_MODE_OUTPUT); 
+    gpio_set_direction(matrixInstanceptr->rowrst_pin, GPIO_MODE_OUTPUT);
+
+    return ESP_OK;
 }
 
 static char* add_txt_spacer(Matrix* matrixInstanceptr, char* spacer)
@@ -54,7 +61,7 @@ static char* add_txt_spacer(Matrix* matrixInstanceptr, char* spacer)
     else
     {
 /*        
-        Pointer BAAAD!
+        NULL pointer dereferencing error!
 */
         return matrixInstanceptr->current_message;
     }
@@ -65,7 +72,7 @@ static char* add_txt_spacer(Matrix* matrixInstanceptr, char* spacer)
 /******************/
 
 /*setup matrix*/
-void system_setup(Matrix* matrixInstanceptr, System_variables* system_variables, matrix_pin_t _serial_pin, matrix_pin_t _shift_pin, matrix_pin_t _latch_pin, matrix_pin_t _rowclk_pin, matrix_pin_t _rowrst_pin, speedtype_enum _speed)
+esp_err_t matrix_init(Matrix* matrixInstanceptr, System_variables* system_variables, narra_speed_enum _speed)
 {
     system_loader(system_variables);
 
@@ -73,40 +80,53 @@ void system_setup(Matrix* matrixInstanceptr, System_variables* system_variables,
     matrixInstanceptr->fontwidth=0x08;
     matrixInstanceptr->num_rows=0x08;
     matrixInstanceptr->num_cols=0x08;
-    matrixInstanceptr->speed=_speed;
-
-    matrixInstanceptr->serial_pin=_serial_pin;
-    matrixInstanceptr->shift_pin=_shift_pin;
-    matrixInstanceptr->latch_pin=_latch_pin;
-    matrixInstanceptr->rowclk_pin=_rowclk_pin;
-    matrixInstanceptr->rowrst_pin=_rowrst_pin;
+    if(IS_SPEED_VALID(_speed))
+    {
+        matrixInstanceptr->speed=_speed;
+    }
+    else
+    {
+        ESP_LOGE(TAG,"Invalid system speed passed to init function");
+        return ESP_FAIL;
+    }
+    matrixInstanceptr->serial_pin=system_variables->param_serial_pin;
+    matrixInstanceptr->shift_pin=system_variables->param_shift_pin;
+    matrixInstanceptr->latch_pin=system_variables->param_latch_pin;
+    matrixInstanceptr->rowclk_pin=system_variables->param_rowclk_pin;
+    matrixInstanceptr->rowrst_pin=system_variables->param_rowrst_pin;
     
     matrixInstanceptr->system_state=startup;
     matrixInstanceptr->current_message=NULL;
 
-    system_initialise(matrixInstanceptr);    
-    system_display(matrixInstanceptr, system_variables, scroll);
-    system_activate(matrixInstanceptr);
+    esp_err_t err=init_pin_interface(matrixInstanceptr);
+
+    if(err==ESP_OK)
+    {    
+        matrix_display(matrixInstanceptr, system_variables, scroll);
+        matrix_activate(matrixInstanceptr);
+    }
+
+    return err;
 }
 
-void system_activate(Matrix* matrixInstanceptr)
+void matrix_activate(Matrix* matrixInstanceptr)
 {
     matrixInstanceptr->system_state=active;
 }
 
-void system_deactivate(Matrix* matrixInstanceptr, System_variables* system_variables)
+void matrix_deactivate(Matrix* matrixInstanceptr, System_variables* system_variables)
 {
     matrixInstanceptr->system_state=shutdown;
-    system_display(matrixInstanceptr, system_variables, scroll);
+    matrix_display(matrixInstanceptr, system_variables, scroll);
 }
 
-void system_reboot(void)
+void matrix_reboot(void)
 {
     esp_restart();
 }
     
 /*Matrix display function*/
-void system_display(Matrix* matrixInstanceptr, System_variables* system_variables, rendertype _renderx)
+void matrix_display(Matrix* matrixInstanceptr, System_variables* system_variables, narra_rendertype_enum _renderx)
 {
     if (matrixInstanceptr->system_state== startup || matrixInstanceptr->system_state== active)
     {

@@ -1,14 +1,21 @@
+
+/*Standard C libs*/
 #include <stddef.h>
 #include <stdint.h>
+#include <string.h>
+
+/*ESP-IDF libs*/
 #include "esp_partition.h"
 #include "esp_err.h"
 #include "nvs_flash.h"
-#include "narra_parameters.h"
-#include <string.h>
 #include "nvs.h"
-#include "narra_nvs.h"
-#include "system_loader.h"
 #include "esp_log.h"
+
+/*project libs*/
+#include "narra_parameters.h"
+#include "narra_nvs.h"
+
+#include "system_loader.h"
 
 static const char* TAG = "Component_loader";
 

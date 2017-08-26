@@ -1,14 +1,21 @@
-#include "stddef.h"
+/*Standard C libs*/
+#include <stddef.h>
+
+/*ESP-IDF libs*/
+#include "nvs.h"
 #include "esp_system.h"
+#include "esp_log.h"
+
+/*project libs*/
+#include "narra_defines.h"
+#include "narra_nvs.h"
+
 #include "system_updater.h"
 #include "utf8_decoder.h"
-#include "nvs.h"
-#include "narra_nvs.h"
-#include "esp_log.h"
 
 static const char* TAG = "Component_updater";
 
-#ifdef ALLOW_STARTUP_MSG_UPDATE
+#if defined ALLOW_SIMPLE_STARTUP_MSG_UPDATE || defined ALLOW_COMPLEX_STARTUP_MSG_UPDATE
 int32_t system_update_startup(char* new_startup_msg)
 {
     narra_nvs_init();
@@ -41,6 +48,7 @@ int32_t system_update_startup(char* new_startup_msg)
 }
 #endif
 
+#if defined ALLOW_SIMPLE_ACTIVE_MSG_UPDATE || defined ALLOW_COMPLEX_ACTIVE_MSG_UPDATE
 int32_t system_update_active(char* new_active_msg)
 {
     narra_nvs_init();
@@ -70,8 +78,9 @@ int32_t system_update_active(char* new_active_msg)
         return UTF8_ERROR;
     }
 }
+#endif
 
-#ifdef ALLOW_SHUTDOWN_MSG_UPDATE
+#if defined ALLOW_SIMPLE_SHUTDOWN_MSG_UPDATE || defined ALLOW_COMPLEX_SHUTDOWN_MSG_UPDATE
 int32_t system_update_shutdown(char* new_shutdown_msg)
 {
     narra_nvs_init();

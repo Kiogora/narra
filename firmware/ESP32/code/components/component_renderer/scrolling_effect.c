@@ -11,6 +11,7 @@
 /*project libs*/
 #include "glyphmap.h"
 #include "narra_system.h"
+#include "narra_defines.h"
 #include "utf8_decoder.h"
 #include "scrolling_effect.h"
 
