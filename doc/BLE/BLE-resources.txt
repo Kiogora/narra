@@ -1,0 +1,2 @@
+BLE data types: AD(Avetisement),EIR, OOB:
+https://www.bluetooth.com/specifications/assigned-numbers/generic-access-profile
