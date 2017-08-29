@@ -1,4 +1,4 @@
-update=Fri 18 Aug 2017 08:28:59 PM EAT
+update=Tue 29 Aug 2017 10:29:32 PM EAT
 version=1
 last_client=kicad
 [pcbnew]
@@ -59,3 +59,13 @@ LibName27=atmel
 LibName28=contrib
 LibName29=valves
 LibName30=/home/bigbitsoko/Desktop/Pochi_files/component_libraries/narra
+[schematic_editor]
+version=1
+PageLayoutDescrFile=
+PlotDirectoryName=
+SubpartIdSeparator=0
+SubpartFirstId=65
+NetFmtName=
+SpiceAjustPassiveValues=0
+LabSize=60
+ERC_TestSimilarLabels=1
