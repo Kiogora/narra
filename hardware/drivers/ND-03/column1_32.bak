@@ -1,0 +1,755 @@
+EESchema Schematic File Version 2
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:narra
+LIBS:ND-03-cache
+EELAYER 26 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 3 7
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L 74HC595 U4
+U 1 1 59973AAE
+P 2400 1630
+F 0 "U4" H 2400 2396 50  0000 C CNN
+F 1 "74HC595" H 2400 2305 50  0000 C CNN
+F 2 "Housings_DIP:DIP-16_W7.62mm_LongPads" H 2400 1630 50  0001 C CNN
+F 3 "" H 2400 1630 50  0001 C CNN
+	1    2400 1630
+	1    0    0    -1  
+$EndComp
+$Comp
+L Screw_Terminal_1x02 J10
+U 1 1 59975107
+P 1070 5230
+F 0 "J10" V 960 5380 50  0000 R CNN
+F 1 "Screw_Terminal_1x02" V 910 5600 50  0000 R CNN
+F 2 "Connectors_Terminal_Blocks:TerminalBlock_Pheonix_MKDS1.5-2pol" H 1070 5005 50  0001 C CNN
+F 3 "" H 1045 5230 50  0001 C CNN
+	1    1070 5230
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Screw_Terminal_1x02 J11
+U 1 1 5997576F
+P 1880 5230
+F 0 "J11" V 1770 5380 50  0000 R CNN
+F 1 "Screw_Terminal_1x02" V 1720 5600 50  0000 R CNN
+F 2 "Connectors_Terminal_Blocks:TerminalBlock_Pheonix_MKDS1.5-2pol" H 1880 5005 50  0001 C CNN
+F 3 "" H 1855 5230 50  0001 C CNN
+	1    1880 5230
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Screw_Terminal_1x02 J12
+U 1 1 5997583F
+P 2710 5230
+F 0 "J12" V 2600 5380 50  0000 R CNN
+F 1 "Screw_Terminal_1x02" V 2550 5600 50  0000 R CNN
+F 2 "Connectors_Terminal_Blocks:TerminalBlock_Pheonix_MKDS1.5-2pol" H 2710 5005 50  0001 C CNN
+F 3 "" H 2685 5230 50  0001 C CNN
+	1    2710 5230
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Screw_Terminal_1x02 J13
+U 1 1 59975934
+P 3540 5230
+F 0 "J13" V 3430 5380 50  0000 R CNN
+F 1 "Screw_Terminal_1x02" V 3380 5600 50  0000 R CNN
+F 2 "Connectors_Terminal_Blocks:TerminalBlock_Pheonix_MKDS1.5-2pol" H 3540 5005 50  0001 C CNN
+F 3 "" H 3515 5230 50  0001 C CNN
+	1    3540 5230
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Screw_Terminal_1x02 J14
+U 1 1 599759F0
+P 4370 5230
+F 0 "J14" V 4260 5380 50  0000 R CNN
+F 1 "Screw_Terminal_1x02" V 4210 5600 50  0000 R CNN
+F 2 "Connectors_Terminal_Blocks:TerminalBlock_Pheonix_MKDS1.5-2pol" H 4370 5005 50  0001 C CNN
+F 3 "" H 4345 5230 50  0001 C CNN
+	1    4370 5230
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Screw_Terminal_1x02 J15
+U 1 1 59975AB9
+P 5250 5230
+F 0 "J15" V 5140 5380 50  0000 R CNN
+F 1 "Screw_Terminal_1x02" V 5090 5600 50  0000 R CNN
+F 2 "Connectors_Terminal_Blocks:TerminalBlock_Pheonix_MKDS1.5-2pol" H 5250 5005 50  0001 C CNN
+F 3 "" H 5225 5230 50  0001 C CNN
+	1    5250 5230
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Screw_Terminal_1x02 J7
+U 1 1 59975BA7
+P 6120 5220
+F 0 "J7" V 6010 5370 50  0000 R CNN
+F 1 "Screw_Terminal_1x02" V 5960 5590 50  0000 R CNN
+F 2 "Connectors_Terminal_Blocks:TerminalBlock_Pheonix_MKDS1.5-2pol" H 6120 4995 50  0001 C CNN
+F 3 "" H 6095 5220 50  0001 C CNN
+	1    6120 5220
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Screw_Terminal_1x02 J8
+U 1 1 59975C1D
+P 7010 5220
+F 0 "J8" V 6900 5370 50  0000 R CNN
+F 1 "Screw_Terminal_1x02" V 6850 5590 50  0000 R CNN
+F 2 "Connectors_Terminal_Blocks:TerminalBlock_Pheonix_MKDS1.5-2pol" H 7010 4995 50  0001 C CNN
+F 3 "" H 6985 5220 50  0001 C CNN
+	1    7010 5220
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Screw_Terminal_1x02 J4
+U 1 1 59975D2B
+P 7870 5210
+F 0 "J4" V 7760 5360 50  0000 R CNN
+F 1 "Screw_Terminal_1x02" V 7710 5580 50  0000 R CNN
+F 2 "Connectors_Terminal_Blocks:TerminalBlock_Pheonix_MKDS1.5-2pol" H 7870 4985 50  0001 C CNN
+F 3 "" H 7845 5210 50  0001 C CNN
+	1    7870 5210
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Screw_Terminal_1x02 J5
+U 1 1 59975D9F
+P 8760 5210
+F 0 "J5" V 8650 5360 50  0000 R CNN
+F 1 "Screw_Terminal_1x02" V 8600 5580 50  0000 R CNN
+F 2 "Connectors_Terminal_Blocks:TerminalBlock_Pheonix_MKDS1.5-2pol" H 8760 4985 50  0001 C CNN
+F 3 "" H 8735 5210 50  0001 C CNN
+	1    8760 5210
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Screw_Terminal_1x02 J6
+U 1 1 59975E2D
+P 9630 5210
+F 0 "J6" V 9520 5360 50  0000 R CNN
+F 1 "Screw_Terminal_1x02" V 9470 5580 50  0000 R CNN
+F 2 "Connectors_Terminal_Blocks:TerminalBlock_Pheonix_MKDS1.5-2pol" H 9630 4985 50  0001 C CNN
+F 3 "" H 9605 5210 50  0001 C CNN
+	1    9630 5210
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Screw_Terminal_1x02 J9
+U 1 1 59975F9D
+P 10460 5220
+F 0 "J9" V 10350 5370 50  0000 R CNN
+F 1 "Screw_Terminal_1x02" V 10300 5590 50  0000 R CNN
+F 2 "Connectors_Terminal_Blocks:TerminalBlock_Pheonix_MKDS1.5-2pol" H 10460 4995 50  0001 C CNN
+F 3 "" H 10435 5220 50  0001 C CNN
+	1    10460 5220
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Screw_Terminal_1x02 J16
+U 1 1 59976601
+P 1080 6150
+F 0 "J16" V 970 6300 50  0000 R CNN
+F 1 "Screw_Terminal_1x02" V 920 6520 50  0000 R CNN
+F 2 "Connectors_Terminal_Blocks:TerminalBlock_Pheonix_MKDS1.5-2pol" H 1080 5925 50  0001 C CNN
+F 3 "" H 1055 6150 50  0001 C CNN
+	1    1080 6150
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Screw_Terminal_1x02 J17
+U 1 1 59976608
+P 1890 6150
+F 0 "J17" V 1780 6300 50  0000 R CNN
+F 1 "Screw_Terminal_1x02" V 1730 6520 50  0000 R CNN
+F 2 "Connectors_Terminal_Blocks:TerminalBlock_Pheonix_MKDS1.5-2pol" H 1890 5925 50  0001 C CNN
+F 3 "" H 1865 6150 50  0001 C CNN
+	1    1890 6150
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Screw_Terminal_1x02 J18
+U 1 1 5997660F
+P 2720 6150
+F 0 "J18" V 2610 6300 50  0000 R CNN
+F 1 "Screw_Terminal_1x02" V 2560 6520 50  0000 R CNN
+F 2 "Connectors_Terminal_Blocks:TerminalBlock_Pheonix_MKDS1.5-2pol" H 2720 5925 50  0001 C CNN
+F 3 "" H 2695 6150 50  0001 C CNN
+	1    2720 6150
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Screw_Terminal_1x02 J19
+U 1 1 59976616
+P 3550 6150
+F 0 "J19" V 3440 6300 50  0000 R CNN
+F 1 "Screw_Terminal_1x02" V 3390 6520 50  0000 R CNN
+F 2 "Connectors_Terminal_Blocks:TerminalBlock_Pheonix_MKDS1.5-2pol" H 3550 5925 50  0001 C CNN
+F 3 "" H 3525 6150 50  0001 C CNN
+	1    3550 6150
+	0    -1   -1   0   
+$EndComp
+Text HLabel 1520 1180 0    60   Input ~ 0
+DATA
+Text HLabel 1550 1380 0    60   Input ~ 0
+SHIFT
+Text HLabel 1560 1680 0    60   Input ~ 0
+LATCH
+Text Label 3140 1180 0    60   ~ 0
+C1
+Text Label 3140 1280 0    60   ~ 0
+C2
+Text Label 3140 1380 0    60   ~ 0
+C3
+Text Label 3140 1480 0    60   ~ 0
+C4
+Text Label 3140 1580 0    60   ~ 0
+C5
+Text Label 3140 1680 0    60   ~ 0
+C6
+Text Label 3140 1780 0    60   ~ 0
+C7
+Text Label 3140 1880 0    60   ~ 0
+C8
+$Comp
+L 74HC595 U7
+U 1 1 59973BB9
+P 8900 1630
+F 0 "U7" H 8900 2396 50  0000 C CNN
+F 1 "74HC595" H 8900 2305 50  0000 C CNN
+F 2 "Housings_DIP:DIP-16_W7.62mm_LongPads" H 8900 1630 50  0001 C CNN
+F 3 "" H 8900 1630 50  0001 C CNN
+	1    8900 1630
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74HC595 U6
+U 1 1 59973B7D
+P 6600 1630
+F 0 "U6" H 6600 2396 50  0000 C CNN
+F 1 "74HC595" H 6600 2305 50  0000 C CNN
+F 2 "Housings_DIP:DIP-16_W7.62mm_LongPads" H 6600 1630 50  0001 C CNN
+F 3 "" H 6600 1630 50  0001 C CNN
+	1    6600 1630
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74HC595 U5
+U 1 1 59973B0B
+P 4500 1630
+F 0 "U5" H 4500 2396 50  0000 C CNN
+F 1 "74HC595" H 4500 2305 50  0000 C CNN
+F 2 "Housings_DIP:DIP-16_W7.62mm_LongPads" H 4500 1630 50  0001 C CNN
+F 3 "" H 4500 1630 50  0001 C CNN
+	1    4500 1630
+	1    0    0    -1  
+$EndComp
+Text Label 5240 1180 0    60   ~ 0
+C9
+Text Label 5240 1280 0    60   ~ 0
+C10
+Text Label 5240 1380 0    60   ~ 0
+C11
+Text Label 5240 1480 0    60   ~ 0
+C12
+Text Label 5240 1580 0    60   ~ 0
+C13
+Text Label 5240 1680 0    60   ~ 0
+C14
+Text Label 5240 1780 0    60   ~ 0
+C15
+Text Label 5240 1880 0    60   ~ 0
+C16
+Text Label 9640 1180 0    60   ~ 0
+C25
+Text Label 9640 1280 0    60   ~ 0
+C26
+Text Label 9640 1380 0    60   ~ 0
+C27
+Text Label 9640 1480 0    60   ~ 0
+C28
+Text Label 9640 1580 0    60   ~ 0
+C29
+Text Label 9640 1680 0    60   ~ 0
+C30
+Text Label 9640 1780 0    60   ~ 0
+C31
+Text Label 9640 1880 0    60   ~ 0
+C32
+Text Label 7340 1180 0    60   ~ 0
+C17
+Text Label 7340 1280 0    60   ~ 0
+C18
+Text Label 7340 1380 0    60   ~ 0
+C19
+Text Label 7340 1480 0    60   ~ 0
+C20
+Text Label 7340 1580 0    60   ~ 0
+C21
+Text Label 7340 1680 0    60   ~ 0
+C22
+Text Label 7340 1780 0    60   ~ 0
+C23
+Text Label 7340 1880 0    60   ~ 0
+C24
+Text Label 970  4920 0    60   ~ 0
+C1
+Text Label 1170 4920 0    60   ~ 0
+C2
+Text Label 1780 4920 0    60   ~ 0
+C3
+Text Label 1980 4920 0    60   ~ 0
+C4
+Text Label 2610 4920 0    60   ~ 0
+C5
+Text Label 2810 4920 0    60   ~ 0
+C6
+Text Label 3440 4920 0    60   ~ 0
+C7
+Text Label 3640 4920 0    60   ~ 0
+C8
+Text Label 4270 4920 0    60   ~ 0
+C9
+Text Label 4470 4920 0    60   ~ 0
+C10
+Text Label 5150 4920 0    60   ~ 0
+C11
+Text Label 5350 4920 0    60   ~ 0
+C12
+Text Label 6020 4910 0    60   ~ 0
+C13
+Text Label 6220 4910 0    60   ~ 0
+C14
+Text Label 6910 4910 0    60   ~ 0
+C15
+Text Label 7110 4910 0    60   ~ 0
+C16
+Text Label 7770 4900 0    60   ~ 0
+C17
+Text Label 7970 4900 0    60   ~ 0
+C18
+Text Label 8660 4900 0    60   ~ 0
+C19
+Text Label 8860 4900 0    60   ~ 0
+C20
+Text Label 9530 4900 0    60   ~ 0
+C21
+Text Label 9730 4900 0    60   ~ 0
+C22
+Text Label 10360 4910 0    60   ~ 0
+C23
+Text Label 10560 4910 0    60   ~ 0
+C24
+Text Label 980  5840 0    60   ~ 0
+C25
+Text Label 1180 5840 0    60   ~ 0
+C26
+Text Label 1790 5840 0    60   ~ 0
+C27
+Text Label 1990 5840 0    60   ~ 0
+C28
+Text Label 2620 5840 0    60   ~ 0
+C29
+Text Label 2820 5840 0    60   ~ 0
+C30
+Text Label 3450 5840 0    60   ~ 0
+C31
+Text Label 3650 5840 0    60   ~ 0
+C32
+Text HLabel 3650 1380 0    60   Input ~ 0
+SHIFT
+Text HLabel 3660 1680 0    60   Input ~ 0
+LATCH
+Text HLabel 5750 1380 0    60   Input ~ 0
+SHIFT
+Text HLabel 5760 1680 0    60   Input ~ 0
+LATCH
+Text HLabel 8050 1380 0    60   Input ~ 0
+SHIFT
+Text HLabel 8060 1680 0    60   Input ~ 0
+LATCH
+Text Label 3140 2080 0    60   ~ 0
+SER_1
+Text Label 3620 1180 2    60   ~ 0
+SER_1
+Text Label 5240 2080 0    60   ~ 0
+SER_2
+Text Label 5720 1180 2    60   ~ 0
+SER_2
+Text Label 7360 2080 0    60   ~ 0
+SER_3
+Text Label 8020 1180 2    60   ~ 0
+SER_3
+Text HLabel 9650 2080 2    60   Output ~ 0
+OUTPUT
+Text Notes 11220 2250 2    60   ~ 0
+THROUGH HOLE
+Text Notes 11220 6530 2    60   ~ 0
+TERMINAL BLOCKS\n
+Text GLabel 1050 1480 0    60   Input ~ 0
+5v
+$Comp
+L GND #PWR013
+U 1 1 5998E76C
+P 1640 1800
+F 0 "#PWR013" H 1640 1550 50  0001 C CNN
+F 1 "GND" H 1645 1627 50  0000 C CNN
+F 2 "" H 1640 1800 50  0001 C CNN
+F 3 "" H 1640 1800 50  0001 C CNN
+	1    1640 1800
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR014
+U 1 1 5998E84C
+P 3690 1810
+F 0 "#PWR014" H 3690 1560 50  0001 C CNN
+F 1 "GND" H 3695 1637 50  0000 C CNN
+F 2 "" H 3690 1810 50  0001 C CNN
+F 3 "" H 3690 1810 50  0001 C CNN
+	1    3690 1810
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR015
+U 1 1 5998EAA8
+P 5840 1840
+F 0 "#PWR015" H 5840 1590 50  0001 C CNN
+F 1 "GND" H 5845 1667 50  0000 C CNN
+F 2 "" H 5840 1840 50  0001 C CNN
+F 3 "" H 5840 1840 50  0001 C CNN
+	1    5840 1840
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR016
+U 1 1 5998ED65
+P 8100 1830
+F 0 "#PWR016" H 8100 1580 50  0001 C CNN
+F 1 "GND" H 8105 1657 50  0000 C CNN
+F 2 "" H 8100 1830 50  0001 C CNN
+F 3 "" H 8100 1830 50  0001 C CNN
+	1    8100 1830
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1700 1180 1520 1180
+Wire Wire Line
+	1550 1380 1700 1380
+Wire Wire Line
+	1700 1680 1560 1680
+Wire Wire Line
+	3100 1180 3140 1180
+Wire Wire Line
+	3100 1280 3140 1280
+Wire Wire Line
+	3100 1380 3140 1380
+Wire Wire Line
+	3100 1480 3140 1480
+Wire Wire Line
+	3100 1580 3140 1580
+Wire Wire Line
+	3100 1680 3140 1680
+Wire Wire Line
+	3100 1780 3140 1780
+Wire Wire Line
+	3100 1880 3140 1880
+Wire Wire Line
+	5200 1180 5240 1180
+Wire Wire Line
+	5200 1280 5240 1280
+Wire Wire Line
+	5200 1380 5240 1380
+Wire Wire Line
+	5200 1480 5240 1480
+Wire Wire Line
+	5200 1580 5240 1580
+Wire Wire Line
+	5200 1680 5240 1680
+Wire Wire Line
+	5200 1780 5240 1780
+Wire Wire Line
+	5200 1880 5240 1880
+Wire Wire Line
+	9600 1180 9640 1180
+Wire Wire Line
+	9600 1280 9640 1280
+Wire Wire Line
+	9600 1380 9640 1380
+Wire Wire Line
+	9600 1480 9640 1480
+Wire Wire Line
+	9600 1580 9640 1580
+Wire Wire Line
+	9600 1680 9640 1680
+Wire Wire Line
+	9600 1780 9640 1780
+Wire Wire Line
+	9600 1880 9640 1880
+Wire Wire Line
+	7300 1180 7340 1180
+Wire Wire Line
+	7300 1280 7340 1280
+Wire Wire Line
+	7300 1380 7340 1380
+Wire Wire Line
+	7300 1480 7340 1480
+Wire Wire Line
+	7300 1580 7340 1580
+Wire Wire Line
+	7300 1680 7340 1680
+Wire Wire Line
+	7300 1780 7340 1780
+Wire Wire Line
+	7300 1880 7340 1880
+Wire Wire Line
+	970  5030 970  4920
+Wire Wire Line
+	1170 5030 1170 4920
+Wire Wire Line
+	1780 5030 1780 4920
+Wire Wire Line
+	1980 5030 1980 4920
+Wire Wire Line
+	2610 5030 2610 4920
+Wire Wire Line
+	2810 5030 2810 4920
+Wire Wire Line
+	3440 5030 3440 4920
+Wire Wire Line
+	3640 5030 3640 4920
+Wire Wire Line
+	4270 5030 4270 4920
+Wire Wire Line
+	4470 5030 4470 4920
+Wire Wire Line
+	5150 5030 5150 4920
+Wire Wire Line
+	5350 5030 5350 4920
+Wire Wire Line
+	6020 5020 6020 4910
+Wire Wire Line
+	6220 5020 6220 4910
+Wire Wire Line
+	6910 5020 6910 4910
+Wire Wire Line
+	7110 5020 7110 4910
+Wire Wire Line
+	7770 5010 7770 4900
+Wire Wire Line
+	7970 5010 7970 4900
+Wire Wire Line
+	8660 5010 8660 4900
+Wire Wire Line
+	8860 5010 8860 4900
+Wire Wire Line
+	9530 5010 9530 4900
+Wire Wire Line
+	9730 5010 9730 4900
+Wire Wire Line
+	10360 5020 10360 4910
+Wire Wire Line
+	10560 5020 10560 4910
+Wire Wire Line
+	980  5950 980  5840
+Wire Wire Line
+	1180 5950 1180 5840
+Wire Wire Line
+	1790 5950 1790 5840
+Wire Wire Line
+	1990 5950 1990 5840
+Wire Wire Line
+	2620 5950 2620 5840
+Wire Wire Line
+	2820 5950 2820 5840
+Wire Wire Line
+	3450 5950 3450 5840
+Wire Wire Line
+	3650 5950 3650 5840
+Wire Notes Line
+	480  2250 11220 2250
+Wire Notes Line
+	470  4120 11220 4120
+Wire Wire Line
+	3800 1180 3620 1180
+Wire Wire Line
+	3650 1380 3800 1380
+Wire Wire Line
+	3800 1680 3660 1680
+Wire Wire Line
+	5900 1180 5720 1180
+Wire Wire Line
+	5750 1380 5900 1380
+Wire Wire Line
+	5900 1680 5760 1680
+Wire Wire Line
+	8200 1180 8020 1180
+Wire Wire Line
+	8050 1380 8200 1380
+Wire Wire Line
+	8200 1680 8060 1680
+Wire Wire Line
+	3100 2080 3140 2080
+Wire Wire Line
+	5200 2080 5240 2080
+Wire Wire Line
+	7300 2080 7360 2080
+Wire Wire Line
+	9600 2080 9650 2080
+Wire Notes Line
+	11220 6530 470  6530
+Wire Wire Line
+	1700 1480 1050 1480
+Wire Wire Line
+	1640 1800 1640 1780
+Wire Wire Line
+	1640 1780 1700 1780
+Wire Wire Line
+	3690 1810 3690 1780
+Wire Wire Line
+	3690 1780 3800 1780
+Wire Wire Line
+	5840 1840 5840 1780
+Wire Wire Line
+	5840 1780 5900 1780
+Wire Wire Line
+	8100 1830 8100 1780
+Wire Wire Line
+	8100 1780 8200 1780
+Wire Wire Line
+	3800 1480 3670 1480
+Text GLabel 3670 1480 0    60   Input ~ 0
+5v
+Wire Wire Line
+	5900 1480 5770 1480
+Text GLabel 5770 1480 0    60   Input ~ 0
+5v
+Wire Wire Line
+	8200 1480 8070 1480
+Text GLabel 8070 1480 0    60   Input ~ 0
+5v
+$Comp
+L C C4
+U 1 1 59997009
+P 3250 7160
+F 0 "C4" H 3365 7206 50  0000 L CNN
+F 1 "10nF" H 3365 7115 50  0000 L CNN
+F 2 "Capacitors_THT:C_Disc_D3.4mm_W2.1mm_P2.50mm" H 3288 7010 50  0001 C CNN
+F 3 "" H 3250 7160 50  0001 C CNN
+	1    3250 7160
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C5
+U 1 1 59997163
+P 3560 7160
+F 0 "C5" H 3675 7206 50  0000 L CNN
+F 1 "10nF" H 3675 7115 50  0000 L CNN
+F 2 "Capacitors_THT:C_Disc_D3.4mm_W2.1mm_P2.50mm" H 3598 7010 50  0001 C CNN
+F 3 "" H 3560 7160 50  0001 C CNN
+	1    3560 7160
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C6
+U 1 1 599972F5
+P 3880 7160
+F 0 "C6" H 3995 7206 50  0000 L CNN
+F 1 "10nF" H 3995 7115 50  0000 L CNN
+F 2 "Capacitors_THT:C_Disc_D3.4mm_W2.1mm_P2.50mm" H 3918 7010 50  0001 C CNN
+F 3 "" H 3880 7160 50  0001 C CNN
+	1    3880 7160
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3880 7010 2830 7010
+Connection ~ 3250 7010
+Connection ~ 3560 7010
+Wire Wire Line
+	2820 7310 3880 7310
+Connection ~ 2950 7310
+Connection ~ 3250 7310
+Connection ~ 3560 7310
+Text GLabel 2830 7010 0    60   Input ~ 0
+5v
+$Comp
+L GND #PWR017
+U 1 1 599984DE
+P 2820 7310
+F 0 "#PWR017" H 2820 7060 50  0001 C CNN
+F 1 "GND" H 2825 7137 50  0000 C CNN
+F 2 "" H 2820 7310 50  0001 C CNN
+F 3 "" H 2820 7310 50  0001 C CNN
+	1    2820 7310
+	1    0    0    -1  
+$EndComp
+Text Notes 6970 7790 2    60   ~ 0
+DECOUPLING CAPS\n
+$Comp
+L C C3
+U 1 1 59996F55
+P 2950 7160
+F 0 "C3" H 3065 7206 50  0000 L CNN
+F 1 "10nF" H 3065 7115 50  0000 L CNN
+F 2 "Capacitors_THT:C_Disc_D3.4mm_W2.1mm_P2.50mm" H 2988 7010 50  0001 C CNN
+F 3 "" H 2950 7160 50  0001 C CNN
+	1    2950 7160
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2950 7010 2950 6960
+Connection ~ 2950 7010
+$Comp
+L VCC #PWR?
+U 1 1 59A69BDF
+P 2950 6960
+F 0 "#PWR?" H 2950 6810 50  0001 C CNN
+F 1 "VCC" H 2967 7133 50  0000 C CNN
+F 2 "" H 2950 6960 50  0001 C CNN
+F 3 "" H 2950 6960 50  0001 C CNN
+	1    2950 6960
+	1    0    0    -1  
+$EndComp
+$EndSCHEMATC
