@@ -1,4 +1,4 @@
-update=Thu 17 Aug 2017 01:30:32 PM EAT
+update=Tue 29 Aug 2017 10:51:55 PM EAT
 version=1
 last_client=kicad
 [cvpcb]
@@ -40,16 +40,6 @@ LibName27=atmel
 LibName28=contrib
 LibName29=valves
 LibName30=/home/bigbitsoko/Desktop/Pochi_files/component_libraries/narra
-[schematic_editor]
-version=1
-PageLayoutDescrFile=/home/bigbitsoko/Documents/narra/hardware/kicad/kicad-page-layout.kicad_wks
-PlotDirectoryName=
-SubpartIdSeparator=0
-SubpartFirstId=65
-NetFmtName=
-SpiceAjustPassiveValues=0
-LabSize=60
-ERC_TestSimilarLabels=1
 [pcbnew]
 version=1
 PageLayoutDescrFile=/home/bigbitsoko/Documents/narra/hardware/kicad/kicad-page-layout.kicad_wks
@@ -69,3 +59,13 @@ SolderMaskMinWidth=0
 DrawSegmentWidth=0.2
 BoardOutlineThickness=0.15
 ModuleOutlineThickness=0.15
+[schematic_editor]
+version=1
+PageLayoutDescrFile=/home/bigbitsoko/Documents/narra/hardware/kicad/kicad-page-layout.kicad_wks
+PlotDirectoryName=
+SubpartIdSeparator=0
+SubpartFirstId=65
+NetFmtName=
+SpiceAjustPassiveValues=0
+LabSize=60
+ERC_TestSimilarLabels=1
