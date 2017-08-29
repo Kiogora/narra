@@ -10,6 +10,14 @@
   )
 
   (page A4)
+  (title_block
+    (title "LED DRIVER ND-03")
+    (date 2017-08-29)
+    (rev 1)
+    (company Bitsoko.io)
+    (comment 1 "Author: Alois Mbutura")
+  )
+
   (layers
     (0 F.Cu signal)
     (1 GND.Cu power)
@@ -5862,7 +5870,7 @@
   )
   (gr_line (start 17.865 31.101) (end 17.865 165.848) (layer Edge.Cuts) (width 0.15))
   (dimension 134.747 (width 0.3) (layer Dwgs.User)
-    (gr_text "134.747 mm" (at 185.585 98.4745 270) (layer Dwgs.User) (tstamp 59BB75F6)
+    (gr_text "134.747 mm" (at 185.585 98.4745 270) (layer Dwgs.User) (tstamp 59C6688C)
       (effects (font (size 1.5 1.5) (thickness 0.3)))
     )
     (feature1 (pts (xy 173.44 165.848) (xy 186.935 165.848)))
@@ -5874,7 +5882,7 @@
     (arrow2b (pts (xy 184.235 31.101) (xy 184.821421 32.227504)))
   )
   (dimension 155.575 (width 0.3) (layer Dwgs.User)
-    (gr_text "155.575 mm" (at 95.6525 13.749) (layer Dwgs.User) (tstamp 59BB75F7)
+    (gr_text "155.575 mm" (at 95.6525 13.749) (layer Dwgs.User) (tstamp 59C6688D)
       (effects (font (size 1.5 1.5) (thickness 0.3)))
     )
     (feature1 (pts (xy 173.44 31.101) (xy 173.44 12.399)))
