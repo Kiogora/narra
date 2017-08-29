@@ -389,7 +389,7 @@ F 3 "" H 9900 5830 50  0001 C CNN
 	1    9900 5830
 	1    0    0    -1  
 $EndComp
-Text Label 9140 5580 2    60   ~ 0
+Text Label 9540 5580 2    60   ~ 0
 5v
 Text Label 9600 5780 2    60   ~ 0
 TXD
@@ -408,8 +408,6 @@ Text Notes 11220 6530 2    60   ~ 0
 CP2102 interface
 Text Label 9600 5880 2    60   ~ 0
 RXD
-Text Label 9600 6080 2    60   ~ 0
-3v3
 $Comp
 L GS2 J1
 U 1 1 59970896
@@ -1062,7 +1060,7 @@ Connection ~ 4980 3210
 Wire Notes Line
 	8270 5220 8270 6540
 Wire Wire Line
-	9570 5580 9700 5580
+	9540 5580 9700 5580
 Wire Wire Line
 	9160 5680 9700 5680
 Wire Wire Line
@@ -1072,7 +1070,7 @@ Wire Wire Line
 Wire Wire Line
 	9160 5760 9160 5680
 Wire Wire Line
-	9700 6080 9600 6080
+	9550 6080 9700 6080
 Wire Wire Line
 	1850 1250 1590 1250
 Wire Wire Line
@@ -1191,16 +1189,18 @@ DTR
 $Comp
 L GS2 J8
 U 1 1 59A5D683
-P 9370 5580
-F 0 "J8" V 9165 5580 50  0000 C CNN
-F 1 "GS2" V 9256 5580 50  0000 C CNN
-F 2 "Connectors:GS2" V 9444 5580 50  0001 C CNN
-F 3 "" H 9370 5580 50  0001 C CNN
-	1    9370 5580
+P 9350 6080
+F 0 "J8" V 9145 6080 50  0000 C CNN
+F 1 "GS2" V 9236 6080 50  0000 C CNN
+F 2 "Connectors:GS2" V 9424 6080 50  0001 C CNN
+F 3 "" H 9350 6080 50  0001 C CNN
+	1    9350 6080
 	0    1    1    0   
 $EndComp
-Wire Wire Line
-	9140 5580 9170 5580
 Text Label 7560 3310 0    60   ~ 0
 RXD
+Wire Wire Line
+	9150 6080 9050 6080
+Text Label 9050 6080 2    60   ~ 0
+3v3
 $EndSCHEMATC

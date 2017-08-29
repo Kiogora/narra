@@ -200,10 +200,8 @@ Text Label 7560 3110 0    60   ~ 0
 IO23
 Text Label 7560 3210 0    60   ~ 0
 IO22
-Text Label 7560 3310 0    60   ~ 0
-TXD
 Text Label 7560 3410 0    60   ~ 0
-RXD
+TXD
 Text Label 7560 3510 0    60   ~ 0
 IO21
 Text Label 7560 3610 0    60   ~ 0
@@ -1191,10 +1189,10 @@ Connection ~ 4850 3210
 Text Label 4690 2990 0    60   ~ 0
 DTR
 $Comp
-L GS2 J?
+L GS2 J8
 U 1 1 59A5D683
 P 9370 5580
-F 0 "J?" V 9165 5580 50  0000 C CNN
+F 0 "J8" V 9165 5580 50  0000 C CNN
 F 1 "GS2" V 9256 5580 50  0000 C CNN
 F 2 "Connectors:GS2" V 9444 5580 50  0001 C CNN
 F 3 "" H 9370 5580 50  0001 C CNN
@@ -1203,4 +1201,6 @@ F 3 "" H 9370 5580 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	9140 5580 9170 5580
+Text Label 7560 3310 0    60   ~ 0
+RXD
 $EndSCHEMATC
