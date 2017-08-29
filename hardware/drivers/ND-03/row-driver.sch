@@ -56,10 +56,10 @@ F 3 "" H 6500 1410 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR032
+L GND #PWR037
 U 1 1 599A2812
 P 2910 1340
-F 0 "#PWR032" H 2910 1090 50  0001 C CNN
+F 0 "#PWR037" H 2910 1090 50  0001 C CNN
 F 1 "GND" H 2780 1250 50  0000 C CNN
 F 2 "" H 2910 1340 50  0001 C CNN
 F 3 "" H 2910 1340 50  0001 C CNN
@@ -120,10 +120,10 @@ Q8
 NoConn ~ 4640 2140
 NoConn ~ 4640 2340
 $Comp
-L GND #PWR033
+L GND #PWR038
 U 1 1 599A3632
 P 6400 2280
-F 0 "#PWR033" H 6400 2030 50  0001 C CNN
+F 0 "#PWR038" H 6400 2030 50  0001 C CNN
 F 1 "GND" H 6405 2107 50  0000 C CNN
 F 2 "" H 6400 2280 50  0001 C CNN
 F 3 "" H 6400 2280 50  0001 C CNN
@@ -176,6 +176,76 @@ F 3 "" H 6835 5500 50  0001 C CNN
 $EndComp
 Text Label 6000 1910 2    60   ~ 0
 JUMP
+Text Notes 11220 6530 2    60   ~ 0
+TERMINAL BLOCKS\n
+Text Label 3060 5260 1    60   ~ 0
+R1
+Text Label 3260 5270 1    60   ~ 0
+R2
+Text Label 4310 5250 1    60   ~ 0
+R3
+Text Label 4510 5250 1    60   ~ 0
+R4
+Text Label 5520 5230 1    60   ~ 0
+R5
+Text Label 5720 5230 1    60   ~ 0
+R6
+Text Label 6760 5230 1    60   ~ 0
+R7
+Text Label 6960 5230 1    60   ~ 0
+R8
+Text Label 7310 1210 0    60   ~ 0
+R1
+Text Label 7310 1310 0    60   ~ 0
+R2
+Text Label 7310 1410 0    60   ~ 0
+R3
+Text Label 7310 1510 0    60   ~ 0
+R4
+Text Label 7310 1610 0    60   ~ 0
+R5
+Text Label 7310 1710 0    60   ~ 0
+R6
+Text Label 7310 1810 0    60   ~ 0
+R7
+Text Label 7310 1910 0    60   ~ 0
+R8
+NoConn ~ 6800 2010
+$Comp
+L CD4017 U21
+U 1 1 599C290B
+P 3990 1790
+F 0 "U21" H 3990 2606 50  0000 C CNN
+F 1 "CD4017" H 3990 2515 50  0000 C CNN
+F 2 "Housings_DIP:DIP-16_W7.62mm_Socket_LongPads" H 3990 1790 60  0001 C CNN
+F 3 "" H 3990 1790 60  0001 C CNN
+	1    3990 1790
+	1    0    0    -1  
+$EndComp
+Text GLabel 3425 1035 0    60   Input ~ 0
+5v
+$Comp
+L GND #PWR039
+U 1 1 599C2C7A
+P 3990 2425
+F 0 "#PWR039" H 3990 2175 50  0001 C CNN
+F 1 "GND" H 4120 2335 50  0000 C CNN
+F 2 "" H 3990 2425 50  0001 C CNN
+F 3 "" H 3990 2425 50  0001 C CNN
+	1    3990 2425
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R2
+U 1 1 59A532E8
+P 7100 1210
+F 0 "R2" V 7140 1360 50  0000 C CNN
+F 1 "R" V 7100 1210 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 7030 1210 50  0001 C CNN
+F 3 "" H 7100 1210 50  0001 C CNN
+	1    7100 1210
+	0    -1   -1   0   
+$EndComp
 Wire Notes Line
 	470  4590 11220 4590
 Wire Wire Line
@@ -258,71 +328,105 @@ Wire Wire Line
 	6760 5300 6760 5230
 Wire Wire Line
 	6960 5300 6960 5230
-Text Notes 11220 6530 2    60   ~ 0
-TERMINAL BLOCKS\n
-Text Label 3060 5260 1    60   ~ 0
-R1
-Text Label 3260 5270 1    60   ~ 0
-R2
-Text Label 4310 5250 1    60   ~ 0
-R3
-Text Label 4510 5250 1    60   ~ 0
-R4
-Text Label 5520 5230 1    60   ~ 0
-R5
-Text Label 5720 5230 1    60   ~ 0
-R6
-Text Label 6760 5230 1    60   ~ 0
-R7
-Text Label 6960 5230 1    60   ~ 0
-R8
-Text Label 6950 1210 0    60   ~ 0
-R1
-Text Label 6950 1310 0    60   ~ 0
-R2
-Text Label 6950 1410 0    60   ~ 0
-R3
-Text Label 6950 1510 0    60   ~ 0
-R4
-Text Label 6950 1610 0    60   ~ 0
-R5
-Text Label 6950 1710 0    60   ~ 0
-R6
-Text Label 6950 1810 0    60   ~ 0
-R7
-Text Label 6950 1910 0    60   ~ 0
-R8
-NoConn ~ 6800 2010
 Wire Notes Line
 	475  2565 11220 2565
-$Comp
-L CD4017 U21
-U 1 1 599C290B
-P 3990 1790
-F 0 "U21" H 3990 2606 50  0000 C CNN
-F 1 "CD4017" H 3990 2515 50  0000 C CNN
-F 2 "Housings_DIP:DIP-16_W7.62mm_Socket_LongPads" H 3990 1790 60  0001 C CNN
-F 3 "" H 3990 1790 60  0001 C CNN
-	1    3990 1790
-	1    0    0    -1  
-$EndComp
-Text GLabel 3425 1035 0    60   Input ~ 0
-5v
 Wire Wire Line
 	3425 1035 3990 1035
 Wire Wire Line
 	3990 1035 3990 1190
-$Comp
-L GND #PWR034
-U 1 1 599C2C7A
-P 3990 2425
-F 0 "#PWR034" H 3990 2175 50  0001 C CNN
-F 1 "GND" H 4120 2335 50  0000 C CNN
-F 2 "" H 3990 2425 50  0001 C CNN
-F 3 "" H 3990 2425 50  0001 C CNN
-	1    3990 2425
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	3990 2425 3990 2390
+$Comp
+L R R3
+U 1 1 59A53F67
+P 7100 1310
+F 0 "R3" V 7140 1460 50  0000 C CNN
+F 1 "R" V 7100 1310 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 7030 1310 50  0001 C CNN
+F 3 "" H 7100 1310 50  0001 C CNN
+	1    7100 1310
+	0    -1   -1   0   
+$EndComp
+$Comp
+L R R4
+U 1 1 59A53FF7
+P 7100 1410
+F 0 "R4" V 7140 1560 50  0000 C CNN
+F 1 "R" V 7100 1410 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 7030 1410 50  0001 C CNN
+F 3 "" H 7100 1410 50  0001 C CNN
+	1    7100 1410
+	0    -1   -1   0   
+$EndComp
+$Comp
+L R R5
+U 1 1 59A54063
+P 7100 1510
+F 0 "R5" V 7140 1660 50  0000 C CNN
+F 1 "R" V 7100 1510 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 7030 1510 50  0001 C CNN
+F 3 "" H 7100 1510 50  0001 C CNN
+	1    7100 1510
+	0    -1   -1   0   
+$EndComp
+$Comp
+L R R6
+U 1 1 59A5411A
+P 7100 1610
+F 0 "R6" V 7140 1760 50  0000 C CNN
+F 1 "R" V 7100 1610 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 7030 1610 50  0001 C CNN
+F 3 "" H 7100 1610 50  0001 C CNN
+	1    7100 1610
+	0    -1   -1   0   
+$EndComp
+$Comp
+L R R7
+U 1 1 59A54156
+P 7100 1710
+F 0 "R7" V 7140 1860 50  0000 C CNN
+F 1 "R" V 7100 1710 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 7030 1710 50  0001 C CNN
+F 3 "" H 7100 1710 50  0001 C CNN
+	1    7100 1710
+	0    -1   -1   0   
+$EndComp
+$Comp
+L R R8
+U 1 1 59A54223
+P 7100 1810
+F 0 "R8" V 7140 1960 50  0000 C CNN
+F 1 "R" V 7100 1810 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 7030 1810 50  0001 C CNN
+F 3 "" H 7100 1810 50  0001 C CNN
+	1    7100 1810
+	0    -1   -1   0   
+$EndComp
+$Comp
+L R R9
+U 1 1 59A54263
+P 7100 1910
+F 0 "R9" V 7140 2060 50  0000 C CNN
+F 1 "R" V 7100 1910 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 7030 1910 50  0001 C CNN
+F 3 "" H 7100 1910 50  0001 C CNN
+	1    7100 1910
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	7250 1210 7310 1210
+Wire Wire Line
+	7250 1310 7310 1310
+Wire Wire Line
+	7250 1410 7310 1410
+Wire Wire Line
+	7250 1510 7310 1510
+Wire Wire Line
+	7250 1610 7310 1610
+Wire Wire Line
+	7250 1710 7310 1710
+Wire Wire Line
+	7250 1810 7310 1810
+Wire Wire Line
+	7250 1910 7310 1910
 $EndSCHEMATC
