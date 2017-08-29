@@ -1,0 +1,6 @@
+FTDI<=======>ESP32
+ TXD<=======>RXD
+ RXD<=======>TXD
+ DTR<=======>EN
+ VCC<=======>VCC
+ GND<=======>GND
