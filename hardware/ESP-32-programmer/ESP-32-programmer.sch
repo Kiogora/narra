@@ -145,14 +145,14 @@ F 3 "" H 9900 1450 50  0001 C CNN
 	1    9900 1450
 	1    0    0    -1  
 $EndComp
-Text Label 9600 1200 2    60   ~ 0
+Text Label 9610 1200 2    60   ~ 0
 DTR
 Text Label 9600 1300 2    60   ~ 0
 RXD
 Text Label 9600 1400 2    60   ~ 0
 TXD
 Text Label 9600 1500 2    60   ~ 0
-5v
+3v3
 Text Label 9600 1600 2    60   ~ 0
 CTS
 $Comp
@@ -200,10 +200,8 @@ Text Label 7560 3110 0    60   ~ 0
 IO23
 Text Label 7560 3210 0    60   ~ 0
 IO22
-Text Label 7560 3310 0    60   ~ 0
-TXD
 Text Label 7560 3410 0    60   ~ 0
-RXD
+TXD
 Text Label 7560 3510 0    60   ~ 0
 IO21
 Text Label 7560 3610 0    60   ~ 0
@@ -391,7 +389,7 @@ F 3 "" H 9900 5830 50  0001 C CNN
 	1    9900 5830
 	1    0    0    -1  
 $EndComp
-Text Label 9600 5580 2    60   ~ 0
+Text Label 9140 5580 2    60   ~ 0
 5v
 Text Label 9600 5780 2    60   ~ 0
 TXD
@@ -548,8 +546,6 @@ F 3 "" H 7200 5950 50  0001 C CNN
 $EndComp
 Text Notes 8270 6530 2    60   ~ 0
 SYSTEM_RESET
-Text Notes 4660 6530 2    60   ~ 0
-BOOT MODE SELECTION(PU-SPI BOOT, PD-DOWNLOAD BOOT)
 $Bitmap
 Pos 7180 6720
 Scale 1.000000
@@ -813,30 +809,6 @@ DF EA 74 9A 0E 90 09 01 E0 AB 55 53 02 A3 C5 9B 96 9C 30 79 C0 C0 73 4E EF 3B B8
 E3 24 58 FB FF FF 00 01 B0 C9 43 61 11 4A D7 00 00 00 00 49 45 4E 44 AE 42 60 82 
 EndData
 $EndBitmap
-Text Label 2150 5850 2    60   ~ 0
-IO0
-$Comp
-L GND #PWR015
-U 1 1 59977E1F
-P 3300 5950
-F 0 "#PWR015" H 3300 5700 50  0001 C CNN
-F 1 "GND" H 3305 5777 50  0000 C CNN
-F 2 "" H 3300 5950 50  0001 C CNN
-F 3 "" H 3300 5950 50  0001 C CNN
-	1    3300 5950
-	1    0    0    -1  
-$EndComp
-$Comp
-L SW_DIP_x02 SW1
-U 1 1 59977E12
-P 2650 5900
-F 0 "SW1" H 2650 6267 50  0000 C CNN
-F 1 "SW_DIP_x02" H 2650 6176 50  0000 C CNN
-F 2 "Buttons_Switches_THT:SW_DIP_x2_W7.62mm_Slide_LowProfile" H 2650 5900 50  0001 C CNN
-F 3 "" H 2650 5900 50  0001 C CNN
-	1    2650 5900
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	5260 3010 5710 3010
 Wire Wire Line
@@ -1090,7 +1062,7 @@ Connection ~ 4980 3210
 Wire Notes Line
 	8270 5220 8270 6540
 Wire Wire Line
-	9700 5580 9600 5580
+	9570 5580 9700 5580
 Wire Wire Line
 	9160 5680 9700 5680
 Wire Wire Line
@@ -1116,23 +1088,9 @@ Wire Notes Line
 Wire Notes Line
 	4660 5190 4660 6535
 Wire Wire Line
-	2350 5800 2350 5900
-Wire Wire Line
-	2350 5850 2150 5850
-Connection ~ 2350 5850
-Wire Wire Line
-	2950 5800 2950 5900
-Wire Wire Line
-	2950 5850 3300 5850
-Connection ~ 2950 5850
-Wire Wire Line
-	3300 5850 3300 5950
-Wire Wire Line
 	7200 5850 7200 5950
 Wire Wire Line
 	6720 5850 7200 5850
-Text Label 6050 5850 2    60   ~ 0
-EN
 Wire Wire Line
 	6050 5850 6320 5850
 $Comp
@@ -1163,8 +1121,6 @@ F 3 "" H 6180 1300 50  0001 C CNN
 	1    6180 1300
 	0    -1   -1   0   
 $EndComp
-NoConn ~ 9700 5980
-NoConn ~ 9700 1200
 NoConn ~ 9700 1600
 Text Label 9600 5980 2    60   ~ 0
 DTR
@@ -1181,4 +1137,70 @@ F 3 "" H 6520 6050 50  0001 C CNN
 	1    6520 5850
 	1    0    0    -1  
 $EndComp
+Text Label 6050 5850 2    60   ~ 0
+IO0
+Text Notes 4660 6530 2    60   ~ 0
+BOOT MODE SELECTION(PU-SPI BOOT, PD-DOWNLOAD BOOT)
+$Comp
+L GND #PWR015
+U 1 1 59977E1F
+P 3300 5950
+F 0 "#PWR015" H 3300 5700 50  0001 C CNN
+F 1 "GND" H 3305 5777 50  0000 C CNN
+F 2 "" H 3300 5950 50  0001 C CNN
+F 3 "" H 3300 5950 50  0001 C CNN
+	1    3300 5950
+	1    0    0    -1  
+$EndComp
+$Comp
+L SW_DIP_x02 SW1
+U 1 1 59977E12
+P 2650 5900
+F 0 "SW1" H 2650 6267 50  0000 C CNN
+F 1 "SW_DIP_x02" H 2650 6176 50  0000 C CNN
+F 2 "Buttons_Switches_THT:SW_DIP_x2_W7.62mm_Slide_LowProfile" H 2650 5900 50  0001 C CNN
+F 3 "" H 2650 5900 50  0001 C CNN
+	1    2650 5900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2350 5800 2350 5900
+Wire Wire Line
+	2350 5850 2150 5850
+Connection ~ 2350 5850
+Wire Wire Line
+	2950 5800 2950 5900
+Wire Wire Line
+	2950 5850 3300 5850
+Connection ~ 2950 5850
+Wire Wire Line
+	3300 5850 3300 5950
+Text Label 2150 5850 2    60   ~ 0
+IO0
+Wire Wire Line
+	9700 5980 9600 5980
+Wire Wire Line
+	9700 1200 9610 1200
+Wire Wire Line
+	4690 2990 4850 2990
+Wire Wire Line
+	4850 2990 4850 3210
+Connection ~ 4850 3210
+Text Label 4690 2990 0    60   ~ 0
+DTR
+$Comp
+L GS2 J8
+U 1 1 59A5D683
+P 9370 5580
+F 0 "J8" V 9165 5580 50  0000 C CNN
+F 1 "GS2" V 9256 5580 50  0000 C CNN
+F 2 "Connectors:GS2" V 9444 5580 50  0001 C CNN
+F 3 "" H 9370 5580 50  0001 C CNN
+	1    9370 5580
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	9140 5580 9170 5580
+Text Label 7560 3310 0    60   ~ 0
+RXD
 $EndSCHEMATC
