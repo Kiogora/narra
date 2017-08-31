@@ -3,6 +3,8 @@
 
 #include "narra_types.h"
 #include "narra_defines.h"
+#include "narra_parameters.h"
+#include "narra_system.h"
 
 #if defined ALLOW_SIMPLE_STARTUP_MSG_UPDATE || defined ALLOW_COMPLEX_STARTUP_MSG_UPDATE
 int32_t system_update_startup(char* new_startup_msg);
@@ -13,6 +15,8 @@ int32_t system_update_active(char* new_active_msg);
 #if defined ALLOW_SIMPLE_SHUTDOWN_MSG_UPDATE || defined ALLOW_COMPLEX_SHUTDOWN_MSG_UPDATE
 int32_t system_update_shutdown(char* new_shutdown_msg);
 #endif
+
+void system_update_state(Matrix* matrixInstanceptr, System_variables* system_variables, uint8_t new_state);
 
 #endif /*__SYSTEM_UPDATER_H_*/
 

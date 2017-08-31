@@ -8,9 +8,11 @@
 
 /*project libs*/
 #include "narra_defines.h"
+#include "narra_system.h" /*Contains the matrix description struct*/
 #include "narra_nvs.h"
 
 #include "system_updater.h"
+#include "system_controller.h"/*Sets the matrix description struct, enable state member*/
 #include "utf8_decoder.h"
 
 static const char* TAG = "Component_updater";
@@ -111,3 +113,15 @@ int32_t system_update_shutdown(char* new_shutdown_msg)
     }
 }
 #endif
+
+void system_update_state(Matrix* matrixInstanceptr, System_variables* system_variables, uint8_t new_state)
+{
+    if(new_state == 0)
+    {
+        matrix_deactivate(matrixInstanceptr, system_variables);
+    }
+    else
+    {
+       matrix_activate(matrixInstanceptr); 
+    }
+}
