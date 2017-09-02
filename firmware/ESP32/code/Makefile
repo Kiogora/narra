@@ -3,7 +3,7 @@
 # project subdirectory.
 #
 
-PROJECT_NAME := matrixtest
+PROJECT_NAME := narra
 
 include $(IDF_PATH)/make/project.mk
 
