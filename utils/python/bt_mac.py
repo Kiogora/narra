@@ -24,14 +24,6 @@ For 4 Universal MAC addresses, the BT, Wifi and ethernet are all enabled. Here:
 #ESP_MAC_BT=BASE MAC+2
 #ESP_MAC_ETH=BASE MAC+3
 """
-
-esptool_path_rel_prefix='components/esptool_py/esptool/'
-esptool_path_prefix=os.path.join(os.environ['IDF_PATH'], esptool_path_rel_prefix)
-esptool=os.path.join(esptool_path_prefix, 'esptool.py')
-
-sdkconfig_path_rel_prefix='../../firmware/ESP32/code'
-sdkconfig='sdkconfig'
-
 def get_bt_mac_lsb_offset(any_path,config_file):
     """
     Obains the offset of the BT_MAC LSB from the BASE_MAC LSB by sdkconfing inspection.
@@ -51,14 +43,14 @@ def get_bt_mac_lsb_offset(any_path,config_file):
                 print("Unable to find valid value of sdkconfig variable "+mac_sdkconfig_string)
                 sys.exit(1)
 
-def get_base_mac():
+def get_base_mac(esptool_script):
     """
     Obtains the BASE_MAC from an ESP32 chip using the "python esptool.py read_mac" command.
     """
     esptool_cmd='read_mac'
     mac_identifier='MAC'
 
-    pipe=subprocess.Popen([esptool,esptool_cmd],stdout=subprocess.PIPE)
+    pipe=subprocess.Popen([esptool_script,esptool_cmd],stdout=subprocess.PIPE)
     esp32_reply=pipe.communicate()
     esp32_reply=esp32_reply[0].split('\n')
     if esp32_reply[-1] != 2:
@@ -83,5 +75,12 @@ def derive_bt_mac(base_mac,offset):
     return bt_mac
 
 if __name__=='__main__':
-    bluetooth_mac=derive_bt_mac(get_base_mac(), get_bt_mac_lsb_offset(sdkconfig_path_rel_prefix, sdkconfig))
+    sdkconfig_path_rel_prefix='../../firmware/ESP32/code'
+    sdkconfig='sdkconfig'
+
+    esptool_path_rel_prefix='components/esptool_py/esptool/'
+    esptool_path_prefix=os.path.join(os.environ['IDF_PATH'], esptool_path_rel_prefix)
+    esptool=os.path.join(esptool_path_prefix, 'esptool.py')
+
+    bluetooth_mac=derive_bt_mac(get_base_mac(esptool), get_bt_mac_lsb_offset(sdkconfig_path_rel_prefix, sdkconfig))
     print('The bluetooth MAC for the current connected chip will be {MAC}'.format(MAC=bluetooth_mac))
