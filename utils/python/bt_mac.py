@@ -4,14 +4,13 @@ import sys
 """
 Author: Alois Mbutura
 This script is used to obtain the bluetooth MAC from a connected ESP32. It then logs the information in a file.
+The number of Universal MAC addresses are set manually by the menuconfig command.
 
 The following MAC addresses are derived from the BASE MAC in the EFUSE BLK0.
 #ESP_MAC_WIFI_STA
 #ESP_MAC_WIFI_SOFTAP
 #ESP_MAC_BT
 #ESP_MAC_ETH
-
-More info at {IDF_PATH}/components/esp32/system_api.c
 
 For 2 universal MAC addresses, the BT and Wifi are both enabled. Ethernet is disabled. Here:
 #ESP_MAC_WIFI_STA=ESP_MAC_WIFI_SOFTAP=BASE MAC.
@@ -25,6 +24,8 @@ For 4 Universal MAC addresses, the BT, Wifi and ethernet are all enabled. Here:
 
 #The number of MAC addresses are set manually by the menuconfig command. Default is 4 MAC universal addresses.
 """
+
+
 esptool_path_prefix=os.path.join(os.environ['IDF_PATH'],'components/esptool_py/esptool/')
 esptool=os.path.join(esptool_path_prefix, 'esptool.py')
 path='../../firmware/ESP32/code'
@@ -66,10 +67,8 @@ def derive_bt_mac(base_mac,offset):
     Derives the bluetooth MAC from the BASE MAC and the offset from sdkconfig inspection
     """
     base_mac_lsb=int((str(base_mac[-1]).rstrip()), base=16)+offset
-    base_mac[-1]=str(hex(base_mac_lsb))
-    base_mac[-1]
+    base_mac[-1]=format(base_mac_lsb, 'x')
     bt_mac='-'.join(base_mac)
-    bt_mac=bt_mac.replace('0x', '')
     bt_mac=bt_mac.strip()
     return bt_mac
 
