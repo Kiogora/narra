@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import sys
 import subprocess
 """
 Author: Alois Mbutura
@@ -48,6 +49,7 @@ def get_bt_mac_lsb_offset(any_path,config_file):
                 return 1
             else:
                 print("Unable to valid value for "+mac_sdkconfig_string)
+                sys.exit(1)
 
 def get_base_mac():
     """
@@ -68,6 +70,7 @@ def get_base_mac():
                 return split_mac
     else:
         print("Subprocess exited with status code {code}".format(code=esp32_reply[-1]))
+        sys.exit(1)
 
 def derive_bt_mac(base_mac,offset):
     """
