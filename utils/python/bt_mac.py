@@ -48,7 +48,7 @@ def get_bt_mac_lsb_offset(any_path,config_file):
             elif '2' in split_line[1]:
                 return 1
             else:
-                print("Unable to valid value for "+mac_sdkconfig_string)
+                print("Unable to find valid value of sdkconfig variable "+mac_sdkconfig_string)
                 sys.exit(1)
 
 def get_base_mac():
@@ -84,4 +84,4 @@ def derive_bt_mac(base_mac,offset):
 
 if __name__=='__main__':
     bluetooth_mac=derive_bt_mac(get_base_mac(), get_bt_mac_lsb_offset(sdkconfig_path_rel_prefix, sdkconfig))
-    print('The bluetooth MAC derived for the current connected chip is {MAC}'.format(MAC=bluetooth_mac) )
+    print('The bluetooth MAC for the current connected chip will be {MAC}'.format(MAC=bluetooth_mac))
