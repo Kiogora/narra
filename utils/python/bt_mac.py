@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import os
-import sys
 """
+
 Author: Alois Mbutura
+
 This script is used to obtain the bluetooth MAC from a connected ESP32. It then logs the information in a file.
-The number of Universal MAC addresses are set manually by the menuconfig command.
+The number of Universal MAC addresses are set manually by the menuconfig command. Default is 4 MAC universal addresses.
 
 The following MAC addresses are derived from the BASE MAC in the EFUSE BLK0.
 #ESP_MAC_WIFI_STA
@@ -22,25 +23,25 @@ For 4 Universal MAC addresses, the BT, Wifi and ethernet are all enabled. Here:
 #ESP_MAC_BT=BASE MAC+2
 #ESP_MAC_ETH=BASE MAC+3
 
-#The number of MAC addresses are set manually by the menuconfig command. Default is 4 MAC universal addresses.
 """
 
 
 esptool_path_prefix=os.path.join(os.environ['IDF_PATH'],'components/esptool_py/esptool/')
 esptool=os.path.join(esptool_path_prefix, 'esptool.py')
-path='../../firmware/ESP32/code'
 
-mac_config_string='CONFIG_NUMBER_OF_UNIVERSAL_MAC_ADDRESS'
-config_file='sdkconfig'
+sdkconfig_path_prefix='../../firmware/ESP32/code'
+sdkconfig='sdkconfig'
 
-def get_bt_mac_lsb_offset(any_path):
+def get_bt_mac_lsb_offset(any_path,config_file):
     """
-    Obains the offset of the BT MAC Least significant byte from the BASE MAC Least significant byte.
+    Obains the offset of the BT_MAC LSB from the BASE_MAC LSB by sdkconfing inspection.
     """
+    mac_sdkconfig_string='CONFIG_NUMBER_OF_UNIVERSAL_MAC_ADDRESS'
+
     sdkconfig=os.path.join(any_path,config_file)
     config_lines=open(sdkconfig).readlines()
     for line in config_lines:
-        if mac_config_string in line:
+        if mac_sdkconfig_string in line:
             split_line=line.split('=')
             if '4' in split_line[1]:
                 return 2
@@ -51,12 +52,14 @@ def get_bt_mac_lsb_offset(any_path):
 
 def get_base_mac():
     """
-    Obtains the BASE MAC Least significant byte from an ESP32 chip using esptool.
+    Obtains the BASE_MAC LSB from an ESP32 chip using esptool.
     """
     cmd='read_mac'
+    mac_identifier='MAC'
+
     output=os.popen(esptool+' '+cmd).readlines()
     for line in output:
-        if 'MAC' in line:
+        if mac_identifier in line:
             split_mac=line.split(':')
             del split_mac[0]
             split_mac[-1]=split_mac[-1].rstrip()
@@ -64,7 +67,7 @@ def get_base_mac():
 
 def derive_bt_mac(base_mac,offset):
     """
-    Derives the bluetooth MAC from the BASE MAC and the offset from sdkconfig inspection
+    Derives the BT_MAC from the BASE_MAC and the BT_MAC LSB offset.
     """
     base_mac_lsb=int((str(base_mac[-1]).rstrip()), base=16)+offset
     base_mac[-1]=format(base_mac_lsb, 'x')
@@ -73,5 +76,5 @@ def derive_bt_mac(base_mac,offset):
     return bt_mac
 
 if __name__=='__main__':
-    bluetooth_mac=derive_bt_mac(get_base_mac(), get_bt_mac_lsb_offset(path))
+    bluetooth_mac=derive_bt_mac(get_base_mac(), get_bt_mac_lsb_offset(sdkconfig_path_prefix, sdkconfig))
     print('The bluetooth MAC derived for the current connected chip is {MAC}'.format(MAC=bluetooth_mac) )
