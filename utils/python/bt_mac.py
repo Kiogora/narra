@@ -62,7 +62,6 @@ def get_base_mac():
     if esp32_reply[-1] != 2:
         for line in esp32_reply:
             if mac_identifier in line:
-                print line
                 split_mac=line.split(':')
                 del split_mac[0]
                 split_mac[-1]=split_mac[-1].rstrip()
@@ -83,4 +82,3 @@ def derive_bt_mac(base_mac,offset):
 if __name__=='__main__':
     bluetooth_mac=derive_bt_mac(get_base_mac(), get_bt_mac_lsb_offset(sdkconfig_path_rel_prefix, sdkconfig))
     print('The bluetooth MAC derived for the current connected chip is {MAC}'.format(MAC=bluetooth_mac) )
-#    get_base_mac()
