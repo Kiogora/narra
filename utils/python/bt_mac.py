@@ -40,7 +40,8 @@ def get_bt_mac_lsb_offset(any_path,config_file):
             elif '2' in split_line[1]:
                 return 1
             else:
-                print("Unable to find valid value of sdkconfig variable "+mac_sdkconfig_string)
+                print("Unable to find valid value of sdkconfig variable {mac_var}"
+                      .format(mac_var=mac_sdkconfig_string))
                 sys.exit(1)
 
 def get_base_mac(esptool_script):
