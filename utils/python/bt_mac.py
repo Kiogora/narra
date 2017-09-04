@@ -26,7 +26,7 @@ For 4 Universal MAC addresses, the BT, Wifi and ethernet are all enabled. Here:
 """
 def get_bt_mac_lsb_offset(any_path,config_file):
     """
-    Obains the offset of the BT_MAC LSB from the BASE_MAC LSB by sdkconfing inspection.
+    Obains the offset of the BT_MAC LSB from the BASE_MAC LSB by sdkconfig inspection.
     """
     mac_sdkconfig_string='CONFIG_NUMBER_OF_UNIVERSAL_MAC_ADDRESS'
 
@@ -52,7 +52,7 @@ def get_base_mac(esptool_script):
 
     pipe=subprocess.Popen([esptool_script,esptool_cmd],stdout=subprocess.PIPE)
     esp32_reply=pipe.communicate()
-    esp32_reply=esp32_reply[0].split('\n')
+    esp32_reply=esp32_reply[0].decode().split('\n')
     if esp32_reply[-1] != 2:
         for line in esp32_reply:
             if mac_identifier in line:
@@ -67,7 +67,7 @@ def derive_bt_mac(base_mac,offset):
     """
     Derives the BT_MAC from the BASE_MAC and the BT_MAC LSB offset.
     """
-    base_mac_lsb=int((str(base_mac[-1]).rstrip()), base=16)+offset
+    base_mac_lsb=int(str(base_mac[-1]), base=16)+offset
     base_mac[-1]=format(base_mac_lsb, 'x')
     bt_mac='-'.join(base_mac)
     return bt_mac
