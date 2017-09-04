@@ -70,7 +70,7 @@ def derive_bt_mac(base_mac,offset):
     base_mac_lsb=int(str(base_mac[-1]), base=16)+offset
     base_mac[-1]=format(base_mac_lsb, 'x')
     bt_mac='-'.join(base_mac)
-    return bt_mac
+    return bt_mac.strip()
 
 if __name__=='__main__':
     sdkconfig_path_rel_prefix='../../firmware/ESP32/code'
