@@ -58,7 +58,6 @@ def get_base_mac(esptool_script):
             if mac_identifier in line:
                 split_mac=line.split(':')
                 del split_mac[0]
-                split_mac[-1]=split_mac[-1].rstrip()
                 return split_mac
     else:
         print("Subprocess exited with status code {code}".format(code=esp32_reply[-1]))
@@ -71,7 +70,6 @@ def derive_bt_mac(base_mac,offset):
     base_mac_lsb=int((str(base_mac[-1]).rstrip()), base=16)+offset
     base_mac[-1]=format(base_mac_lsb, 'x')
     bt_mac='-'.join(base_mac)
-    bt_mac=bt_mac.strip()
     return bt_mac
 
 if __name__=='__main__':
