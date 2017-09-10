@@ -34,11 +34,6 @@ typedef struct
 #else
 #pragma message("SIMPLE ACTIVE MESSAGE UPDATE ALLOWED")
 #endif
-    narra_pin_t param_serial_pin;
-    narra_pin_t param_shift_pin;
-    narra_pin_t param_latch_pin;
-    narra_pin_t param_rowclk_pin;
-    narra_pin_t param_rowrst_pin;
 } System_variables;
 
 #endif /*__SYSTEM_PARAMETERS_H_*/

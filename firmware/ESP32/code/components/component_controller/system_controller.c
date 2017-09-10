@@ -89,11 +89,6 @@ esp_err_t matrix_init(Matrix* matrixInstanceptr, System_variables* system_variab
         ESP_LOGE(TAG,"Invalid system speed passed to init function");
         return ESP_FAIL;
     }
-    matrixInstanceptr->serial_pin=system_variables->param_serial_pin;
-    matrixInstanceptr->shift_pin=system_variables->param_shift_pin;
-    matrixInstanceptr->latch_pin=system_variables->param_latch_pin;
-    matrixInstanceptr->rowclk_pin=system_variables->param_rowclk_pin;
-    matrixInstanceptr->rowrst_pin=system_variables->param_rowrst_pin;
     
     matrixInstanceptr->system_state=startup;
     matrixInstanceptr->current_message=NULL;

@@ -6,18 +6,19 @@
 
 /*Project libs*/
 #include "narra_parameters.h"
-
+ 
 #include "system_loader.h"
 #include "system_controller.h"
 #include "system_updater.h"
 
-void init_pin_interface(System_variables* _system_variables)
+void init_pin_interface(Matrix* matrixInstanceptr)
 {
-    _system_variables->param_serial_pin= GPIO_NUM_25;
-    _system_variables->param_shift_pin=GPIO_NUM_26;
-    _system_variables->param_latch_pin=GPIO_NUM_27;
-    _system_variables->param_rowclk_pin=GPIO_NUM_12;
-    _system_variables->param_rowrst_pin=GPIO_NUM_14;
+
+    matrixInstanceptr->serial_pin=GPIO_NUM_25;
+    matrixInstanceptr->shift_pin=GPIO_NUM_26;
+    matrixInstanceptr->latch_pin=GPIO_NUM_27;
+    matrixInstanceptr->rowclk_pin=GPIO_NUM_12;
+    matrixInstanceptr->rowrst_pin=GPIO_NUM_14;
 }
 
 void app_main(void)
@@ -25,7 +26,7 @@ void app_main(void)
     Matrix matrix;    
     System_variables system_variables;
 
-    init_pin_interface(&system_variables);
+    init_pin_interface(&matrix);
 
     char* new_text="***WELCOME TO HEAVEN***";
     system_update_startup(new_text);
