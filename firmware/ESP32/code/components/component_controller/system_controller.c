@@ -76,6 +76,8 @@ esp_err_t matrix_init(Matrix* matrixInstanceptr, System_variables* system_variab
 {
     system_loader(system_variables);
 
+    /*Send event group to bluetooth task to start*/
+
     matrixInstanceptr->unit_per_matrix=0x08;
     matrixInstanceptr->fontwidth=0x08;
     matrixInstanceptr->num_rows=0x08;
