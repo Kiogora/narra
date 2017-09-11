@@ -1,12 +1,30 @@
+#ifndef __BLE_H_
+#define __BLE_H_
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
 
-//Form a dynamic array of structures that increase with the number of connections, and decrease on disconnecion. VArious parameters will be unique 
-//per connection.
+static void system_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, 
+                                         esp_ble_gatts_cb_param_t *param);
 
+static void usage_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, 
+                                        esp_ble_gatts_cb_param_t *param);
+
+static void read_attribute_by_app(esp_attr_value_t attribute, esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, 
+                                  esp_ble_gatts_cb_param_t *param);
+
+static void usage_profile_read_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, 
+                                             esp_ble_gatts_cb_param_t *param);
+
+static void usage_profile_prepare_write_event_handler(esp_gatt_if_t gatts_if, prepare_write_t *prepare_write_state,
+                                                      esp_ble_gatts_cb_param_t *param);
+
+static void usage_profile_exec_write_event_handler(esp_attr_value_t attribute, prepare_write_t *prepare_write_env,
+                                                   esp_ble_gatts_cb_param_t *param);
+
+static void clear_write_buffer(prepare_write_t *prepare_write_env);
 
 ///System Attributes State Machine
 enum
@@ -88,3 +106,5 @@ typedef struct
     uint8_t* prepare_buf;
     int prepare_len;
 } prepare_write_t;
+
+#endif /*__BLE_H_*/

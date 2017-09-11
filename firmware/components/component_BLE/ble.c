@@ -161,27 +161,8 @@ static void gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param
 /******************************************END ADVERTISING***************************************************/
 
 /********************************************GATT SERVER ************************************************/
+
 static prepare_write_t prepare_write_tracker;
-
-static void system_profile_event_handler(esp_gatts_cb_event_t event, 
-					                     esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param);
-
-static void usage_profile_event_handler(esp_gatts_cb_event_t event, 
-					                    esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param);
-
-static void read_attribute_by_app(esp_attr_value_t attribute, esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, 
-                                  esp_ble_gatts_cb_param_t *param);
-
-static void usage_profile_read_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, 
-                                             esp_ble_gatts_cb_param_t *param);
-
-static void usage_profile_prepare_write_event_handler(esp_gatt_if_t gatts_if, prepare_write_t *prepare_write_state,
-                                                      esp_ble_gatts_cb_param_t *param);
-
-static void usage_profile_exec_write_event_handler(esp_attr_value_t attribute, prepare_write_t *prepare_write_env,
-                                                   esp_ble_gatts_cb_param_t *param);
-
-static void clear_write_buffer(prepare_write_t *prepare_write_env);
 
 /************** GATT ATTRIBUTES ***************/
 
@@ -489,7 +470,7 @@ static void read_attribute_by_app(esp_attr_value_t attribute, esp_gatts_cb_event
     esp_gatt_rsp_t rsp;
     memset(&rsp, 0, sizeof(esp_gatt_rsp_t));
 
-    if (param->rea    memset(&rsp, 0, sizeof(esp_gatt_rsp_t));d.offset < attribute.attr_len)
+    if (param->read.offset < attribute.attr_len)
     {
         rsp.attr_value.len = (attribute.attr_len) - param->read.offset;
         rsp.attr_value.offset = param->read.offset;
@@ -512,7 +493,7 @@ static void read_attribute_by_app(esp_attr_value_t attribute, esp_gatts_cb_event
 }
 
 static void usage_profile_prepare_write_event_handler(esp_gatt_if_t gatts_if, prepare_write_t *prepare_write_state,
-                                     esp_ble_gatts_cb_param_t *param)
+                                                      esp_ble_gatts_cb_param_t *param)
 {
     esp_gatt_status_t status = ESP_GATT_OK;
     if (param->write.need_rsp)
@@ -726,13 +707,14 @@ static void gatts_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_
 }
 
 /*****************************************END GATT SERVER ************************************************/
-void app_main()
+void bleTask(void *pvParameters)
 {
     esp_err_t ret;
 
     // Initialize NVS.
     ret = nvs_flash_init();
-    if (ret == ESP_ERR_NVS_NO_FREE_PAGES) {
+    if (ret == ESP_ERR_NVS_NO_FREE_PAGES)
+    {
         ESP_ERROR_CHECK(nvs_flash_erase());
         ret = nvs_flash_init();
     }
@@ -740,20 +722,23 @@ void app_main()
 
     esp_bt_controller_config_t bt_cfg = BT_CONTROLLER_INIT_CONFIG_DEFAULT();
     ret = esp_bt_controller_init(&bt_cfg);
-    if (ret) {
+    if (ret)
+    {
         ESP_LOGE(GATTS_TABLE_TAG, "%s enable controller failed\n", __func__);
         return;
     }
 
     ret = esp_bt_controller_enable(ESP_BT_MODE_BTDM);
-    if (ret) {
+    if (ret)
+    {
         ESP_LOGE(GATTS_TABLE_TAG, "%s enable controller failed\n", __func__);
         return;
     }
 
     ESP_LOGI(GATTS_TABLE_TAG, "%s init bluetooth\n", __func__);
     ret = esp_bluedroid_init();
-    if (ret) {
+    if (ret)
+    {
         ESP_LOGE(GATTS_TABLE_TAG, "%s init bluetooth failed\n", __func__);
         return;
     }
@@ -767,5 +752,9 @@ void app_main()
     esp_ble_gap_register_callback(gap_event_handler);
     esp_ble_gatts_app_register(SYSTEM_APP_ID);
     esp_ble_gatts_app_register(USAGE_APP_ID);
-    return;
+
+    while(1)
+    {
+        ;
+    }
 }
