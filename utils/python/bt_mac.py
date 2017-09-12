@@ -74,7 +74,7 @@ def derive_bt_mac(base_mac,offset):
     return bt_mac.strip()
 
 if __name__=='__main__':
-    sdkconfig_path_rel_prefix='../../firmware/ESP32/code'
+    sdkconfig_path_rel_prefix='../../firmware'
     sdkconfig='sdkconfig'
 
     esptool_path_rel_prefix='components/esptool_py/esptool/'
