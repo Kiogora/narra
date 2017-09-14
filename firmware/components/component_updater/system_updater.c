@@ -10,6 +10,7 @@
 #include "narra_defines.h"
 #include "narra_system.h" /*Contains the matrix description struct*/
 #include "narra_nvs.h"
+#include "narra_parameters.h"
 
 #include "system_updater.h"
 #include "system_controller.h"/*Sets the matrix description struct, enable state member*/
@@ -18,7 +19,7 @@
 static const char* TAG = "Component_updater";
 
 #if defined ALLOW_SIMPLE_STARTUP_MSG_UPDATE || defined ALLOW_COMPLEX_STARTUP_MSG_UPDATE
-int32_t system_update_startup(char* new_startup_msg)
+int32_t system_update_startup(System_variables* instanceptr, char* new_startup_msg)
 {
     narra_nvs_init();
     nvs_handle system_updater;
@@ -32,6 +33,7 @@ int32_t system_update_startup(char* new_startup_msg)
         if(err == ESP_OK)
         {
             ESP_LOGI(TAG, "Write startup success");
+            system_loader(instanceptr);
             return ESP_OK;
         }
 
@@ -51,7 +53,7 @@ int32_t system_update_startup(char* new_startup_msg)
 #endif
 
 #if defined ALLOW_SIMPLE_ACTIVE_MSG_UPDATE || defined ALLOW_COMPLEX_ACTIVE_MSG_UPDATE
-int32_t system_update_active(char* new_active_msg)
+int32_t system_update_active(System_variables* instanceptr, char* new_active_msg)
 {
     narra_nvs_init();
     nvs_handle system_updater;
@@ -65,6 +67,7 @@ int32_t system_update_active(char* new_active_msg)
         if(err == ESP_OK)
         {
             ESP_LOGI(TAG, "Write active success");
+            system_loader(instanceptr);
             return ESP_OK;
         }
         else
@@ -83,7 +86,7 @@ int32_t system_update_active(char* new_active_msg)
 #endif
 
 #if defined ALLOW_SIMPLE_SHUTDOWN_MSG_UPDATE || defined ALLOW_COMPLEX_SHUTDOWN_MSG_UPDATE
-int32_t system_update_shutdown(char* new_shutdown_msg)
+int32_t system_update_shutdown(System_variables* instanceptr, char* new_shutdown_msg)
 {
     narra_nvs_init();
     nvs_handle system_updater;
@@ -97,6 +100,7 @@ int32_t system_update_shutdown(char* new_shutdown_msg)
         if (err == ESP_OK)
         {
             ESP_LOGI(TAG, "Write active success");
+            system_loader(instanceptr);           
             return ESP_OK;
         }
         else
