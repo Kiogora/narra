@@ -40,7 +40,7 @@ void displayTask(void *pvParameters)
 
 /*    char* new_text="***WELCOME TO HEAVEN***";
     system_update_startup(new_text);
-
+presentation_t
     char* active_text="***VIVO-ENERGY©µ***";    
     system_update_active(active_text);
 */
