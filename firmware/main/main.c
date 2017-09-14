@@ -24,8 +24,17 @@ void init_pin_interface(Matrix* matrixInstanceptr)
 
 void displayTask(void *pvParameters)
 {
-    Matrix matrix;    
-    System_variables system_variables;
+    Matrix matrix=
+    {
+        .current_message=NULL,
+    };
+
+    System_variables system_variables =
+    {
+        .startup_msg=NULL,
+        .shutdown_msg=NULL,
+        .active_msg=NULL,
+    };
 
     init_pin_interface(&matrix);
 
