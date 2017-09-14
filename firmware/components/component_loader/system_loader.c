@@ -46,17 +46,42 @@ static esp_err_t narra_load_startup_msg(System_variables* instanceptr)
         nvs_open("system", NVS_READONLY, &system_loader);
     }
     err = nvs_get_str(system_loader, "startup_msg", NULL, &string_size);
+
     if(err == ESP_OK)
     {
-        instanceptr->startup_msg = malloc(string_size);
-        err = nvs_get_str(system_loader, "startup_msg", instanceptr->startup_msg, &string_size);
-        ESP_LOGI(TAG, "Startup message is %s", instanceptr->startup_msg);
+        if(instanceptr->startup_msg == NULL)
+        {
+            /*This code branch is executed on boot*/
+            instanceptr->startup_msg = malloc(string_size);
+            err = nvs_get_str(system_loader, "startup_msg", instanceptr->startup_msg, &string_size);
+            ESP_LOGI(TAG, "Initial startup message is %s", instanceptr->startup_msg);
+        }
+        else
+        {
+            /*This is after the startup message has been allocated, probably after a write during runtime*/
+            free(instanceptr->startup_msg);
+            instanceptr->startup_msg = NULL;
+            instanceptr->startup_msg = malloc(string_size);
+            err = nvs_get_str(system_loader, "startup_msg", instanceptr->startup_msg, &string_size);
+            ESP_LOGI(TAG, "Current startup message is %s", instanceptr->startup_msg);          
+        }
     }
     else
     {
-        instanceptr->startup_msg = malloc(strlen("ERROR!")+1);
-        strcpy(instanceptr->startup_msg,"ERROR!");
-        ESP_LOGE(TAG, "Startup message is %s", instanceptr->startup_msg);
+        if(instanceptr->startup_msg == NULL)
+        {
+            instanceptr->startup_msg = malloc(strlen("STARTUP MESSAGE LOAD ERROR!")+1);
+            strcpy(instanceptr->startup_msg,"STARTUP MESSAGE LOAD ERROR!");
+            ESP_LOGE(TAG, "Initial startup message is %s", instanceptr->startup_msg);
+        }
+        else
+        {
+            free(instanceptr->startup_msg);
+            instanceptr->startup_msg = NULL;
+            instanceptr->startup_msg = malloc(strlen("STARTUP MESSAGE LOAD ERROR!")+1);
+            strcpy(instanceptr->startup_msg,"STARTUP MESSAGE LOAD ERROR!");
+            ESP_LOGE(TAG, "Current startup message is %s", instanceptr->startup_msg);    
+        }
     }
     nvs_close(system_loader);
     return err;   
@@ -86,17 +111,40 @@ static esp_err_t narra_load_shutdown_msg(System_variables* instanceptr)
         nvs_open("system", NVS_READONLY, &system_loader);
     }
     err = nvs_get_str(system_loader, "shutdown_msg", NULL, &string_size);
+
     if(err == ESP_OK)
     {
-        instanceptr->shutdown_msg = malloc(string_size);
-        err = nvs_get_str(system_loader, "shutdown_msg", instanceptr->shutdown_msg, &string_size);
-        ESP_LOGI(TAG, "Shutdown message is %s", instanceptr->shutdown_msg);
+        if(instanceptr->shutdown_msg == NULL)
+        {
+            instanceptr->shutdown_msg = malloc(string_size);
+            err = nvs_get_str(system_loader, "shutdown_msg", instanceptr->shutdown_msg, &string_size);
+            ESP_LOGI(TAG, "Initial shutdown message is %s", instanceptr->shutdown_msg);
+        }
+        else
+        {
+            free(instanceptr->shutdown_msg);
+            instanceptr->shutdown_msg == NULL;
+            instanceptr->shutdown_msg = malloc(string_size);
+            err = nvs_get_str(system_loader, "shutdown_msg", instanceptr->shutdown_msg, &string_size);
+            ESP_LOGI(TAG, "Current shutdown message is %s", instanceptr->shutdown_msg);
+        }
     }
     else
     {
-        instanceptr->shutdown_msg = malloc(strlen("ERROR!")+1);
-        strcpy(instanceptr->shutdown_msg,"ERROR!");
-        ESP_LOGE(TAG, "Shutdown message is %s", instanceptr->shutdown_msg);
+        if(instanceptr->shutdown_msg == NULL)
+        {
+            instanceptr->shutdown_msg = malloc(strlen("SHUTDOWN MESSAGE LOAD ERROR!")+1);
+            strcpy(instanceptr->shutdown_msg,"SHUTDOWN MESSAGE LOAD ERROR!");
+            ESP_LOGE(TAG, "Initial shutdown message is %s", instanceptr->shutdown_msg);
+        }
+        else
+        {
+            free(instanceptr->shutdown_msg);
+            instanceptr->shutdown_msg == NULL;
+            instanceptr->shutdown_msg = malloc(strlen("SHUTDOWN MESSAGE LOAD ERROR!")+1);
+            strcpy(instanceptr->shutdown_msg,"SHUTDOWN MESSAGE LOAD ERROR!");
+            ESP_LOGE(TAG, "Current shutdown message is %s", instanceptr->shutd
+        }
     }
     nvs_close(system_loader);
     return err; 
@@ -126,17 +174,40 @@ static esp_err_t narra_load_active_msg(System_variables* instanceptr)
         nvs_open("system", NVS_READONLY, &system_loader);
     }
     err = nvs_get_str(system_loader, "active_msg", NULL, &string_size);
+
     if(err == ESP_OK)
     {
-        instanceptr->active_msg = malloc(string_size);
-        err = nvs_get_str(system_loader, "active_msg", instanceptr->active_msg, &string_size);
-        ESP_LOGI(TAG, "Active message is %s\n", instanceptr->active_msg);
+        if(instanceptr->active_msg == NULL)
+        {
+            instanceptr->active_msg = malloc(string_size);
+            err = nvs_get_str(system_loader, "active_msg", instanceptr->active_msg, &string_size);
+            ESP_LOGI(TAG, "Initial active message is %s\n", instanceptr->active_msg);
+        }
+        else
+        {
+            free(instanceptr->active_msg);
+            instanceptr->active_msg == NULL;
+            instanceptr->active_msg = malloc(string_size);
+            err = nvs_get_str(system_loader, "active_msg", instanceptr->active_msg, &string_size);
+            ESP_LOGI(TAG, "Current active message is %s\n", instanceptr->active_msg);
+        }
     }
     else
     {
-        instanceptr->active_msg = malloc(strlen("ERROR!")+1);
-        strcpy(instanceptr->active_msg,"ERROR!");
-        ESP_LOGE(TAG, "Active message is %s\n", instanceptr->active_msg);
+        if(instanceptr->shutdown_msg == NULL)
+        {
+            instanceptr->active_msg = malloc(strlen("RUNTIME MESSAGE LOAD ERROR!")+1);
+            strcpy(instanceptr->active_msg,"RUNTIME MESSAGE LOAD ERROR!");
+            ESP_LOGE(TAG, "Initial active message is %s\n", instanceptr->active_msg);
+        }
+        else
+        {
+            free(instanceptr->active_msg);
+            instanceptr->active_msg == NULL; 
+            instanceptr->active_msg = malloc(strlen("RUNTIME MESSAGE LOAD ERROR!")+1);
+            strcpy(instanceptr->active_msg,"RUNTIME MESSAGE LOAD ERROR!");
+            ESP_LOGE(TAG, "Current active message is %s\n", instanceptr->active_msg);
+        }
     }
     nvs_close(system_loader);
     return err; 
