@@ -105,6 +105,7 @@ typedef struct
 {
     uint8_t* prepare_buf;
     int prepare_len;
+    uint16_t handle;
 } prepare_write_t;
 
 #endif /*__BLE_H_*/

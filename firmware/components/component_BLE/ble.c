@@ -14,6 +14,7 @@
 #include "esp_gattc_api.h"
 
 #include "ble.h"
+#include "utf8_decoder.h"
 
 #define GATTS_TABLE_TAG "GATTS_TABLE_DEMO"
 
@@ -39,7 +40,7 @@ uint16_t usage_handle_table[USAGE_IDX_NB];
 
 char *string =NULL;
 uint8_t state=0x01;
-uint16_t mtu_size=ESP_GATT_DEF_BLE_MTU_SIZE;
+
 
 /**********************************************ADVERTISING****************************************************/
 static uint8_t raw_adv_data[] = {
@@ -504,6 +505,7 @@ static void usage_profile_prepare_write_event_handler(esp_gatt_if_t gatts_if, pr
             {
                 prepare_write_env->prepare_buf = (uint8_t *)malloc(CHAR_VAL_LEN_MAX * sizeof(uint8_t));
                 prepare_write_env->prepare_len = 0;
+                prepare_write_env->handle = 0;
 
                 if (prepare_write_env->prepare_buf == NULL)
                 {
@@ -553,7 +555,7 @@ static void usage_profile_prepare_write_event_handler(esp_gatt_if_t gatts_if, pr
                    param->write.len);
 
             prepare_write_env->prepare_len += param->write.len;
-
+            prepare_write_env->handle =  param->write.handle;
         }
         else
         {
@@ -562,6 +564,7 @@ static void usage_profile_prepare_write_event_handler(esp_gatt_if_t gatts_if, pr
         }
     }
 }
+
 static void clear_write_buffer(prepare_write_t *prepare_write_env)
 {
     if (prepare_write_env->prepare_buf)
@@ -570,22 +573,23 @@ static void clear_write_buffer(prepare_write_t *prepare_write_env)
         prepare_write_env->prepare_buf = NULL;
     }
     prepare_write_env->prepare_len = 0;
+    prepare_write_env->handle = 0;
 } 
 
-static void usage_profile_exec_write_event_handler(esp_attr_value_t* attributeptr,prepare_write_t* prepare_write_env,
+static void usage_profile_exec_write_event_handler(prepare_write_t* prepare_write_env,
                                                    esp_ble_gatts_cb_param_t *param)
 {
 /*    
-    if (param->read.handle == usage_handle_table[USAGE_IDX_DEVICE_STATE_VAL])
+    if (param->write.handle == usage_handle_table[USAGE_IDX_DEVICE_STATE_VAL])
     {
         write_attribute_by_app(attribute, event, gatts_if, param);
     }
-    else if (param->read.handle == usage_handle_table[USAGE_IDX_DISPLAY_STRING_VAL])
+    else if (param->write.handle == usage_handle_table[USAGE_IDX_DISPLAY_STRING_VAL])
     {
         write_attribute_by_app(attribute, event, gatts_if, param);
     }
     else
-    { 
+    {
         ;
     }
 */    
@@ -619,7 +623,7 @@ static void usage_profile_event_handler(esp_gatts_cb_event_t event,
             usage_profile_prepare_write_event_handler(event, gatts_if, param);
       	 	break;
     	case ESP_GATTS_EXEC_WRITE_EVT:
-            usage_profile_exec_write_event_handler(/*attributeptr here*/, prepare_write_tracker, param);
+            usage_profile_exec_write_event_handler(prepare_write_tracker, param);
 		break;
     	case ESP_GATTS_MTU_EVT:
 		break;
