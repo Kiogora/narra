@@ -384,17 +384,17 @@ static void system_profile_event_handler(esp_gatts_cb_event_t event,
         	ESP_LOGI(GATTS_TABLE_TAG, "%s %d\n", __func__, __LINE__);
 
 		    esp_ble_gatts_create_attr_tab(system_gatt_db, gatts_if, SYSTEM_IDX_NB, SYSTEM_SERVICE_INSTANCE_ID);
-       	break;
+       	    break;
     	case ESP_GATTS_READ_EVT:
-       	 break;
+       	    break;
     	case ESP_GATTS_WRITE_EVT: 
       	 	break;
     	case ESP_GATTS_EXEC_WRITE_EVT:
-		break;
+		    break;
     	case ESP_GATTS_MTU_EVT:
-		break;
-   	 case ESP_GATTS_CONF_EVT:
-		break;
+		    break;
+   	    case ESP_GATTS_CONF_EVT:
+		    break;
     	case ESP_GATTS_UNREG_EVT:
         	break;
     	case ESP_GATTS_DELETE_EVT:
@@ -406,33 +406,38 @@ static void system_profile_event_handler(esp_gatts_cb_event_t event,
     	case ESP_GATTS_CONNECT_EVT:
         	break;
     	case ESP_GATTS_DISCONNECT_EVT:
-        esp_ble_gap_start_advertising(&bitsoko_advert_params);
-		break;
+            esp_ble_gap_start_advertising(&bitsoko_advert_params);
+		    break;
     	case ESP_GATTS_OPEN_EVT:
-		break;
+		    break;
     	case ESP_GATTS_CANCEL_OPEN_EVT:
-		break;
+		    break;
     	case ESP_GATTS_CLOSE_EVT:
-		break;
+		    break;
     	case ESP_GATTS_LISTEN_EVT:
-		break;
+		    break;
     	case ESP_GATTS_CONGEST_EVT:
-		break;
-    case ESP_GATTS_CREAT_ATTR_TAB_EVT:{
-        ESP_LOGI(GATTS_TABLE_TAG, "The number handle =%x\n",param->add_attr_tab.num_handle);
-        if (param->add_attr_tab.status != ESP_GATT_OK){
-            ESP_LOGE(GATTS_TABLE_TAG, "Create attribute table failed, error code=0x%x", param->add_attr_tab.status);
-        }
-        else if (param->add_attr_tab.num_handle != SYSTEM_IDX_NB){
-            ESP_LOGE(GATTS_TABLE_TAG, "Create attribute table abnormally, num_handle (%d) \
-                    doesn't equal to SYSTEM_IDX_NB(%d)", param->add_attr_tab.num_handle, SYSTEM_IDX_NB);
-        }
-        else {
-            ESP_LOGE(GATTS_TABLE_TAG, "Reached create sys attribute tab");
-            memcpy(system_handle_table, param->add_attr_tab.handles, sizeof(system_handle_table));
-            esp_ble_gatts_start_service(system_handle_table[SYSTEM_IDX_SYSTEM_INFO_SERVICE]);
-        }
-        break;
+		    break;
+        case ESP_GATTS_CREAT_ATTR_TAB_EVT:
+        {
+            ESP_LOGI(GATTS_TABLE_TAG, "The number handle =%x\n",param->add_attr_tab.num_handle);
+            if (param->add_attr_tab.status != ESP_GATT_OK)
+            {
+                ESP_LOGE(GATTS_TABLE_TAG, "Create attribute table failed, error code=0x%x", 
+                         param->add_attr_tab.status);
+            }
+            else if (param->add_attr_tab.num_handle != SYSTEM_IDX_NB)
+            {
+                ESP_LOGE(GATTS_TABLE_TAG, "Create attribute table abnormally, num_handle (%d) \
+                         doesn't equal to SYSTEM_IDX_NB(%d)", param->add_attr_tab.num_handle, SYSTEM_IDX_NB);
+            }
+            else
+            {
+                ESP_LOGE(GATTS_TABLE_TAG, "Reached create sys attribute tab");
+                memcpy(system_handle_table, param->add_attr_tab.handles, sizeof(system_handle_table));
+                esp_ble_gatts_start_service(system_handle_table[SYSTEM_IDX_SYSTEM_INFO_SERVICE]);
+            }
+            break;
          }
 
     default:
@@ -574,37 +579,85 @@ static void clear_write_buffer(prepare_write_t *prepare_write_env)
     }
     prepare_write_env->prepare_len = 0;
     prepare_write_env->handle = 0;
-} 
+}
+
+static void boolean_check_then_write(prepare_write_t* prepare_write_env, esp_ble_gatts_cb_param_t *param)
+{
+
+}
+
+static void bytestring_check_then_write(prepare_write_t* prepare_write_env, esp_ble_gatts_cb_param_t *param)
+{
+    /* sanity check variable that holds the (in)validity of the byte buffer as a UTF8 string*/
+    uint8_t invalid=0;
+    size_t bytestring_length;
+
+    if(prepare_write_env->prepare_buf[(prepare_write_env->prepare_len)-1] != '\0')
+    {
+        /*Byte array lacks NUL string terminator*/
+        nul_terminated_buffer=(uint8_t*)malloc((prepare_write_env->prepare_len)+1);
+        memcpy(null_terminated_buffer, prepare_write_env->prepare_buf, prepare_write_env->prepare_len);
+        nul_terminated_buffer[prepare_write_env->prepare_len]='\0'
+        invalid = check_count_valid_UTF8( (char*)nul_terminated_buffer, &bytestring_length);
+        if(!invalid)
+        {
+            /*commit the utf8 string write*/
+            /*In the case of multiple system messages, check handle against the GATT attribute handle table*/
+        }
+        else
+        {
+            ;/*NOP*/
+        }           
+    }
+    else
+    {
+        /*Byte array contains NUL string terminator*/
+        invalid = check_count_valid_UTF8(prepare_write_env->prepare_buf, &bytestring_length);
+        if(!invalid)
+        {
+            /*commit the utf8 string write*/
+            /*In the case of multiple system messages, check handle against the GATT attribute handle table*/
+        }
+        else
+        {
+            ;/*NOP*/
+        }
+    }
+}
 
 static void usage_profile_exec_write_event_handler(prepare_write_t* prepare_write_env,
                                                    esp_ble_gatts_cb_param_t *param)
 {
-/*    
-    if (param->write.handle == usage_handle_table[USAGE_IDX_DEVICE_STATE_VAL])
+    
+    if (prepare_write_env->handle == usage_handle_table[USAGE_IDX_DEVICE_STATE_VAL])
     {
-        write_attribute_by_app(attribute, event, gatts_if, param);
+        if (param->exec_write.exec_write_flag == ESP_GATT_PREP_WRITE_EXEC)
+        {
+
+        }
+        else
+        {
+            ESP_LOGI(GATTS_TAG,"ESP_GATT_PREP_WRITE_CANCEL");
+        }
+        clear_write_buffer(prepare_write_env);
     }
-    else if (param->write.handle == usage_handle_table[USAGE_IDX_DISPLAY_STRING_VAL])
+    else if (prepare_write_env->handle == usage_handle_table[USAGE_IDX_DISPLAY_STRING_VAL])
     {
-        write_attribute_by_app(attribute, event, gatts_if, param);
+        if (param->exec_write.exec_write_flag == ESP_GATT_PREP_WRITE_EXEC)
+        {
+            bytestring_check_then_write(prepare_write_env, param);
+        }
+        else
+        {
+            ESP_LOGI(GATTS_TAG,"ESP_GATT_PREP_WRITE_CANCEL");
+        }
+        clear_write_buffer(prepare_write_env);
     }
     else
     {
         ;
     }
-*/    
-    if (param->exec_write.exec_write_flag == ESP_GATT_PREP_WRITE_EXEC)
-    {
-        //Zero out the memory block
-        memset(prepare_write_env->&prepare_buf, 0, attributeptr->attr_len);
-        memcpy(attributeptr->attr_value, prepare_write_env->&prepare_buff, prepare_write_env->prepare_len)
-        attribute.attr_len = prepare_write_env->prepare_len;
-    }
-    else
-    {
-        ESP_LOGI(GATTS_TAG,"ESP_GATT_PREP_WRITE_CANCEL");
-    }
-    clear_write_buffer(prepare_write_env);
+    
 }
 
 static void usage_profile_event_handler(esp_gatts_cb_event_t event, 
@@ -615,20 +668,20 @@ static void usage_profile_event_handler(esp_gatts_cb_event_t event,
     	case ESP_GATTS_REG_EVT:
         	ESP_LOGI(GATTS_TABLE_TAG, "%s %d\n", __func__, __LINE__);
 		    esp_ble_gatts_create_attr_tab(usage_gatt_db, gatts_if, USAGE_IDX_NB, USAGE_SERVICE_INSTANCE_ID);
-       	break;
+       	    break;
     	case ESP_GATTS_READ_EVT:
             usage_profile_read_event_handler(event, gatts_if, param);
-       	 break;
+       	    break;
     	case ESP_GATTS_WRITE_EVT:
             usage_profile_prepare_write_event_handler(event, gatts_if, param);
       	 	break;
     	case ESP_GATTS_EXEC_WRITE_EVT:
             usage_profile_exec_write_event_handler(prepare_write_tracker, param);
-		break;
+		    break;
     	case ESP_GATTS_MTU_EVT:
-		break;
+		    break;
    	 case ESP_GATTS_CONF_EVT:
-		break;
+		    break;
     	case ESP_GATTS_UNREG_EVT:
         	break;
     	case ESP_GATTS_DELETE_EVT:
@@ -640,18 +693,19 @@ static void usage_profile_event_handler(esp_gatts_cb_event_t event,
     	case ESP_GATTS_CONNECT_EVT:
         	break;
     	case ESP_GATTS_DISCONNECT_EVT:
-		break;
+		    break;
     	case ESP_GATTS_OPEN_EVT:
-		break;
+		    break;
     	case ESP_GATTS_CANCEL_OPEN_EVT:
-		break;
+		    break;
     	case ESP_GATTS_CLOSE_EVT:
-		break;
+		    break;
     	case ESP_GATTS_LISTEN_EVT:
-		break;
+		    break;
     	case ESP_GATTS_CONGEST_EVT:
-		break;
-    case ESP_GATTS_CREAT_ATTR_TAB_EVT:{
+		    break;
+    case ESP_GATTS_CREAT_ATTR_TAB_EVT:
+    {
         ESP_LOGI(GATTS_TABLE_TAG, "The number handle =%x\n",param->add_attr_tab.num_handle);
         if (param->add_attr_tab.status != ESP_GATT_OK)
         {
@@ -747,7 +801,8 @@ void bleTask(void *pvParameters)
         return;
     }
     ret = esp_bluedroid_enable();
-    if (ret) {
+    if (ret) 
+    {
         ESP_LOGE(GATTS_TABLE_TAG, "%s enable bluetooth failed\n", __func__);
         return;
     }
