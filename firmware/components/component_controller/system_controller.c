@@ -74,36 +74,46 @@ static char* add_txt_spacer(Matrix* matrixInstanceptr, char* spacer)
 /*setup matrix*/
 esp_err_t matrix_init(Matrix* matrixInstanceptr, System_variables* system_variables, narra_speed_enum _speed)
 {
-    system_loader(system_variables);
+    int32_t loader_return_code = system_loader(system_variables);
 
-    /*Send event group to bluetooth task to start*/
-
-    matrixInstanceptr->unit_per_matrix=0x08;
-    matrixInstanceptr->fontwidth=0x08;
-    matrixInstanceptr->num_rows=0x08;
-    matrixInstanceptr->num_cols=0x08;
-    if(IS_SPEED_VALID(_speed))
+    if (loader_return_code == NVS_INIT_ERROR)
     {
-        matrixInstanceptr->speed=_speed;
+        /*Non-recoverable loader error*/
+        return ESP_FAIL;
     }
     else
     {
-        ESP_LOGE(TAG,"Invalid system speed passed to init function");
-        return ESP_FAIL;
+
+        if(IS_SPEED_VALID(_speed))
+        {
+            matrixInstanceptr->speed=_speed;
+        }
+        else
+        {
+            ESP_LOGE(TAG,"Invalid system speed passed to init function");
+            return ESP_FAIL;
+        }
+
+        /*Send event group to bluetooth task to start*/
+
+        matrixInstanceptr->unit_per_matrix=0x08;
+        matrixInstanceptr->fontwidth=0x08;
+        matrixInstanceptr->num_rows=0x08;
+        matrixInstanceptr->num_cols=0x08;
+        
+        matrixInstanceptr->system_state=startup;
+        matrixInstanceptr->current_message=NULL;
+
+        err = init_pin_interface(matrixInstanceptr);
+
+        if(err == ESP_OK)
+        {    
+            matrix_display(matrixInstanceptr, system_variables, scroll);
+            matrix_activate(matrixInstanceptr);
+        }
+
+        return err;
     }
-    
-    matrixInstanceptr->system_state=startup;
-    matrixInstanceptr->current_message=NULL;
-
-    esp_err_t err=init_pin_interface(matrixInstanceptr);
-
-    if(err==ESP_OK)
-    {    
-        matrix_display(matrixInstanceptr, system_variables, scroll);
-        matrix_activate(matrixInstanceptr);
-    }
-
-    return err;
 }
 
 void matrix_activate(Matrix* matrixInstanceptr)
