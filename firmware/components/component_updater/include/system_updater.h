@@ -16,8 +16,6 @@ int32_t system_update_active(char* new_active_msg);
 int32_t system_update_shutdown(char* new_shutdown_msg);
 #endif
 
-void system_update_state(Matrix* matrixInstanceptr, System_variables* system_variables, uint8_t new_state);
-
 #endif /*__SYSTEM_UPDATER_H_*/
 
 //TODO: Section the update function internals above to change based on the above preprocessor macros. Maybe edit the bootloader?

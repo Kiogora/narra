@@ -26,6 +26,9 @@ static void usage_profile_exec_write_event_handler(esp_attr_value_t attribute, p
 
 static void clear_write_buffer(prepare_write_t *prepare_write_env);
 
+
+static void system_update_state(Matrix* matrixInstanceptr, System_variables* system_variables, uint8_t new_state);
+
 ///System Attributes State Machine
 enum
 {

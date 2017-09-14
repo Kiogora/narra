@@ -33,7 +33,6 @@ int32_t system_update_startup(System_variables* instanceptr, char* new_startup_m
         if(err == ESP_OK)
         {
             ESP_LOGI(TAG, "Write startup success");
-            system_loader(instanceptr);
             return ESP_OK;
         }
 
@@ -67,7 +66,6 @@ int32_t system_update_active(System_variables* instanceptr, char* new_active_msg
         if(err == ESP_OK)
         {
             ESP_LOGI(TAG, "Write active success");
-            system_loader(instanceptr);
             return ESP_OK;
         }
         else
@@ -99,8 +97,7 @@ int32_t system_update_shutdown(System_variables* instanceptr, char* new_shutdown
         /*Write to the active section of the nvs with the new message*/
         if (err == ESP_OK)
         {
-            ESP_LOGI(TAG, "Write active success");
-            system_loader(instanceptr);           
+            ESP_LOGI(TAG, "Write active success");          
             return ESP_OK;
         }
         else
@@ -117,15 +114,3 @@ int32_t system_update_shutdown(System_variables* instanceptr, char* new_shutdown
     }
 }
 #endif
-
-void system_update_state(Matrix* matrixInstanceptr, System_variables* system_variables, uint8_t new_state)
-{
-    if(new_state == 0)
-    {
-        matrix_deactivate(matrixInstanceptr, system_variables);
-    }
-    else
-    {
-       matrix_activate(matrixInstanceptr); 
-    }
-}
