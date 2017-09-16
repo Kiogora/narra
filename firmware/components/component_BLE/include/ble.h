@@ -1,66 +1,34 @@
 #ifndef __BLE_H_
 #define __BLE_H_
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <stdint.h>
-#include <string.h>
 
-static void system_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, 
-                                         esp_ble_gatts_cb_param_t *param);
+#define GATTS_TABLE_TAG "GATTS_TABLE_DEMO"
+/*Number of profiles*/
+#define NARRA_PROFILE_NUM 			    0x02
 
-static void usage_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, 
-                                        esp_ble_gatts_cb_param_t *param);
+/*Application ID*/
+#define SYSTEM_APP_ID			        0x00
+#define USAGE_APP_ID                    0x01
+/*System profile ID*/
+#define SYSTEM_PROFILE_APP_IDX 			0x00
+#define USAGE_PROFILE_APP_IDX 			0x01
+/*service instance ID*/
+#define SYSTEM_SERVICE_INSTANCE_ID	    0x00
+#define USAGE_SERVICE_INSTANCE_ID	    0x01
+/*GATT NAME*/
+#define ADVERTISED_DEVICE_NAME         "Narra_01"
+#define DEV_ID_LEN                      8
 
-static void read_attribute_by_app(esp_attr_value_t attribute, esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, 
-                                  esp_ble_gatts_cb_param_t *param);
+#define CHAR_VAL_LEN_MAX		0xFF
+#define CHAR_UNINITIALISED_LEN  0x00
 
-static void usage_profile_read_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, 
-                                             esp_ble_gatts_cb_param_t *param);
-
-static void usage_profile_prepare_write_event_handler(esp_gatt_if_t gatts_if, prepare_write_t *prepare_write_state,
-                                                      esp_ble_gatts_cb_param_t *param);
-
-static void usage_profile_exec_write_event_handler(esp_attr_value_t attribute, prepare_write_t *prepare_write_env,
-                                                   esp_ble_gatts_cb_param_t *param);
-
-static void clear_write_buffer(prepare_write_t *prepare_write_env);
-
-
-static void system_update_state(Matrix* matrixInstanceptr, System_variables* system_variables, uint8_t new_state);
-
-///System Attributes State Machine
-enum
+typedef struct
 {
-    SYSTEM_IDX_SYSTEM_INFO_SERVICE=0,
-
-    SYSTEM_IDX_DEV_ID_CHAR,
-    SYSTEM_IDX_DEV_ID_VAL,
-
-    SYSTEM_IDX_FW_VER_STRING_CHAR,
-    SYSTEM_IDX_FW_VER_STRING_VAL,
-
-    SYSTEM_IDX_MAN_NAME_CHAR,
-    SYSTEM_IDX_MAN_NAME_VAL,
-
-    SYSTEM_IDX_NB,
-};
-
-///Usage Attributes State Machine
-enum
-{
-    USAGE_IDX_USAGE_SERVICE=0,
-
-    USAGE_IDX_DISPLAY_STRING_CHAR,
-    USAGE_IDX_DISPLAY_STRING_VAL,
-    USAGE_IDX_DISPLAY_STRING_CFG_1,
-
-    USAGE_IDX_DEVICE_STATE_CHAR,
-    USAGE_IDX_DEVICE_STATE_VAL,
-    USAGE_IDX_DEVICE_STATE_CFG_1,
-
-    USAGE_IDX_NB,
-};
+    uint8_t* prepare_buf;
+    int prepare_len;
+    uint16_t handle;
+} prepare_write_t;
 
 //https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.descriptor.gatt.characteristic_presentation_format.xml
 
@@ -104,11 +72,46 @@ typedef struct
     uint16_t _description;
 } __attribute__ ((packed)) presentation_t;
 
-typedef struct
+///System Attributes State Machine
+enum
 {
-    uint8_t* prepare_buf;
-    int prepare_len;
-    uint16_t handle;
-} prepare_write_t;
+    SYSTEM_IDX_SYSTEM_INFO_SERVICE=0,
+
+    SYSTEM_IDX_DEV_ID_CHAR,
+    SYSTEM_IDX_DEV_ID_VAL,
+
+    SYSTEM_IDX_FW_VER_STRING_CHAR,
+    SYSTEM_IDX_FW_VER_STRING_VAL,
+
+    SYSTEM_IDX_MAN_NAME_CHAR,
+    SYSTEM_IDX_MAN_NAME_VAL,
+
+    SYSTEM_IDX_NB,
+};
+
+///Usage Attributes State Machine
+enum
+{
+    USAGE_IDX_USAGE_SERVICE=0,
+
+    USAGE_IDX_DISPLAY_STRING_CHAR,
+    USAGE_IDX_DISPLAY_STRING_VAL,
+    USAGE_IDX_DISPLAY_STRING_CFG_1,
+
+    USAGE_IDX_DEVICE_STATE_CHAR,
+    USAGE_IDX_DEVICE_STATE_VAL,
+    USAGE_IDX_DEVICE_STATE_CFG_1,
+
+    USAGE_IDX_NB,
+};
+
+esp_attr_value_t* get_usage_state_attribute(void);
+
+esp_attr_value_t* get_usage_string_attribute(void);
+
+void gatts_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, 
+									esp_ble_gatts_cb_param_t *param);
+
+void gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *param);
 
 #endif /*__BLE_H_*/

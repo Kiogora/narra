@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/event_groups.h"
@@ -11,36 +14,15 @@
 #include "esp_gatts_api.h"
 #include "esp_bt_defs.h"
 #include "esp_bt_main.h"
+#include "esp_bt_main.h"
 #include "esp_gattc_api.h"
 
 #include "ble.h"
 #include "utf8_decoder.h"
 
-#define GATTS_TABLE_TAG "GATTS_TABLE_DEMO"
 
-/*Number of profiles*/
-#define NARRA_PROFILE_NUM 			    2
-
-/*Application ID*/
-#define SYSTEM_APP_ID			        0x00
-#define USAGE_APP_ID                    0x01
-/*System profile ID*/
-#define SYSTEM_PROFILE_APP_IDX 			0
-#define USAGE_PROFILE_APP_IDX 			1
-/*service instance ID*/
-#define SYSTEM_SERVICE_INSTANCE_ID	    0
-#define USAGE_SERVICE_INSTANCE_ID	    1
-/*GATT NAME*/
-#define ADVERTISED_DEVICE_NAME         "Narra_01"
-#define DEV_ID_LEN                      8
-
-#define CHAR_VAL_LEN_MAX		0xFF
 uint16_t system_handle_table[SYSTEM_IDX_NB];
 uint16_t usage_handle_table[USAGE_IDX_NB];
-
-char *string =NULL;
-uint8_t state=0x01;
-
 
 /**********************************************ADVERTISING****************************************************/
 static uint8_t raw_adv_data[] = {
@@ -116,7 +98,63 @@ static esp_ble_adv_params_t bitsoko_advert_params =
     .adv_filter_policy = ADV_FILTER_ALLOW_SCAN_ANY_CON_ANY,
 };
 
-static void gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *param)
+/************** GATT ATTRIBUTES ***************/
+
+/*esp_attr_value_t usage_state_attribute = 
+{
+    .attr_max_len= CHAR_VAL_LEN_MAX,
+    .attr_value  = (uint8_t *)&state,
+    .attr_len    = sizeof(usage_state_attribute.attr_value),
+};
+*/
+esp_attr_value_t usage_state_attribute = 
+{
+    .attr_max_len= CHAR_VAL_LEN_MAX,
+    .attr_value  = NULL,
+    .attr_len    = CHAR_UNINITIALISED_LEN,
+};
+/*
+esp_attr_value_t usage_string_attribute = 
+{
+    .attr_max_len= CHAR_VAL_LEN_MAX,
+    .attr_value  = (uint8_t *)string,
+    .attr_len    = strlen( (char *)usage_string_attribute.attr_value),
+};
+*/
+esp_attr_value_t usage_string_attribute =
+{
+    .attr_max_len= CHAR_VAL_LEN_MAX,
+    .attr_value  = NULL,
+    .attr_len    = CHAR_UNINITIALISED_LEN,
+};
+
+static void system_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, 
+                                         esp_ble_gatts_cb_param_t *param);
+
+static void usage_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, 
+                                        esp_ble_gatts_cb_param_t *param);
+
+static void usage_profile_read_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if,
+                                             esp_ble_gatts_cb_param_t *param);
+
+static void read_attribute_by_app(esp_attr_value_t attribute, esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, 
+                                  esp_ble_gatts_cb_param_t *param);
+
+static void usage_profile_prepare_write_event_handler(prepare_write_t *prepare_write_env, esp_gatt_if_t gatts_if, 
+                                                      esp_ble_gatts_cb_param_t *param);
+
+static void clear_write_buffer(prepare_write_t *prepare_write_env);
+
+static void boolean_check_then_write(esp_attr_value_t attribute, prepare_write_t* prepare_write_env, 
+                                     esp_ble_gatts_cb_param_t *param);
+
+static void bytestring_check_then_write(esp_attr_value_t attribute, prepare_write_t* prepare_write_env, 
+                                        esp_ble_gatts_cb_param_t *param);
+
+static void usage_profile_exec_write_event_handler(prepare_write_t* prepare_write_env, 
+                                                   esp_ble_gatts_cb_param_t* param);
+
+void gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *param)
 {
     ESP_LOGE(GATTS_TABLE_TAG, "GAP_EVT, event %d\n", event);
 
@@ -169,23 +207,16 @@ static void gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param
 /*The form of the datatype defined below is declared in ble.h*/
 static prepare_write_t prepare_write_tracker;
 
-/************** GATT ATTRIBUTES ***************/
-
-esp_attr_value_t usage_state_attribute = 
+esp_attr_value_t* get_usage_state_attribute(void)
 {
-    .attr_max_len= CHAR_VAL_LEN_MAX,
-    .attr_value  = (uint8_t *)&state,
-    .attr_len    = sizeof(usage_state_attribute.attr_value /*state*/),
-};
+    return &usage_state_attribute;
+}
 
-esp_attr_value_t usage_string_attribute = 
+esp_attr_value_t* get_usage_string_attribute(void)
 {
-    .attr_max_len= CHAR_VAL_LEN_MAX,
-    .attr_value  = (uint8_t *)string,
-    .attr_len    = strlen( (char *)usage_string_attribute.attr_value /*string*/ ),
-};
+    return &usage_string_attribute;
+}
 
-/***********************************************/
 struct gatts_profile_inst 
 {
     esp_gatts_cb_t gatts_cb;
@@ -455,16 +486,16 @@ static void system_profile_event_handler(esp_gatts_cb_event_t event,
 }
 
 //Remember The Max MTU negotiable ESP_GATT_MAX_MTU_SIZE(517) < ESP_GATT_MAX_ATTR_LEN(600)
-static void usage_profile_read_event_handler(esp_attr_value_t attribute, esp_gatts_cb_event_t event, 
-                                             esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param)
+static void usage_profile_read_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if,
+                                             esp_ble_gatts_cb_param_t *param)
 {
     if (param->read.handle == usage_handle_table[USAGE_IDX_DEVICE_STATE_VAL])
     {
-        read_attribute_by_app(attribute, event, gatts_if, param);
+        read_attribute_by_app(usage_state_attribute, event, gatts_if, param);
     }
     else if (param->read.handle == usage_handle_table[USAGE_IDX_DISPLAY_STRING_VAL])
     {
-        read_attribute_by_app(attribute, event, gatts_if, param);
+        read_attribute_by_app(usage_string_attribute, event, gatts_if, param);
     }
     else
     { 
@@ -475,6 +506,9 @@ static void usage_profile_read_event_handler(esp_attr_value_t attribute, esp_gat
 static void read_attribute_by_app(esp_attr_value_t attribute, esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, 
                                   esp_ble_gatts_cb_param_t *param)
 {
+    /*Do not get the length of string pointed to at global level, perform at local level at each read event.*/
+    attribute.attr_len = strlen((char*)attribute.attr_value);
+    
     esp_gatt_status_t status = ESP_GATT_OK;
 
     if(attribute.attr_len > attribute.attr_max_len)
@@ -507,7 +541,7 @@ static void read_attribute_by_app(esp_attr_value_t attribute, esp_gatts_cb_event
     }
 }
 
-static void usage_profile_prepare_write_event_handler(esp_gatt_if_t gatts_if, prepare_write_t *prepare_write_env,
+static void usage_profile_prepare_write_event_handler(prepare_write_t *prepare_write_env, esp_gatt_if_t gatts_if, 
                                                       esp_ble_gatts_cb_param_t *param)
 {
     esp_gatt_status_t status = ESP_GATT_OK;
@@ -592,7 +626,7 @@ static void clear_write_buffer(prepare_write_t *prepare_write_env)
 
 //TODO: Read from the attribute that points to the respective matrix, sys_variable structure members.
 
-static void system_update_state(Matrix* matrixInstanceptr, System_variables* system_variables, uint8_t new_state)
+/*static void system_update_state(Matrix* matrixInstanceptr, System_variables* system_variables, uint8_t new_state)
 {
     if(new_state == 0)
     {
@@ -603,35 +637,27 @@ static void system_update_state(Matrix* matrixInstanceptr, System_variables* sys
         matrix_activate(matrixInstanceptr); 
     }
 }
+*/
 
-static void boolean_check_then_write(Matrix* matrixInstanceptr, System_variables* system_variables,
-                                     prepare_write_t* prepare_write_env, esp_ble_gatts_cb_param_t *param)
+static void boolean_check_then_write(esp_attr_value_t attribute, prepare_write_t* prepare_write_env, 
+                                     esp_ble_gatts_cb_param_t *param)
 {
     /*Check buffer length, should be a byte long for boolean type*/
     if(prepare_write_env->prepare_len != sizeof(uint8_t))
     {
+        ESP_LOGI(GATTS_TABLE_TAG, "INVALID STATE VALUE. VALUE NOT WRITTEN");
         return;
     }
     else
     {
-        /*buffer length ok, now check value*/
-        if(prepare_write_env->prepare_buf[(prepare_write_env->prepare_len)-1] == 0x00 ||
-           prepare_write_env->prepare_buf[(prepare_write_env->prepare_len)-1] == 0x01)
-        {
-            /*commit the boolean string write*/
-            /*In the case of multiple boolean values, check handle against the GATT attribute handle table*/
-            system_update_state(Matrix* matrixInstanceptr, System_variables* system_variables, 
-                                prepare_write_env->prepare_buf[prepare_write_env->prepare_len)-1]);
-        }
-        else
-        {
-            return;
-        }
+        /*commit the boolean string write*/
+        /*In the case of multiple boolean values, check handle against the GATT attribute handle table*/
+        ESP_LOGI(GATTS_TABLE_TAG, "VALID STATE VALUE. VALUE WRITTEN :D");  
     }
 }
 
-static void bytestring_check_then_write(Matrix* matrixInstanceptr, System_variables* system_variables,
-                                        prepare_write_t* prepare_write_env, esp_ble_gatts_cb_param_t *param)
+static void bytestring_check_then_write(esp_attr_value_t attribute, prepare_write_t* prepare_write_env, 
+                                        esp_ble_gatts_cb_param_t *param)
 {
     /* sanity check variable that holds the (in)validity of the byte buffer as a UTF8 string*/
     uint8_t invalid=0;
@@ -640,49 +666,54 @@ static void bytestring_check_then_write(Matrix* matrixInstanceptr, System_variab
     if(prepare_write_env->prepare_buf[(prepare_write_env->prepare_len)-1] != '\0')
     {
         /*Byte array lacks NUL string terminator*/
-        nul_terminated_buffer=(uint8_t*)malloc((prepare_write_env->prepare_len)+1);
-        memcpy(null_terminated_buffer, prepare_write_env->prepare_buf, prepare_write_env->prepare_len);
-        nul_terminated_buffer[prepare_write_env->prepare_len]='\0'
+        uint8_t* nul_terminated_buffer=(uint8_t*)malloc((prepare_write_env->prepare_len)+1);
+        memcpy(nul_terminated_buffer, prepare_write_env->prepare_buf, prepare_write_env->prepare_len);
+        nul_terminated_buffer[prepare_write_env->prepare_len]='\0';
         invalid = check_count_valid_UTF8( (char*)nul_terminated_buffer, &bytestring_length);
         if(!invalid)
         {
             /*commit the utf8 string write*/
             /*In the case of multiple system messages, check handle against the GATT attribute handle table*/
+            ESP_LOGI(GATTS_TABLE_TAG, "NO NULL, THEN WRITE STRING :D");
         }
         else
         {
+            ESP_LOGI(GATTS_TABLE_TAG, "NO NULL, INVALID STRING AFTER NUL CHAR ADDITION");
             return;
-        }           
+        }
+        free(nul_terminated_buffer);
     }
     else
     {
         /*Byte array contains NUL string terminator*/
-        invalid = check_count_valid_UTF8(prepare_write_env->prepare_buf, &bytestring_length);
+        invalid = check_count_valid_UTF8((char*)prepare_write_env->prepare_buf, &bytestring_length);
         if(!invalid)
         {
             /*commit the utf8 string write*/
             /*In the case of multiple system messages, check handle against the GATT attribute handle table*/
+            ESP_LOGI(GATTS_TABLE_TAG, "YES NULL, THEN WRITE STRING :D");
         }
         else
         {
+            ESP_LOGI(GATTS_TABLE_TAG, "YES NULL, INVALID STRING AFTER NUL CHAR ADDITION");
             return;
         }
     }
 }
 
-static void usage_profile_exec_write_event_handler(Matrix* matrixInstanceptr, System_variables* system_variables,
-                                                   prepare_write_t* prepare_write_env, esp_ble_gatts_cb_param_t* param)
+static void usage_profile_exec_write_event_handler(prepare_write_t* prepare_write_env, 
+                                                   esp_ble_gatts_cb_param_t* param)
 {
     
     if (prepare_write_env->handle == usage_handle_table[USAGE_IDX_DEVICE_STATE_VAL])
     {
         if (param->exec_write.exec_write_flag == ESP_GATT_PREP_WRITE_EXEC)
         {
-            boolean_check_then_write(matrixInstanceptr, system_variables, prepare_write_env, param);
+            boolean_check_then_write(usage_state_attribute, prepare_write_env, param);
         }
         else
         {
-            ESP_LOGI(GATTS_TAG,"ESP_GATT_PREP_WRITE_CANCEL");
+            ESP_LOGI(GATTS_TABLE_TAG,"ESP_GATT_PREP_WRITE_CANCEL");
         }
         clear_write_buffer(prepare_write_env);
     }
@@ -690,11 +721,11 @@ static void usage_profile_exec_write_event_handler(Matrix* matrixInstanceptr, Sy
     {
         if (param->exec_write.exec_write_flag == ESP_GATT_PREP_WRITE_EXEC)
         {
-            bytestring_check_then_write(matrixInstanceptr, system_variables, prepare_write_env, param);
+            bytestring_check_then_write(usage_string_attribute, prepare_write_env, param);
         }
         else
         {
-            ESP_LOGI(GATTS_TAG,"ESP_GATT_PREP_WRITE_CANCEL");
+            ESP_LOGI(GATTS_TABLE_TAG,"ESP_GATT_PREP_WRITE_CANCEL");
         }
         clear_write_buffer(prepare_write_env);
     }
@@ -718,10 +749,10 @@ static void usage_profile_event_handler(esp_gatts_cb_event_t event,
             usage_profile_read_event_handler(event, gatts_if, param);
        	    break;
     	case ESP_GATTS_WRITE_EVT:
-            usage_profile_prepare_write_event_handler(gatts_if, prepare_write_tracker, param);
+            usage_profile_prepare_write_event_handler(&prepare_write_tracker, gatts_if, param);
       	 	break;
     	case ESP_GATTS_EXEC_WRITE_EVT:
-            usage_profile_exec_write_event_handler(prepare_write_tracker, param);
+            usage_profile_exec_write_event_handler(&prepare_write_tracker, param);
 		    break;
     	case ESP_GATTS_MTU_EVT:
 		    break;
@@ -775,7 +806,7 @@ static void usage_profile_event_handler(esp_gatts_cb_event_t event,
     }
 }
 
-static void gatts_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, 
+void gatts_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, 
 									esp_ble_gatts_cb_param_t *param)
 {
     ESP_LOGI(GATTS_TABLE_TAG, "EVT %d, gatts if %d\n", event, gatts_if);

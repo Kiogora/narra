@@ -104,7 +104,7 @@ esp_err_t matrix_init(Matrix* matrixInstanceptr, System_variables* system_variab
         matrixInstanceptr->system_state=startup;
         matrixInstanceptr->current_message=NULL;
 
-        err = init_pin_interface(matrixInstanceptr);
+        esp_err_t err = init_pin_interface(matrixInstanceptr);
 
         if(err == ESP_OK)
         {    

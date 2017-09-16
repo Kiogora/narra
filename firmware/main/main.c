@@ -1,21 +1,38 @@
-
 /*ESP-IDF libs*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/gpio.h"
+#include "freertos/task.h"
+#include "freertos/event_groups.h"
+#include "esp_system.h"
+#include "esp_log.h"
+#include "nvs_flash.h"
+#include "bt.h"
+#include "bta_api.h"
+
+#include "esp_gap_ble_api.h"
+#include "esp_gatts_api.h"
+#include "esp_bt_defs.h"
+#include "esp_bt_main.h"
+#include "esp_bt_main.h"
+#include "esp_gattc_api.h"
 
 /*Project libs*/
-#include "narra_parameters.h"
- 
 #include "ble.h"
+#include "narra_parameters.h"
 #include "system_loader.h"
 #include "system_controller.h"
 #include "system_updater.h"
 
+static const char* BLE_TASK_TAG = "BLE_task";
+
 typedef struct
 {
-    Matrix* matrixinstanceptr;
-    System_variables* system_variables;
+    Matrix* matrix_instance_ptr;
+    System_variables* system_variables_ptr;
 } Ble_task_parameters;
 
 /*The below structures declared outside stack. Ensures validity between task frames and context switches*/
@@ -30,12 +47,14 @@ System_variables system_variables =
     .shutdown_msg=NULL,
     .active_msg=NULL,
 };
-/*Now define the structure*/
+
+/*Now define the structure with references of the memory set aside for the above structures*/
 Ble_task_parameters ble_task_parameters=
 {
     .matrix_instance_ptr=&matrix,
-    .system_variables_ptr=&system_variables;
+    .system_variables_ptr=&system_variables
 };
+
 
 void init_pin_interface(Matrix* matrixInstanceptr)
 {
@@ -44,6 +63,75 @@ void init_pin_interface(Matrix* matrixInstanceptr)
     matrixInstanceptr->latch_pin=GPIO_NUM_27;
     matrixInstanceptr->rowclk_pin=GPIO_NUM_12;
     matrixInstanceptr->rowrst_pin=GPIO_NUM_14;
+}
+
+void bleTask(void *pvParameters)
+{
+    esp_err_t ret;
+
+    /* Initialise NVS*/
+    ret = nvs_flash_init();
+
+    if (ret == ESP_ERR_NVS_NO_FREE_PAGES)
+    {
+        ESP_ERROR_CHECK(nvs_flash_erase());
+        ret = nvs_flash_init();
+    }
+    ESP_ERROR_CHECK( ret );
+
+    /*TODO: cast the pvparameters, passed pointer to a valid type */
+
+    esp_bt_controller_config_t bt_cfg = BT_CONTROLLER_INIT_CONFIG_DEFAULT();
+    ret = esp_bt_controller_init(&bt_cfg);
+    if (ret)
+    {
+        ESP_LOGE(BLE_TASK_TAG, "%s enable controller failed\n", __func__);
+        return;
+    }
+
+    ret = esp_bt_controller_enable(ESP_BT_MODE_BTDM);
+    if (ret)
+    {
+        ESP_LOGE(BLE_TASK_TAG, "%s enable controller failed\n", __func__);
+        return;
+    }
+
+    ESP_LOGI(BLE_TASK_TAG, "%s init bluetooth\n", __func__);
+    ret = esp_bluedroid_init();
+    if (ret)
+    {
+        ESP_LOGE(BLE_TASK_TAG, "%s init bluetooth failed\n", __func__);
+        return;
+    }
+    ret = esp_bluedroid_enable();
+    if (ret) 
+    {
+        ESP_LOGE(BLE_TASK_TAG, "%s enable bluetooth failed\n", __func__);
+        return;
+    }
+
+    Ble_task_parameters* ble_param = NULL;
+    ble_param = (Ble_task_parameters*)pvParameters;
+
+    /*The usage attributes are global in ble.c thus are available to the whole program after linking*/
+    /*We assign the below variables via a safe way instead of at the global level*/
+    /*We could increase the priority of ble task during writes to ensure it is not preempted by a separate task*/
+    /*This is if there are writes from multiple sources to say a pointer*/
+    esp_attr_value_t* usage_state_attr = get_usage_state_attribute();
+    esp_attr_value_t* usage_string_attr = get_usage_string_attribute();
+
+    usage_state_attr->attr_value = (uint8_t*) &(ble_param->matrix_instance_ptr->system_state);
+    usage_string_attr->attr_value = (uint8_t*) ble_param->system_variables_ptr->active_msg;
+
+    esp_ble_gatts_register_callback(gatts_event_handler);
+    esp_ble_gap_register_callback(gap_event_handler);
+    esp_ble_gatts_app_register(SYSTEM_APP_ID);
+    esp_ble_gatts_app_register(USAGE_APP_ID);
+
+    for(;;)
+    {
+        ;
+    }
 }
 
 void displayTask(void *pvParameters)
@@ -68,68 +156,12 @@ presentation_t
     }
     else
     {
-        //implement pin and speed initialisation error exception handling here
-    }
-}
-
-void bleTask(void *pvParameters)
-{
-    esp_err_t ret;
-    /* Initialise NVS*/
-    ret = nvs_flash_init();
-
-    if (ret == ESP_ERR_NVS_NO_FREE_PAGES)
-    {
-        ESP_ERROR_CHECK(nvs_flash_erase());
-        ret = nvs_flash_init();
-    }
-    ESP_ERROR_CHECK( ret );
-
-    /*TODO: cast the pvparameters, passed pointer to a valid type */
-
-    esp_bt_controller_config_t bt_cfg = BT_CONTROLLER_INIT_CONFIG_DEFAULT();
-    ret = esp_bt_controller_init(&bt_cfg);
-    if (ret)
-    {
-        ESP_LOGE(GATTS_TABLE_TAG, "%s enable controller failed\n", __func__);
-        return;
-    }
-
-    ret = esp_bt_controller_enable(ESP_BT_MODE_BTDM);
-    if (ret)
-    {
-        ESP_LOGE(GATTS_TABLE_TAG, "%s enable controller failed\n", __func__);
-        return;
-    }
-
-    ESP_LOGI(GATTS_TABLE_TAG, "%s init bluetooth\n", __func__);
-    ret = esp_bluedroid_init();
-    if (ret)
-    {
-        ESP_LOGE(GATTS_TABLE_TAG, "%s init bluetooth failed\n", __func__);
-        return;
-    }
-    ret = esp_bluedroid_enable();
-    if (ret) 
-    {
-        ESP_LOGE(GATTS_TABLE_TAG, "%s enable bluetooth failed\n", __func__);
-        return;
-    }
-    string ="What the fuck are you saying bitch!!!!";
-    esp_ble_gatts_register_callback(gatts_event_handler);
-    esp_ble_gap_register_callback(gap_event_handler);
-    esp_ble_gatts_app_register(SYSTEM_APP_ID);
-    esp_ble_gatts_app_register(USAGE_APP_ID);
-
-    for(;;)
-    {
-        ;
+        //implement matrix initialisation exception handling here
     }
 }
 
 void app_main(void)
 {
-    xTaskCreate(displayTask, "DisplayTask", 1024, NULL, 1, NULL );
+    xTaskCreate(displayTask, "DisplayTask", 8192, NULL, 1, NULL );
 }
 //TODO: Move speed from system initialisation at start and implement in parameters in func write_speed/update_speed .
-
