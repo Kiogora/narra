@@ -104,7 +104,8 @@ static uint8_t raw_scan_rsp_data[] = {
 0xdb  //msb
 };
 
-static esp_ble_adv_params_t bitsoko_advert_params = {
+static esp_ble_adv_params_t bitsoko_advert_params = 
+{
     .adv_int_min        = 0x20,
     .adv_int_max        = 0x40,
     .adv_type           = ADV_TYPE_IND,
@@ -165,22 +166,23 @@ static void gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param
 
 /*TODO-Check how to pass structures to this usage_profile_event_handler*/
 
+/*The form of the datatype defined below is declared in ble.h*/
 static prepare_write_t prepare_write_tracker;
 
 /************** GATT ATTRIBUTES ***************/
 
 esp_attr_value_t usage_state_attribute = 
 {
-    .attr_max_len   = CHAR_VAL_LEN_MAX,
-    .attr_value     = (uint8_t *)&state,
-    .attr_len		= sizeof(usage_state_attribute.attr_value /*state*/),
+    .attr_max_len= CHAR_VAL_LEN_MAX,
+    .attr_value  = (uint8_t *)&state,
+    .attr_len    = sizeof(usage_state_attribute.attr_value /*state*/),
 };
 
 esp_attr_value_t usage_string_attribute = 
 {
-    .attr_max_len   = CHAR_VAL_LEN_MAX,
-    .attr_value     = (uint8_t *)string,
-    .attr_len		= strlen( (char *)usage_string_attribute.attr_value /*string*/ ),
+    .attr_max_len= CHAR_VAL_LEN_MAX,
+    .attr_value  = (uint8_t *)string,
+    .attr_len    = strlen( (char *)usage_string_attribute.attr_value /*string*/ ),
 };
 
 /***********************************************/
@@ -206,13 +208,13 @@ static struct gatts_profile_inst narra_profile_table[NARRA_PROFILE_NUM] =
     [SYSTEM_PROFILE_APP_IDX] = 
     {
         .gatts_cb = system_profile_event_handler,
-        .gatts_if = ESP_GATT_IF_NONE,       /* Not get the gatt_if, so initial is ESP_GATT_IF_NONE */
+        .gatts_if = ESP_GATT_IF_NONE,       /* Get the gatt_if after reg evt, so initial is ESP_GATT_IF_NONE */
     },
 
     [USAGE_PROFILE_APP_IDX] = 
     {
         .gatts_cb = usage_profile_event_handler,
-        .gatts_if = ESP_GATT_IF_NONE,       /* Not get the gatt_if, so initial is ESP_GATT_IF_NONE */
+        .gatts_if = ESP_GATT_IF_NONE,       /* Get the gatt_if after reg evt, so initial is ESP_GATT_IF_NONE */
     },
     
 };
@@ -379,18 +381,18 @@ static void system_profile_event_handler(esp_gatts_cb_event_t event,
     ESP_LOGE(GATTS_TABLE_TAG, "event = %x\n",event);
     switch (event) {
     	case ESP_GATTS_REG_EVT:
-		    ESP_LOGI(GATTS_TABLE_TAG, "%s %d\n", __func__, __LINE__);
+            ESP_LOGI(GATTS_TABLE_TAG, "%s %d\n", __func__, __LINE__);
             //TODO Redo the advertised name as there may be more than one beacon in a vicinity.
-        	esp_ble_gap_set_device_name(ADVERTISED_DEVICE_NAME);
+            esp_ble_gap_set_device_name(ADVERTISED_DEVICE_NAME);
 
-        	ESP_LOGI(GATTS_TABLE_TAG, "%s %d\n", __func__, __LINE__);
+            ESP_LOGI(GATTS_TABLE_TAG, "%s %d\n", __func__, __LINE__);
 
             esp_ble_gap_config_adv_data_raw(raw_adv_data, sizeof(raw_adv_data));
             esp_ble_gap_config_scan_rsp_data_raw(raw_scan_rsp_data, sizeof(raw_scan_rsp_data));
 
-        	ESP_LOGI(GATTS_TABLE_TAG, "%s %d\n", __func__, __LINE__);
+            ESP_LOGI(GATTS_TABLE_TAG, "%s %d\n", __func__, __LINE__);
 
-		    esp_ble_gatts_create_attr_tab(system_gatt_db, gatts_if, SYSTEM_IDX_NB, SYSTEM_SERVICE_INSTANCE_ID);
+            esp_ble_gatts_create_attr_tab(system_gatt_db, gatts_if, SYSTEM_IDX_NB, SYSTEM_SERVICE_INSTANCE_ID);
        	    break;
     	case ESP_GATTS_READ_EVT:
        	    break;
@@ -505,7 +507,7 @@ static void read_attribute_by_app(esp_attr_value_t attribute, esp_gatts_cb_event
     }
 }
 
-static void usage_profile_prepare_write_event_handler(esp_gatt_if_t gatts_if, prepare_write_t *prepare_write_state,
+static void usage_profile_prepare_write_event_handler(esp_gatt_if_t gatts_if, prepare_write_t *prepare_write_env,
                                                       esp_ble_gatts_cb_param_t *param)
 {
     esp_gatt_status_t status = ESP_GATT_OK;
@@ -716,7 +718,7 @@ static void usage_profile_event_handler(esp_gatts_cb_event_t event,
             usage_profile_read_event_handler(event, gatts_if, param);
        	    break;
     	case ESP_GATTS_WRITE_EVT:
-            usage_profile_prepare_write_event_handler(event, gatts_if, param);
+            usage_profile_prepare_write_event_handler(gatts_if, prepare_write_tracker, param);
       	 	break;
     	case ESP_GATTS_EXEC_WRITE_EVT:
             usage_profile_exec_write_event_handler(prepare_write_tracker, param);
