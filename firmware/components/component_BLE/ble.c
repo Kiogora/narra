@@ -131,6 +131,9 @@ static void update_attribute_length(esp_attr_value_t* attribute, esp_ble_gatts_c
 static void usage_profile_prepare_write_event_handler(prepare_write_t *prepare_write_env, esp_gatt_if_t gatts_if, 
                                                       esp_ble_gatts_cb_param_t *param);
 
+static esp_gatt_status_t prepare_write_buffer(prepare_write_t *prepare_write_env, esp_gatt_if_t gatts_if, 
+                                    esp_ble_gatts_cb_param_t *param);
+
 static void clear_write_buffer(prepare_write_t *prepare_write_env);
 
 static void boolean_check_then_write(esp_attr_value_t* attribute, prepare_write_t* prepare_write_env, 
@@ -548,120 +551,31 @@ static void update_attribute_length(esp_attr_value_t* attribute, esp_ble_gatts_c
 
 /********************************************Writes***********************************************/
 /*************************************************************************************************/
+
 static void usage_profile_prepare_write_event_handler(prepare_write_t *prepare_write_env, esp_gatt_if_t gatts_if, 
                                                       esp_ble_gatts_cb_param_t *param)
 {
-    esp_gatt_status_t status = ESP_GATT_OK;
     if (param->write.need_rsp)
     {
         if (param->write.is_prep)
         {
-            /*Long writes*/
-            if (prepare_write_env->prepare_buf == NULL)
-            {
-                prepare_write_env->prepare_buf = (uint8_t *)malloc(CHAR_VAL_LEN_MAX * sizeof(uint8_t));
-                prepare_write_env->prepare_len = 0;
-                prepare_write_env->handle = 0;
-
-                if (prepare_write_env->prepare_buf == NULL)
-                {
-                    LOG_ERROR("Gatt_server insufficient heap memory resource\n");
-
-                    status = ESP_GATT_NO_RESOURCES;
-                }
-            }
-            else
-            {
-                if(param->write.offset > CHAR_VAL_LEN_MAX)
-                {
-                    status = ESP_GATT_INVALID_OFFSET;
-                }
-                else if ((param->write.offset + param->write.len) > CHAR_VAL_LEN_MAX) 
-                {
-                    status = ESP_GATT_INVALID_ATTR_LEN;
-                }
-            }
-
-            esp_gatt_rsp_t *gatt_rsp = (esp_gatt_rsp_t *)malloc(sizeof(esp_gatt_rsp_t));
-            memset(gatt_rsp, 0, sizeof(esp_gatt_rsp_t));
-
-            gatt_rsp->attr_value.len = param->write.len;
-            gatt_rsp->attr_value.handle = param->write.handle;
-            gatt_rsp->attr_value.offset = param->write.offset;
-            gatt_rsp->attr_value.auth_req = ESP_GATT_AUTH_REQ_NONE;
-
-            memcpy(gatt_rsp->attr_value.value, param->write.value, param->write.len);
-            esp_err_t response_err = esp_ble_gatts_send_response(gatts_if, 
-                                                                 param->write.conn_id, 
-                                                                 param->write.trans_id, 
-                                                                 status, 
-                                                                 gatt_rsp);
-            if (response_err != ESP_OK)
-            {
-               LOG_ERROR("Send response error\n");
-            }
-            free(gatt_rsp);
-            if (status != ESP_GATT_OK)
+            /*Long writes greater than (MTU-3) size payloads*/
+            if (prepare_write_buffer(prepare_write_env, gatts_if, param) != ESP_GATT_OK)
             {
                 return;
             }
-            memcpy(prepare_write_env->prepare_buf + param->write.offset,
-                   param->write.value,
-                   param->write.len);
+            memcpy(prepare_write_env->prepare_buf + param->write.offset, param->write.value, param->write.len);
             prepare_write_env->prepare_len += param->write.len;
             prepare_write_env->handle =  param->write.handle;
         }
         else
         {
-            /*Short writes*/
-            if (prepare_write_env->prepare_buf == NULL)
-            {
-                prepare_write_env->prepare_buf = (uint8_t *)malloc(CHAR_VAL_LEN_MAX * sizeof(uint8_t));
-                prepare_write_env->prepare_len = 0;
-                prepare_write_env->handle = 0;
-
-                if (prepare_write_env->prepare_buf == NULL)
-                {
-                    LOG_ERROR("Gatt_server insufficient heap memory resource\n");
-
-                    status = ESP_GATT_NO_RESOURCES;
-                }
-            }
-            else
-            {
-                if(param->write.offset > CHAR_VAL_LEN_MAX)
-                {
-                    status = ESP_GATT_INVALID_OFFSET;
-                }
-                else if ((param->write.offset + param->write.len) > CHAR_VAL_LEN_MAX) 
-                {
-                    status = ESP_GATT_INVALID_ATTR_LEN;
-                }
-            }
-
-            esp_gatt_rsp_t *gatt_rsp = (esp_gatt_rsp_t *)malloc(sizeof(esp_gatt_rsp_t));
-            memset(gatt_rsp, 0, sizeof(esp_gatt_rsp_t));
-
-            gatt_rsp->attr_value.len = param->write.len;
-            gatt_rsp->attr_value.handle = param->write.handle;
-            gatt_rsp->attr_value.offset = param->write.offset;
-            gatt_rsp->attr_value.auth_req = ESP_GATT_AUTH_REQ_NONE;
-
-            memcpy(gatt_rsp->attr_value.value, param->write.value, param->write.len);
-            esp_err_t response_err = esp_ble_gatts_send_response(gatts_if, 
-                                                                 param->write.conn_id, 
-                                                                 param->write.trans_id, 
-                                                                 status, 
-                                                                 gatt_rsp);
-            if (response_err != ESP_OK)
-            {
-               LOG_ERROR("Send response error\n");
-            }
-            free(gatt_rsp);
-            if (status != ESP_GATT_OK)
+            /*Short writes, less than (MTU-3) size payloads*/
+            if (prepare_write_buffer(prepare_write_env, gatts_if, param) != ESP_GATT_OK)
             {
                 return;
             }
+
             memcpy(prepare_write_env->prepare_buf, param->write.value, param->write.len);
             prepare_write_env->prepare_len += param->write.len;
             prepare_write_env->handle =  param->write.handle;
@@ -677,6 +591,56 @@ static void usage_profile_prepare_write_event_handler(prepare_write_t *prepare_w
             }
         }
     }
+}
+
+static esp_gatt_status_t prepare_write_buffer(prepare_write_t *prepare_write_env, esp_gatt_if_t gatts_if, 
+                                    esp_ble_gatts_cb_param_t *param)
+{
+    esp_gatt_status_t status = ESP_GATT_OK;
+    if (prepare_write_env->prepare_buf == NULL)
+    {
+        prepare_write_env->prepare_buf = (uint8_t *)malloc(CHAR_VAL_LEN_MAX * sizeof(uint8_t));
+        prepare_write_env->prepare_len = 0;
+        prepare_write_env->handle = 0;
+
+        if (prepare_write_env->prepare_buf == NULL)
+        {
+            LOG_ERROR("INSUFFICIENT HEAP MEMORY RESOURCE FOR WRITE BUFFER ALLOCATION\n");
+            status = ESP_GATT_NO_RESOURCES;
+        }
+    }
+    else
+    {
+        if(param->write.offset > CHAR_VAL_LEN_MAX)
+        {
+            status = ESP_GATT_INVALID_OFFSET;
+        }
+        else if ((param->write.offset + param->write.len) > CHAR_VAL_LEN_MAX) 
+        {
+            status = ESP_GATT_INVALID_ATTR_LEN;
+        }
+    }
+
+    esp_gatt_rsp_t *gatt_rsp = (esp_gatt_rsp_t *)malloc(sizeof(esp_gatt_rsp_t));
+    memset(gatt_rsp, 0, sizeof(esp_gatt_rsp_t));
+
+    gatt_rsp->attr_value.len = param->write.len;
+    gatt_rsp->attr_value.handle = param->write.handle;
+    gatt_rsp->attr_value.offset = param->write.offset;
+    gatt_rsp->attr_value.auth_req = ESP_GATT_AUTH_REQ_NONE;
+
+    memcpy(gatt_rsp->attr_value.value, param->write.value, param->write.len);
+    esp_err_t response_err = esp_ble_gatts_send_response(gatts_if, 
+                                                         param->write.conn_id, 
+                                                         param->write.trans_id, 
+                                                         status, 
+                                                         gatt_rsp);
+    if (response_err != ESP_OK)
+    {
+       LOG_ERROR("Send response error\n");
+    }
+    free(gatt_rsp);
+    return status;
 }
 
 static void clear_write_buffer(prepare_write_t *prepare_write_env)
@@ -784,7 +748,7 @@ static void usage_profile_exec_write_event_handler(prepare_write_t* prepare_writ
         }
         else
         {
-            ESP_LOGI(GATTS_TABLE_TAG,"ESP_GATT_PREP_WRITE_CANCEL");
+            ESP_LOGI(GATTS_TABLE_TAG,"ESP_GATT_PREP_WRITE_EXEC_CANCEL");
         }
         clear_write_buffer(prepare_write_env);
     }
@@ -796,7 +760,7 @@ static void usage_profile_exec_write_event_handler(prepare_write_t* prepare_writ
         }
         else
         {
-            ESP_LOGI(GATTS_TABLE_TAG,"ESP_GATT_PREP_WRITE_CANCEL");
+            ESP_LOGI(GATTS_TABLE_TAG,"ESP_GATT_PREP_WRITE_EXEC_CANCEL");
         }
         clear_write_buffer(prepare_write_env);
     }
