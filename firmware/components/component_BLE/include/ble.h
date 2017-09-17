@@ -2,6 +2,7 @@
 #define __BLE_H_
 
 #include <stdint.h>
+#include "sdkconfig.h"
 
 #define GATTS_TABLE_TAG "GATTS_TABLE_DEMO"
 /*Number of profiles*/

@@ -19,6 +19,10 @@
 
 #include "ble.h"
 #include "utf8_decoder.h"
+#include "sdkconfig.h"
+
+#include "system_updater.h"
+#include "system_loader.h"
 
 
 uint16_t system_handle_table[SYSTEM_IDX_NB];
@@ -98,6 +102,35 @@ static esp_ble_adv_params_t bitsoko_advert_params =
     .adv_filter_policy = ADV_FILTER_ALLOW_SCAN_ANY_CON_ANY,
 };
 
+#if CONFIG_LOG_DEFAULT_LEVEL >= 3
+char* gatts_event[24]=
+{
+    "ESP_GATTS_REG_EVT\0",
+    "ESP_GATTS_READ_EVT\0"
+    "ESP_GATTS_WRITE_EVT\0",
+    "ESP_GATTS_EXEC_WRITE_EVT\0",
+    "ESP_GATTS_MTU_EVT\0",
+    "ESP_GATTS_CONF_EVT\0",
+    "ESP_GATTS_UNREG_EVT\0",
+    "ESP_GATTS_CREATE_EVT\0",
+    "ESP_GATTS_ADD_INCL_SRVC_EVT\0",
+    "ESP_GATTS_ADD_CHAR_EVT\0",
+    "ESP_GATTS_ADD_CHAR_DESCR_EVT\0",
+    "ESP_GATTS_DELETE_EVT\0",
+    "ESP_GATTS_START_EVT\0",
+    "ESP_GATTS_STOP_EVT\0",
+    "ESP_GATTS_CONNECT_EVT\0",
+    "ESP_GATTS_DISCONNECT_EVT\0",
+    "ESP_GATTS_OPEN_EVT\0",
+    "ESP_GATTS_CANCEL_OPEN_EVT\0",
+    "ESP_GATTS_CLOSE_EVT\0",
+    "ESP_GATTS_LISTEN_EVT\0",
+    "ESP_GATTS_CONGEST_EVT\0",
+    "ESP_GATTS_RESPONSE_EVT\0",
+    "ESP_GATTS_CREAT_ATTR_TAB_EVT\0",
+    "ESP_GATTS_SET_ATTR_VAL_EVT\0"
+};
+#endif
 /************** GATT ATTRIBUTES ***************/
 
 esp_attr_value_t usage_state_attribute = 
@@ -147,8 +180,6 @@ static void usage_profile_exec_write_event_handler(prepare_write_t* prepare_writ
 
 void gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *param)
 {
-    ESP_LOGE(GATTS_TABLE_TAG, "GAP_EVT, event %d\n", event);
-
     switch (event) 
     {
     case ESP_GAP_BLE_ADV_DATA_SET_COMPLETE_EVT:
@@ -192,8 +223,6 @@ void gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *par
 /******************************************END ADVERTISING***************************************************/
 
 /********************************************GATT SERVER ************************************************/
-
-/*TODO-Check how to pass structures to this usage_profile_event_handler*/
 
 /*The form of the datatype defined below is declared in ble.h*/
 static prepare_write_t prepare_write_tracker;
@@ -400,7 +429,6 @@ static const esp_gatts_attr_db_t usage_gatt_db[USAGE_IDX_NB] =
 static void system_profile_event_handler(esp_gatts_cb_event_t event, 
 										esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param) 
 {
-    ESP_LOGE(GATTS_TABLE_TAG, "event = %x\n",event);
     switch (event) {
     	case ESP_GATTS_REG_EVT:
             ESP_LOGI(GATTS_TABLE_TAG, "%s %d\n", __func__, __LINE__);
@@ -559,7 +587,7 @@ static void usage_profile_prepare_write_event_handler(prepare_write_t *prepare_w
     {
         if (param->write.is_prep)
         {
-            /*Long writes greater than (MTU-3) size payloads*/
+            /*Long writes of payload size greater than (MTU-3)*/
             if (prepare_write_buffer(prepare_write_env, gatts_if, param) != ESP_GATT_OK)
             {
                 return;
@@ -570,7 +598,7 @@ static void usage_profile_prepare_write_event_handler(prepare_write_t *prepare_w
         }
         else
         {
-            /*Short writes, less than (MTU-3) size payloads*/
+            /*Short writes, of maximum payload size (MTU-3)*/
             if (prepare_write_buffer(prepare_write_env, gatts_if, param) != ESP_GATT_OK)
             {
                 return;
@@ -727,6 +755,7 @@ static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_wri
             /*In the case of multiple system messages, check handle against the GATT attribute handle table*/
             ESP_LOGI(GATTS_TABLE_TAG, "NULL TERMINATOR FOUND, WRITING STRING :D");
             ESP_LOGI(GATTS_TABLE_TAG, "STRING WRITTEN IS: %s", (char*)prepare_write_env->prepare_buf);
+            
         }
         else
         {
@@ -774,7 +803,6 @@ static void usage_profile_exec_write_event_handler(prepare_write_t* prepare_writ
 static void usage_profile_event_handler(esp_gatts_cb_event_t event, 
 										esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param) 
 {
-    ESP_LOGE(GATTS_TABLE_TAG, "event decimal number= %d\n",event);
     switch (event) {
     	case ESP_GATTS_REG_EVT:
         	ESP_LOGI(GATTS_TABLE_TAG, "%s %d\n", __func__, __LINE__);
@@ -844,7 +872,7 @@ static void usage_profile_event_handler(esp_gatts_cb_event_t event,
 void gatts_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, 
 									esp_ble_gatts_cb_param_t *param)
 {
-    ESP_LOGI(GATTS_TABLE_TAG, "EVT %d, gatts if %d\n", event, gatts_if);
+    ESP_LOGI(GATTS_TABLE_TAG, "EVENT TYPE: %s, EVENT ID: %d, GATTS IF: %d\n", gatts_event[event-1], event, gatts_if);
 
     /* If event is register event, store the gatts_if for each profile */
     if (event == ESP_GATTS_REG_EVT) {
