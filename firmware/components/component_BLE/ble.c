@@ -100,27 +100,13 @@ static esp_ble_adv_params_t bitsoko_advert_params =
 
 /************** GATT ATTRIBUTES ***************/
 
-/*esp_attr_value_t usage_state_attribute = 
-{
-    .attr_max_len= CHAR_VAL_LEN_MAX,
-    .attr_value  = (uint8_t *)&state,
-    .attr_len    = sizeof(usage_state_attribute.attr_value),
-};
-*/
 esp_attr_value_t usage_state_attribute = 
 {
     .attr_max_len= CHAR_VAL_LEN_MAX,
     .attr_value  = NULL,
     .attr_len    = CHAR_UNINITIALISED_LEN,
 };
-/*
-esp_attr_value_t usage_string_attribute = 
-{
-    .attr_max_len= CHAR_VAL_LEN_MAX,
-    .attr_value  = (uint8_t *)string,
-    .attr_len    = strlen( (char *)usage_string_attribute.attr_value),
-};
-*/
+
 esp_attr_value_t usage_string_attribute =
 {
     .attr_max_len= CHAR_VAL_LEN_MAX,
@@ -137,18 +123,20 @@ static void usage_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_
 static void usage_profile_read_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if,
                                              esp_ble_gatts_cb_param_t *param);
 
-static void read_attribute_by_app(esp_attr_value_t attribute, esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, 
-                                  esp_ble_gatts_cb_param_t *param);
+static void read_attribute_by_app(esp_attr_value_t* attribute, esp_gatts_cb_event_t event, 
+                                  esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param);
+
+static void update_attribute_length(esp_attr_value_t* attribute, esp_ble_gatts_cb_param_t *param);
 
 static void usage_profile_prepare_write_event_handler(prepare_write_t *prepare_write_env, esp_gatt_if_t gatts_if, 
                                                       esp_ble_gatts_cb_param_t *param);
 
 static void clear_write_buffer(prepare_write_t *prepare_write_env);
 
-static void boolean_check_then_write(esp_attr_value_t attribute, prepare_write_t* prepare_write_env, 
+static void boolean_check_then_write(esp_attr_value_t* attribute, prepare_write_t* prepare_write_env, 
                                      esp_ble_gatts_cb_param_t *param);
 
-static void bytestring_check_then_write(esp_attr_value_t attribute, prepare_write_t* prepare_write_env, 
+static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_write_t* prepare_write_env, 
                                         esp_ble_gatts_cb_param_t *param);
 
 static void usage_profile_exec_write_event_handler(prepare_write_t* prepare_write_env, 
@@ -485,17 +473,20 @@ static void system_profile_event_handler(esp_gatts_cb_event_t event,
     }
 }
 
+/********************************************Reads***********************************************/
+/************************************************************************************************/
+
 //Remember The Max MTU negotiable ESP_GATT_MAX_MTU_SIZE(517) < ESP_GATT_MAX_ATTR_LEN(600)
 static void usage_profile_read_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if,
                                              esp_ble_gatts_cb_param_t *param)
 {
     if (param->read.handle == usage_handle_table[USAGE_IDX_DEVICE_STATE_VAL])
     {
-        read_attribute_by_app(usage_state_attribute, event, gatts_if, param);
+        read_attribute_by_app(&usage_state_attribute, event, gatts_if, param);
     }
     else if (param->read.handle == usage_handle_table[USAGE_IDX_DISPLAY_STRING_VAL])
     {
-        read_attribute_by_app(usage_string_attribute, event, gatts_if, param);
+        read_attribute_by_app(&usage_string_attribute, event, gatts_if, param);
     }
     else
     { 
@@ -503,27 +494,27 @@ static void usage_profile_read_event_handler(esp_gatts_cb_event_t event, esp_gat
     }  
 }
 
-static void read_attribute_by_app(esp_attr_value_t attribute, esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, 
-                                  esp_ble_gatts_cb_param_t *param)
+static void read_attribute_by_app(esp_attr_value_t* attribute, esp_gatts_cb_event_t event, 
+                                  esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param)
 {
-    /*Do not get the length of string pointed to at global level, perform at local level at each read event.*/
-    attribute.attr_len = strlen((char*)attribute.attr_value);
-    
+  
+    update_attribute_length(attribute, param);
+
     esp_gatt_status_t status = ESP_GATT_OK;
 
-    if(attribute.attr_len > attribute.attr_max_len)
+    if(attribute->attr_len > attribute->attr_max_len)
     {
-        attribute.attr_len = attribute.attr_max_len;
+        attribute->attr_len = attribute->attr_max_len;
     }
 
     esp_gatt_rsp_t rsp;
     memset(&rsp, 0, sizeof(esp_gatt_rsp_t));
 
-    if (param->read.offset < attribute.attr_len)
+    if (param->read.offset < attribute->attr_len)
     {
-        rsp.attr_value.len = (attribute.attr_len) - param->read.offset;
+        rsp.attr_value.len = (attribute->attr_len) - param->read.offset;
         rsp.attr_value.offset = param->read.offset;
-        memcpy(rsp.attr_value.value, attribute.attr_value+param->read.offset, rsp.attr_value.len);
+        memcpy(rsp.attr_value.value, (attribute->attr_value)+param->read.offset, rsp.attr_value.len);
     }
     rsp.attr_value.handle = param->read.handle;
     rsp.attr_value.auth_req = ESP_GATT_AUTH_REQ_NONE;
@@ -541,6 +532,22 @@ static void read_attribute_by_app(esp_attr_value_t attribute, esp_gatts_cb_event
     }
 }
 
+static void update_attribute_length(esp_attr_value_t* attribute, esp_ble_gatts_cb_param_t *param)
+{
+    /*Do not get and update the length of attribute at global level, perform this at local at each read event.*/
+    if (param->read.handle == usage_handle_table[USAGE_IDX_DEVICE_STATE_VAL])
+    {
+        attribute->attr_len = sizeof(attribute->attr_value);
+    }
+    else if (param->read.handle == usage_handle_table[USAGE_IDX_DISPLAY_STRING_VAL])
+    {
+        attribute->attr_len = strlen((char*)attribute->attr_value);
+    }
+}
+
+
+/********************************************Writes***********************************************/
+/*************************************************************************************************/
 static void usage_profile_prepare_write_event_handler(prepare_write_t *prepare_write_env, esp_gatt_if_t gatts_if, 
                                                       esp_ble_gatts_cb_param_t *param)
 {
@@ -549,6 +556,7 @@ static void usage_profile_prepare_write_event_handler(prepare_write_t *prepare_w
     {
         if (param->write.is_prep)
         {
+            /*Long writes*/
             if (prepare_write_env->prepare_buf == NULL)
             {
                 prepare_write_env->prepare_buf = (uint8_t *)malloc(CHAR_VAL_LEN_MAX * sizeof(uint8_t));
@@ -597,18 +605,76 @@ static void usage_profile_prepare_write_event_handler(prepare_write_t *prepare_w
             {
                 return;
             }
-
             memcpy(prepare_write_env->prepare_buf + param->write.offset,
                    param->write.value,
                    param->write.len);
-
             prepare_write_env->prepare_len += param->write.len;
             prepare_write_env->handle =  param->write.handle;
         }
         else
         {
-            /*BLE stack is not ready to perform prep_write, send NULL response to client to control communication.*/
-            esp_ble_gatts_send_response(gatts_if, param->write.conn_id, param->write.trans_id, status, NULL);
+            /*Short writes*/
+            if (prepare_write_env->prepare_buf == NULL)
+            {
+                prepare_write_env->prepare_buf = (uint8_t *)malloc(CHAR_VAL_LEN_MAX * sizeof(uint8_t));
+                prepare_write_env->prepare_len = 0;
+                prepare_write_env->handle = 0;
+
+                if (prepare_write_env->prepare_buf == NULL)
+                {
+                    LOG_ERROR("Gatt_server insufficient heap memory resource\n");
+
+                    status = ESP_GATT_NO_RESOURCES;
+                }
+            }
+            else
+            {
+                if(param->write.offset > CHAR_VAL_LEN_MAX)
+                {
+                    status = ESP_GATT_INVALID_OFFSET;
+                }
+                else if ((param->write.offset + param->write.len) > CHAR_VAL_LEN_MAX) 
+                {
+                    status = ESP_GATT_INVALID_ATTR_LEN;
+                }
+            }
+
+            esp_gatt_rsp_t *gatt_rsp = (esp_gatt_rsp_t *)malloc(sizeof(esp_gatt_rsp_t));
+            memset(gatt_rsp, 0, sizeof(esp_gatt_rsp_t));
+
+            gatt_rsp->attr_value.len = param->write.len;
+            gatt_rsp->attr_value.handle = param->write.handle;
+            gatt_rsp->attr_value.offset = param->write.offset;
+            gatt_rsp->attr_value.auth_req = ESP_GATT_AUTH_REQ_NONE;
+
+            memcpy(gatt_rsp->attr_value.value, param->write.value, param->write.len);
+            esp_err_t response_err = esp_ble_gatts_send_response(gatts_if, 
+                                                                 param->write.conn_id, 
+                                                                 param->write.trans_id, 
+                                                                 status, 
+                                                                 gatt_rsp);
+            if (response_err != ESP_OK)
+            {
+               LOG_ERROR("Send response error\n");
+            }
+            free(gatt_rsp);
+            if (status != ESP_GATT_OK)
+            {
+                return;
+            }
+            memcpy(prepare_write_env->prepare_buf, param->write.value, param->write.len);
+            prepare_write_env->prepare_len += param->write.len;
+            prepare_write_env->handle =  param->write.handle;
+            if (prepare_write_env->handle == usage_handle_table[USAGE_IDX_DEVICE_STATE_VAL])
+            {
+                boolean_check_then_write(&usage_state_attribute, prepare_write_env, param);
+                clear_write_buffer(prepare_write_env);
+            }
+            else if (prepare_write_env->handle == usage_handle_table[USAGE_IDX_DISPLAY_STRING_VAL])
+            {
+                bytestring_check_then_write(&usage_string_attribute, prepare_write_env, param);
+                clear_write_buffer(prepare_write_env);
+            }
         }
     }
 }
@@ -639,7 +705,7 @@ static void clear_write_buffer(prepare_write_t *prepare_write_env)
 }
 */
 
-static void boolean_check_then_write(esp_attr_value_t attribute, prepare_write_t* prepare_write_env, 
+static void boolean_check_then_write(esp_attr_value_t* attribute, prepare_write_t* prepare_write_env, 
                                      esp_ble_gatts_cb_param_t *param)
 {
     /*Check buffer length, should be a byte long for boolean type*/
@@ -650,13 +716,15 @@ static void boolean_check_then_write(esp_attr_value_t attribute, prepare_write_t
     }
     else
     {
-        /*commit the boolean string write*/
+        /*commit the boolean value write*/
         /*In the case of multiple boolean values, check handle against the GATT attribute handle table*/
-        ESP_LOGI(GATTS_TABLE_TAG, "VALID STATE VALUE. VALUE WRITTEN :D");  
+        ESP_LOGI(GATTS_TABLE_TAG, "VALID STATE VALUE. VALUE WRITTEN :D");
+        ESP_LOGI(GATTS_TABLE_TAG, "STATE LEN IS: %d", prepare_write_env->prepare_len)
+        ESP_LOGI(GATTS_TABLE_TAG, "STATE WRITTEN IS: %u", *(prepare_write_env->prepare_buf));
     }
 }
 
-static void bytestring_check_then_write(esp_attr_value_t attribute, prepare_write_t* prepare_write_env, 
+static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_write_t* prepare_write_env, 
                                         esp_ble_gatts_cb_param_t *param)
 {
     /* sanity check variable that holds the (in)validity of the byte buffer as a UTF8 string*/
@@ -674,11 +742,13 @@ static void bytestring_check_then_write(esp_attr_value_t attribute, prepare_writ
         {
             /*commit the utf8 string write*/
             /*In the case of multiple system messages, check handle against the GATT attribute handle table*/
-            ESP_LOGI(GATTS_TABLE_TAG, "NO NULL, THEN WRITE STRING :D");
+            ESP_LOGI(GATTS_TABLE_TAG, "NUL TERMINATOR FOUND, WRITING STRING :D");
+            ESP_LOGI(GATTS_TABLE_TAG, "STRING LEN IS: %d", strlen((char*)nul_terminated_buffer))
+            ESP_LOGI(GATTS_TABLE_TAG, "STRING WRITTEN IS: %s", (char*)nul_terminated_buffer);
         }
         else
         {
-            ESP_LOGI(GATTS_TABLE_TAG, "NO NULL, INVALID STRING AFTER NUL CHAR ADDITION");
+            ESP_LOGI(GATTS_TABLE_TAG, "NO NUL TERMINATOR FOUND, INVALID STRING AFTER NUL CHAR ADDITION");
             return;
         }
         free(nul_terminated_buffer);
@@ -691,11 +761,12 @@ static void bytestring_check_then_write(esp_attr_value_t attribute, prepare_writ
         {
             /*commit the utf8 string write*/
             /*In the case of multiple system messages, check handle against the GATT attribute handle table*/
-            ESP_LOGI(GATTS_TABLE_TAG, "YES NULL, THEN WRITE STRING :D");
+            ESP_LOGI(GATTS_TABLE_TAG, "NULL TERMINATOR FOUND, WRITING STRING :D");
+            ESP_LOGI(GATTS_TABLE_TAG, "STRING WRITTEN IS: %s", (char*)prepare_write_env->prepare_buf);
         }
         else
         {
-            ESP_LOGI(GATTS_TABLE_TAG, "YES NULL, INVALID STRING AFTER NUL CHAR ADDITION");
+            ESP_LOGI(GATTS_TABLE_TAG, "NUL TERMINATOR FOUND, BUT INVALID STRING");
             return;
         }
     }
@@ -709,7 +780,7 @@ static void usage_profile_exec_write_event_handler(prepare_write_t* prepare_writ
     {
         if (param->exec_write.exec_write_flag == ESP_GATT_PREP_WRITE_EXEC)
         {
-            boolean_check_then_write(usage_state_attribute, prepare_write_env, param);
+            boolean_check_then_write(&usage_state_attribute, prepare_write_env, param);
         }
         else
         {
@@ -721,7 +792,7 @@ static void usage_profile_exec_write_event_handler(prepare_write_t* prepare_writ
     {
         if (param->exec_write.exec_write_flag == ESP_GATT_PREP_WRITE_EXEC)
         {
-            bytestring_check_then_write(usage_string_attribute, prepare_write_env, param);
+            bytestring_check_then_write(&usage_string_attribute, prepare_write_env, param);
         }
         else
         {

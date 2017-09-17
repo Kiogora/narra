@@ -3,6 +3,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
+#include <stdlib.h>
 
 /*ESP-IDF libs*/
 #include "esp_partition.h"
