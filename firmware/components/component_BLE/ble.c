@@ -103,32 +103,32 @@ static esp_ble_adv_params_t bitsoko_advert_params =
 };
 
 #if CONFIG_LOG_DEFAULT_LEVEL >= 3
-char* gatts_event[24]=
+const char* gatts_event[24]=
 {
-    "ESP_GATTS_REG_EVT\0",
-    "ESP_GATTS_READ_EVT\0"
-    "ESP_GATTS_WRITE_EVT\0",
-    "ESP_GATTS_EXEC_WRITE_EVT\0",
-    "ESP_GATTS_MTU_EVT\0",
-    "ESP_GATTS_CONF_EVT\0",
-    "ESP_GATTS_UNREG_EVT\0",
-    "ESP_GATTS_CREATE_EVT\0",
-    "ESP_GATTS_ADD_INCL_SRVC_EVT\0",
-    "ESP_GATTS_ADD_CHAR_EVT\0",
-    "ESP_GATTS_ADD_CHAR_DESCR_EVT\0",
-    "ESP_GATTS_DELETE_EVT\0",
-    "ESP_GATTS_START_EVT\0",
-    "ESP_GATTS_STOP_EVT\0",
-    "ESP_GATTS_CONNECT_EVT\0",
-    "ESP_GATTS_DISCONNECT_EVT\0",
-    "ESP_GATTS_OPEN_EVT\0",
-    "ESP_GATTS_CANCEL_OPEN_EVT\0",
-    "ESP_GATTS_CLOSE_EVT\0",
-    "ESP_GATTS_LISTEN_EVT\0",
-    "ESP_GATTS_CONGEST_EVT\0",
-    "ESP_GATTS_RESPONSE_EVT\0",
-    "ESP_GATTS_CREAT_ATTR_TAB_EVT\0",
-    "ESP_GATTS_SET_ATTR_VAL_EVT\0"
+    "ESP_GATTS_REG_EVT",
+    "ESP_GATTS_READ_EVT",
+    "ESP_GATTS_WRITE_EVT",
+    "ESP_GATTS_EXEC_WRITE_EVT",
+    "ESP_GATTS_MTU_EVT",
+    "ESP_GATTS_CONF_EVT",
+    "ESP_GATTS_UNREG_EVT",
+    "ESP_GATTS_CREATE_EVT",
+    "ESP_GATTS_ADD_INCL_SRVC_EVT",
+    "ESP_GATTS_ADD_CHAR_EVT",
+    "ESP_GATTS_ADD_CHAR_DESCR_EVT",
+    "ESP_GATTS_DELETE_EVT",
+    "ESP_GATTS_START_EVT",
+    "ESP_GATTS_STOP_EVT",
+    "ESP_GATTS_CONNECT_EVT",
+    "ESP_GATTS_DISCONNECT_EVT",
+    "ESP_GATTS_OPEN_EVT",
+    "ESP_GATTS_CANCEL_OPEN_EVT",
+    "ESP_GATTS_CLOSE_EVT",
+    "ESP_GATTS_LISTEN_EVT",
+    "ESP_GATTS_CONGEST_EVT",
+    "ESP_GATTS_RESPONSE_EVT",
+    "ESP_GATTS_CREAT_ATTR_TAB_EVT",
+    "ESP_GATTS_SET_ATTR_VAL_EVT",
 };
 #endif
 /************** GATT ATTRIBUTES ***************/
@@ -665,7 +665,7 @@ static esp_gatt_status_t prepare_write_buffer(prepare_write_t *prepare_write_env
                                                          gatt_rsp);
     if (response_err != ESP_OK)
     {
-       LOG_ERROR("Send response error\n");
+       LOG_ERROR("\"SEND RESPONSE\" ERROR\n");
     }
     free(gatt_rsp);
     return status;
@@ -712,7 +712,8 @@ static void boolean_check_then_write(esp_attr_value_t* attribute, prepare_write_
         /*In the case of multiple boolean values, check handle against the GATT attribute handle table*/
         ESP_LOGI(GATTS_TABLE_TAG, "VALID STATE VALUE. VALUE WRITTEN :D");
         ESP_LOGI(GATTS_TABLE_TAG, "STATE LEN IS: %d", prepare_write_env->prepare_len)
-        ESP_LOGI(GATTS_TABLE_TAG, "STATE WRITTEN IS: %u", *(prepare_write_env->prepare_buf));
+        ESP_LOGI(GATTS_TABLE_TAG, "STATE VAL WRITTEN IS: DECIMAL %u, HEX 0x%02X", *(prepare_write_env->prepare_buf),
+                                                                                  *(prepare_write_env->prepare_buf));
     }
 }
 
@@ -736,7 +737,7 @@ static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_wri
             /*In the case of multiple system messages, check handle against the GATT attribute handle table*/
             ESP_LOGI(GATTS_TABLE_TAG, "NUL TERMINATOR FOUND, WRITING STRING :D");
             ESP_LOGI(GATTS_TABLE_TAG, "STRING LEN IS: %d", strlen((char*)nul_terminated_buffer))
-            ESP_LOGI(GATTS_TABLE_TAG, "STRING WRITTEN IS: %s", (char*)nul_terminated_buffer);
+            ESP_LOGI(GATTS_TABLE_TAG, "STRING VAL WRITTEN IS: %s", (char*)nul_terminated_buffer);
         }
         else
         {
@@ -872,7 +873,7 @@ static void usage_profile_event_handler(esp_gatts_cb_event_t event,
 void gatts_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, 
 									esp_ble_gatts_cb_param_t *param)
 {
-    ESP_LOGI(GATTS_TABLE_TAG, "EVENT TYPE: %s, EVENT ID: %d, GATTS IF: %d\n", gatts_event[event-1], event, gatts_if);
+    ESP_LOGI(GATTS_TABLE_TAG, "EVENT TYPE: %s, EVENT ID: %d, GATTS IF: %d\n", gatts_event[event], event, gatts_if);
 
     /* If event is register event, store the gatts_if for each profile */
     if (event == ESP_GATTS_REG_EVT) {
@@ -882,7 +883,7 @@ void gatts_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if,
         } 
         else 
         {
-            ESP_LOGI(GATTS_TABLE_TAG, "Reg app failed, app_id %04x, status %d\n",
+            ESP_LOGI(GATTS_TABLE_TAG, "REG APP FAILED, APP_ID: %04x, STATUS: %d\n",
                      param->reg.app_id, param->reg.status);
             return;
         }
