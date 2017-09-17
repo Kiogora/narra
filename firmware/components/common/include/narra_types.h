@@ -58,7 +58,7 @@ typedef enum
 */
 typedef enum
 {
-    scroll = (narra_xristics_t)0x01
+    scroll = (narra_xristics_t)0x00
 }narra_rendertype_enum;
 
 /**@typedef narra_state
@@ -66,9 +66,9 @@ typedef enum
 */
 typedef enum
 {
-    startup = (narra_xristics_t)0x03,
-    active = (narra_xristics_t)0x02,
-    shutdown = (narra_xristics_t)0x01,
+    startup = (narra_xristics_t)0x02,
+    active = (narra_xristics_t)0x01,
+    shutdown = (narra_xristics_t)0x00,
 }narra_state_enum;
 
 #endif /*__NARRA_TYPES_H_*/
