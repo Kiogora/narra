@@ -738,8 +738,9 @@ static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_wri
         {
             /*commit the utf8 string write*/
             /*In the case of multiple system messages, check handle against the GATT attribute handle table*/
+            system_update_active((char*)nul_terminated_buffer);
             ESP_LOGI(GATTS_TABLE_TAG, "NUL TERMINATOR FOUND, WRITING STRING :D");
-            ESP_LOGI(GATTS_TABLE_TAG, "STRING LEN IS: %d", strlen((char*)nul_terminated_buffer))
+            ESP_LOGI(GATTS_TABLE_TAG, "STRING LEN IS: %d", strlen((char*)nul_terminated_buffer));
             ESP_LOGI(GATTS_TABLE_TAG, "STRING VAL WRITTEN IS: %s", (char*)nul_terminated_buffer);
         }
         else
@@ -757,6 +758,7 @@ static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_wri
         {
             /*commit the utf8 string write*/
             /*In the case of multiple system messages, check handle against the GATT attribute handle table*/
+            system_update_active((char*)prepare_write_env->prepare_buf);
             ESP_LOGI(GATTS_TABLE_TAG, "NULL TERMINATOR FOUND, WRITING STRING :D");
             ESP_LOGI(GATTS_TABLE_TAG, "STRING WRITTEN IS: %s", (char*)prepare_write_env->prepare_buf);
             
