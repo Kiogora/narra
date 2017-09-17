@@ -21,8 +21,8 @@
 #define ADVERTISED_DEVICE_NAME         "Narra_01"
 #define DEV_ID_LEN                      8
 
-#define CHAR_VAL_LEN_MAX		0xFF
-#define CHAR_UNINITIALISED_LEN  0x00
+#define CHAR_VAL_LEN_MAX		        0xFF
+#define UNINITIALISED                   0x00
 
 typedef struct
 {

@@ -85,28 +85,28 @@ void bleTask(void *pvParameters)
     ret = esp_bt_controller_init(&bt_cfg);
     if (ret)
     {
-        ESP_LOGE(BLE_TASK_TAG, "%s enable controller failed\n", __func__);
+        ESP_LOGE(BLE_TASK_TAG, "%s BLUETOOTH CONTROLLER INIT FAILED\n", __func__);
         return;
     }
 
     ret = esp_bt_controller_enable(ESP_BT_MODE_BTDM);
     if (ret)
     {
-        ESP_LOGE(BLE_TASK_TAG, "%s enable controller failed\n", __func__);
+        ESP_LOGE(BLE_TASK_TAG, "%s  BLUETOOTH CONTROLLER ENABLE FAILED\n", __func__);
         return;
     }
 
-    ESP_LOGI(BLE_TASK_TAG, "%s init bluetooth\n", __func__);
+    ESP_LOGI(BLE_TASK_TAG, "%s INITIALISED BLUETOOTH CONTROLLER\n", __func__);
     ret = esp_bluedroid_init();
     if (ret)
     {
-        ESP_LOGE(BLE_TASK_TAG, "%s init bluetooth failed\n", __func__);
+        ESP_LOGE(BLE_TASK_TAG, "%s BLUEDROID STACK INIT FAILED\n", __func__);
         return;
     }
     ret = esp_bluedroid_enable();
     if (ret) 
     {
-        ESP_LOGE(BLE_TASK_TAG, "%s enable bluetooth failed\n", __func__);
+        ESP_LOGE(BLE_TASK_TAG, "%s BLUEDROID STACK ENABLE FAILED\n", __func__);
         return;
     }
 
