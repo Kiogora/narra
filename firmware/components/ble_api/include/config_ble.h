@@ -1,3 +1,6 @@
+#ifndef __CONFIG_BLE_H_
+#define __CONFIG_BLE_H_
+
 const uint8_t raw_adv_data[] = {
 0x02, // Len
 0x01, // Type Flags
@@ -104,3 +107,5 @@ static const uint8_t character_shutdown_string_uuid[ESP_UUID_LEN_128] =
 /* LSB <---------------------------------------------------------------> MSB */
 0x16,0x25,0x28,0x04,0x4a,0xb7,0x5a,0x9e,0xb4,0x43,0x23,0xfc,0x1a,0x93,0x6a,0xb6,
 };
+
+#endif /*__CONFIG_BLE_H_*/
