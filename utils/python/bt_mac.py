@@ -64,6 +64,27 @@ def get_base_mac(esptool_script):
         print("Subprocess exited with status code {code}".format(code=esp32_reply[-1]))
         sys.exit(1)
 
+def get_pretty_base_mac(esptool_script):
+    """
+    Obtains the BASE_MAC from an ESP32 chip using the "python esptool.py read_mac" command.
+    """
+    esptool_cmd='read_mac'
+    mac_identifier='MAC'
+
+    pipe=subprocess.Popen([esptool_script,esptool_cmd],stdout=subprocess.PIPE)
+    esp32_reply=pipe.communicate()
+    esp32_reply=esp32_reply[0].decode().split('\n')
+    if esp32_reply[-1] != 2:
+        for line in esp32_reply:
+            if mac_identifier in line:
+                split_mac=line.split(':')
+                del split_mac[0]
+                base_mac='-'.join(split_mac)
+                return base_mac.strip()
+    else:
+        print("Subprocess exited with status code {code}".format(code=esp32_reply[-1]))
+        sys.exit(1)
+
 def derive_bt_mac(base_mac,offset):
     """
     Derives the BT_MAC from the BASE_MAC and the BT_MAC LSB offset.
@@ -80,6 +101,6 @@ if __name__=='__main__':
     esptool_path_rel_prefix='components/esptool_py/esptool/'
     esptool_path_prefix=os.path.join(os.environ['IDF_PATH'], esptool_path_rel_prefix)
     esptool=os.path.join(esptool_path_prefix, 'esptool.py')
-
+    print('The base MAC for the current connected chip will be {MAC}'.format(MAC=get_pretty_base_mac(esptool)))
     bluetooth_mac=derive_bt_mac(get_base_mac(esptool), get_bt_mac_lsb_offset(sdkconfig_path_rel_prefix, sdkconfig))
     print('The bluetooth MAC for the current connected chip will be {MAC}'.format(MAC=bluetooth_mac))
