@@ -133,7 +133,7 @@ const char* gatts_event[24]=
 };
 #endif
 
-/************** GATT ATTRIBUTES ***************/
+/** GATT ATTRIBUTES**/
 
 esp_attr_value_t usage_state_attribute = 
 {
@@ -142,7 +142,21 @@ esp_attr_value_t usage_state_attribute =
     .attr_len    = UNINITIALISED,
 };
 
-esp_attr_value_t usage_string_attribute =
+esp_attr_value_t usage_runtime_string_attribute =
+{
+    .attr_max_len= CHAR_VAL_LEN_MAX,
+    .attr_value  = NULL,
+    .attr_len    = UNINITIALISED,
+};
+
+esp_attr_value_t usage_startup_string_attribute =
+{
+    .attr_max_len= CHAR_VAL_LEN_MAX,
+    .attr_value  = NULL,
+    .attr_len    = UNINITIALISED,
+};
+
+esp_attr_value_t usage_shutdown_string_attribute =
 {
     .attr_max_len= CHAR_VAL_LEN_MAX,
     .attr_value  = NULL,
@@ -194,16 +208,18 @@ void gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *par
         esp_ble_gap_start_advertising(&bitsoko_advert_params);
         break;
     case ESP_GAP_BLE_ADV_START_COMPLETE_EVT:
-        //advertising start complete event to indicate advertising start successfully or failed
-        if (param->adv_start_cmpl.status != ESP_BT_STATUS_SUCCESS) {
+        if (param->adv_start_cmpl.status != ESP_BT_STATUS_SUCCESS)
+        {
             ESP_LOGE(GATTS_TABLE_TAG, "Advertising start failed\n");
         }
         break;
     case ESP_GAP_BLE_ADV_STOP_COMPLETE_EVT:
-        if (param->adv_stop_cmpl.status != ESP_BT_STATUS_SUCCESS) {
+        if (param->adv_stop_cmpl.status != ESP_BT_STATUS_SUCCESS)
+        {
             ESP_LOGE(GATTS_TABLE_TAG, "Advertising stop failed\n");
         }
-        else {
+        else
+        {
             ESP_LOGI(GATTS_TABLE_TAG, "Stop adv successfully\n");
         }
         break;
@@ -234,9 +250,19 @@ esp_attr_value_t* get_usage_state_attribute(void)
     return &usage_state_attribute;
 }
 
-esp_attr_value_t* get_usage_string_attribute(void)
+esp_attr_value_t* get_usage_runtime_string_attribute(void)
 {
-    return &usage_string_attribute;
+    return &usage_runtime_string_attribute;
+}
+
+esp_attr_value_t* get_usage_startup_string_attribute(void)
+{
+    return &usage_startup_string_attribute;
+}
+
+esp_attr_value_t* get_usage_shutdown_string_attribute(void)
+{
+    return &usage_shutdown_string_attribute;
 }
 
 struct gatts_profile_inst 
@@ -280,7 +306,8 @@ static const uint16_t device_info_svc = ESP_GATT_UUID_DEVICE_INFO_SVC;
 static const esp_gatt_char_prop_t  sys_char_prop_indicate = ESP_GATT_CHAR_PROP_BIT_INDICATE;
 static const esp_gatt_char_prop_t  sys_char_prop_notify = ESP_GATT_CHAR_PROP_BIT_NOTIFY;
 static const esp_gatt_char_prop_t  sys_char_prop_read = ESP_GATT_CHAR_PROP_BIT_READ;
-static const esp_gatt_char_prop_t  sys_char_prop_read_write = ESP_GATT_CHAR_PROP_BIT_WRITE|ESP_GATT_CHAR_PROP_BIT_READ;
+static const esp_gatt_char_prop_t  sys_char_prop_read_write = ESP_GATT_CHAR_PROP_BIT_WRITE|
+                                                              ESP_GATT_CHAR_PROP_BIT_READ;
 //Service type uuid
 static const uint16_t sys_primary_service_uuid = ESP_GATT_UUID_PRI_SERVICE;
 //GATT declaration
@@ -337,6 +364,7 @@ esp_gatt_char_prop_t  usage_char_prop_indicate = ESP_GATT_CHAR_PROP_BIT_INDICATE
 esp_gatt_char_prop_t  usage_char_prop_notify = ESP_GATT_CHAR_PROP_BIT_NOTIFY;
 esp_gatt_char_prop_t  usage_char_prop_read = ESP_GATT_CHAR_PROP_BIT_READ;
 esp_gatt_char_prop_t  usage_char_prop_read_write = ESP_GATT_CHAR_PROP_BIT_WRITE| ESP_GATT_CHAR_PROP_BIT_READ;
+
 presentation_t utf8_presentation = 
 {
     ._format=utf_8_string,
@@ -369,7 +397,7 @@ static const uint16_t usage_character_client_config_uuid = ESP_GATT_UUID_CHAR_CL
 /*db709546-bcb6-426d-9c53-592297035393*/
 static const uint8_t usage_svc[ESP_UUID_LEN_128] =
 {
-/* LSB <-----------------------------------------------------------------> MSB */
+/* LSB <---------------------------------------------------------------> MSB */
 0x93,0x53,0x03,0x97,0x22,0x59,0x53,0x9c,0x6d,0x42,0xb6,0xbc,0x46,0x95,0x70,0xdb,
 };
 
@@ -379,7 +407,6 @@ static const uint8_t character_display_string_uuid[ESP_UUID_LEN_128] =
 /* LSB <---------------------------------------------------------------> MSB */
 0x19,0x7c,0x14,0x97,0x06,0xa7,0x80,0x82,0x1f,0x4a,0xe5,0x35,0x95,0x69,0x5d,0x8f,
 };
-static const uint8_t  display_string_val[5] = {0x48,0x45,0x4c,0x4c,0x4f};
 
 /*7351f963-fbc7-42cc-88ca-dc084155c2db*/
 static const uint8_t character_device_state_uuid[ESP_UUID_LEN_128] =
@@ -387,13 +414,19 @@ static const uint8_t character_device_state_uuid[ESP_UUID_LEN_128] =
 /* LSB <---------------------------------------------------------------> MSB */
 0xdb,0xc2,0x55,0x41,0x08,0xdc,0xca,0x88,0xcc,0x42,0xc7,0xfb,0x63,0xf9,0x51,0x73,
 };
-static const uint8_t  device_state_val[1] = {0x01};
 
 /*5c5be607-4f2e-4f8e-b2b2-c16116c6783c*/
-static const uint8_t character_device_mtu_uuid[ESP_UUID_LEN_128] =
+static const uint8_t character_startup_string_uuid[ESP_UUID_LEN_128] =
 {
 /* LSB <---------------------------------------------------------------> MSB */
 0x3c,0x78,0xc6,0x16,0x61,0xc1,0xb2,0xb2,0x8e,0x4f,0x2e,0x4f,0x07,0xe6,0x5b,0x5c,
+};
+
+/*b66a931a-fc23-43b4-9e5a-b74a04282516*/
+static const uint8_t character_shutdown_string_uuid[ESP_UUID_LEN_128] =
+{
+/* LSB <---------------------------------------------------------------> MSB */
+0x16,0x25,0x28,0x04,0x4a,0xb7,0x5a,0x9e,0xb4,0x43,0x23,0xfc,0x1a,0x93,0x6a,0xb6,
 };
 
 esp_gatts_attr_db_t usage_gatt_db[USAGE_IDX_NB] =
@@ -408,25 +441,47 @@ esp_gatts_attr_db_t usage_gatt_db[USAGE_IDX_NB] =
 
     [USAGE_IDX_DISPLAY_STRING_VAL]          =    
     {{ESP_GATT_RSP_BY_APP}, {ESP_UUID_LEN_128, (uint8_t *)&character_display_string_uuid, ESP_GATT_PERM_READ|
-      ESP_GATT_PERM_WRITE, sizeof(display_string_val), sizeof(display_string_val), 
-      (uint8_t *)display_string_val}},
+      ESP_GATT_PERM_WRITE, 0, 0, NULL}},
 
     [USAGE_IDX_DISPLAY_STRING_CFG_1]     	=    
     {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_char_presentation_uuid,
      ESP_GATT_PERM_READ, sizeof(utf8_presentation), sizeof(utf8_presentation), (uint8_t *)&utf8_presentation}},
 
-    [USAGE_IDX_DEVICE_STATE_CHAR]     	     =    
+    [USAGE_IDX_STARTUP_STRING_CHAR]         =
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_declaration_uuid, ESP_GATT_PERM_READ,
+      CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE,(uint8_t *)&usage_char_prop_read_write}},
+
+    [USAGE_IDX_STARTUP_STRING_VAL]          =    
+    {{ESP_GATT_RSP_BY_APP}, {ESP_UUID_LEN_128, (uint8_t *)&character_startup_string_uuid, ESP_GATT_PERM_READ|
+      ESP_GATT_PERM_WRITE, 0, 0, NULL}},
+
+    [USAGE_IDX_STARTUP_STRING_CFG_1]     	=    
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_char_presentation_uuid,
+     ESP_GATT_PERM_READ, sizeof(utf8_presentation), sizeof(utf8_presentation), (uint8_t *)&utf8_presentation}},
+
+    [USAGE_IDX_SHUTDOWN_STRING_CHAR]        =
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_declaration_uuid, ESP_GATT_PERM_READ,
+      CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE,(uint8_t *)&usage_char_prop_read_write}},
+
+    [USAGE_IDX_SHUTDOWN_STRING_VAL]         =    
+    {{ESP_GATT_RSP_BY_APP}, {ESP_UUID_LEN_128, (uint8_t *)&character_shutdown_string_uuid, ESP_GATT_PERM_READ|
+      ESP_GATT_PERM_WRITE, 0, 0, NULL}},
+
+    [USAGE_IDX_SHUTDOWN_STRING_CFG_1]       =    
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_char_presentation_uuid,
+     ESP_GATT_PERM_READ, sizeof(utf8_presentation), sizeof(utf8_presentation), (uint8_t *)&utf8_presentation}},
+
+    [USAGE_IDX_DEVICE_STATE_CHAR]           =    
     {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_declaration_uuid, ESP_GATT_PERM_READ, 
     CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE, (uint8_t *)&usage_char_prop_read_write}},
 
-    [USAGE_IDX_DEVICE_STATE_VAL]     	     =    
+    [USAGE_IDX_DEVICE_STATE_VAL]     	    =    
     {{ESP_GATT_RSP_BY_APP}, {ESP_UUID_LEN_128, (uint8_t *)&character_device_state_uuid, ESP_GATT_PERM_READ|
-    ESP_GATT_PERM_WRITE, sizeof(device_state_val), sizeof(device_state_val), (uint8_t *)device_state_val}},
+    ESP_GATT_PERM_WRITE, 0, 0, NULL}},
 
-    [USAGE_IDX_DEVICE_STATE_CFG_1]           =    
+    [USAGE_IDX_DEVICE_STATE_CFG_1]          =    
     {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_char_presentation_uuid,
-     ESP_GATT_PERM_READ, sizeof(uint8_presentation), 
-     sizeof(uint8_presentation), (uint8_t *)&uint8_presentation}},
+     ESP_GATT_PERM_READ, sizeof(uint8_presentation), sizeof(uint8_presentation), (uint8_t *)&uint8_presentation}},
 };
 
 static void system_profile_event_handler(esp_gatts_cb_event_t event, 
@@ -506,8 +561,7 @@ static void system_profile_event_handler(esp_gatts_cb_event_t event,
     }
 }
 
-/********************************************Reads***********************************************/
-/************************************************************************************************/
+/**Read operation funcs**/
 
 //Remember The Max MTU negotiable ESP_GATT_MAX_MTU_SIZE(517) < ESP_GATT_MAX_ATTR_LEN(600)
 static void usage_profile_read_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if,
@@ -519,7 +573,15 @@ static void usage_profile_read_event_handler(esp_gatts_cb_event_t event, esp_gat
     }
     else if (param->read.handle == usage_handle_table[USAGE_IDX_DISPLAY_STRING_VAL])
     {
-        read_attribute_by_app(&usage_string_attribute, event, gatts_if, param);
+        read_attribute_by_app(&usage_runtime_string_attribute, event, gatts_if, param);
+    }
+    else if (param->read.handle == usage_handle_table[USAGE_IDX_STARTUP_STRING_VAL])
+    {
+        read_attribute_by_app(&usage_startup_string_attribute, event, gatts_if, param);
+    }
+    else if (param->read.handle == usage_handle_table[USAGE_IDX_SHUTDOWN_STRING_VAL])
+    {
+        read_attribute_by_app(&usage_shutdown_string_attribute, event, gatts_if, param);
     }
     else
     { 
@@ -576,12 +638,19 @@ static void update_attribute_length(esp_attr_value_t* attribute, esp_ble_gatts_c
     {
         attribute->attr_len = strlen((char*)attribute->attr_value);
     }
+    else if (param->read.handle == usage_handle_table[USAGE_IDX_STARTUP_STRING_VAL])
+    {
+        attribute->attr_len = strlen((char*)attribute->attr_value);
+    }
+    else if (param->read.handle == usage_handle_table[USAGE_IDX_SHUTDOWN_STRING_VAL])
+    {
+        attribute->attr_len = strlen((char*)attribute->attr_value);
+    }
     ESP_LOGI(GATTS_TABLE_TAG,"ATTRIBUTE LENGTH READ IS %u", attribute->attr_len);
 }
 
 
-/********************************************Writes***********************************************/
-/*************************************************************************************************/
+/**Write operation funcs**/
 
 static void usage_profile_prepare_write_event_handler(prepare_write_t *prepare_write_env, esp_gatt_if_t gatts_if, 
                                                       esp_ble_gatts_cb_param_t *param)
@@ -617,7 +686,17 @@ static void usage_profile_prepare_write_event_handler(prepare_write_t *prepare_w
             }
             else if (prepare_write_env->handle == usage_handle_table[USAGE_IDX_DISPLAY_STRING_VAL])
             {
-                bytestring_check_then_write(&usage_string_attribute, prepare_write_env, param);
+                bytestring_check_then_write(&usage_runtime_string_attribute, prepare_write_env, param);
+                clear_write_buffer(prepare_write_env);
+            }
+            else if (prepare_write_env->handle == usage_handle_table[USAGE_IDX_STARTUP_STRING_VAL])
+            {
+                bytestring_check_then_write(&usage_startup_string_attribute, prepare_write_env, param);
+                clear_write_buffer(prepare_write_env);
+            }
+            else if (prepare_write_env->handle == usage_handle_table[USAGE_IDX_STARTUP_STRING_VAL])
+            {
+                bytestring_check_then_write(&usage_startup_string_attribute, prepare_write_env, param);
                 clear_write_buffer(prepare_write_env);
             }
         }
@@ -738,7 +817,18 @@ static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_wri
         {
             /*commit the utf8 string write*/
             /*In the case of multiple system messages, check handle against the GATT attribute handle table*/
-            system_update_active((char*)nul_terminated_buffer);
+            if(prepare_write_env->handle == usage_handle_table[USAGE_IDX_DISPLAY_STRING_VAL])
+            {
+                system_update_active((char*)nul_terminated_buffer);
+            }
+            else if(prepare_write_env->handle == usage_handle_table[USAGE_IDX_STARTUP_STRING_VAL])
+            {
+                system_update_startup((char*)nul_terminated_buffer);
+            }
+            else if(prepare_write_env->handle == usage_handle_table[USAGE_IDX_SHUTDOWN_STRING_VAL])
+            {
+                system_update_shutdown((char*)nul_terminated_buffer);
+            }            
             ESP_LOGI(GATTS_TABLE_TAG, "NUL TERMINATOR FOUND, WRITING STRING :D");
             ESP_LOGI(GATTS_TABLE_TAG, "STRING LEN IS: %d", strlen((char*)nul_terminated_buffer));
             ESP_LOGI(GATTS_TABLE_TAG, "STRING VAL WRITTEN IS: %s", (char*)nul_terminated_buffer);
@@ -756,6 +846,18 @@ static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_wri
         invalid = check_count_valid_UTF8((char*)prepare_write_env->prepare_buf, &bytestring_length);
         if(!invalid)
         {
+            if(prepare_write_env->handle == usage_handle_table[USAGE_IDX_DISPLAY_STRING_VAL])
+            {
+                system_update_active((char*)prepare_write_env->prepare_buf);
+            }
+            else if(prepare_write_env->handle == usage_handle_table[USAGE_IDX_STARTUP_STRING_VAL])
+            {
+                system_update_startup((char*)prepare_write_env->prepare_buf);
+            }
+            else if(prepare_write_env->handle == usage_handle_table[USAGE_IDX_SHUTDOWN_STRING_VAL])
+            {
+                system_update_shutdown((char*)prepare_write_env->prepare_buf);
+            }
             /*commit the utf8 string write*/
             /*In the case of multiple system messages, check handle against the GATT attribute handle table*/
             system_update_active((char*)prepare_write_env->prepare_buf);
@@ -791,7 +893,31 @@ static void usage_profile_exec_write_event_handler(prepare_write_t* prepare_writ
     {
         if (param->exec_write.exec_write_flag == ESP_GATT_PREP_WRITE_EXEC)
         {
-            bytestring_check_then_write(&usage_string_attribute, prepare_write_env, param);
+            bytestring_check_then_write(&usage_runtime_string_attribute, prepare_write_env, param);
+        }
+        else
+        {
+            ESP_LOGI(GATTS_TABLE_TAG,"ESP_GATT_PREP_WRITE_EXEC_CANCEL");
+        }
+        clear_write_buffer(prepare_write_env);
+    }
+    else if (prepare_write_env->handle == usage_handle_table[USAGE_IDX_STARTUP_STRING_VAL])
+    {
+        if (param->exec_write.exec_write_flag == ESP_GATT_PREP_WRITE_EXEC)
+        {
+            bytestring_check_then_write(&usage_startup_string_attribute, prepare_write_env, param);
+        }
+        else
+        {
+            ESP_LOGI(GATTS_TABLE_TAG,"ESP_GATT_PREP_WRITE_EXEC_CANCEL");
+        }
+        clear_write_buffer(prepare_write_env);
+    }
+    else if (prepare_write_env->handle == usage_handle_table[USAGE_IDX_SHUTDOWN_STRING_VAL])
+    {
+        if (param->exec_write.exec_write_flag == ESP_GATT_PREP_WRITE_EXEC)
+        {
+            bytestring_check_then_write(&usage_shutdown_string_attribute, prepare_write_env, param);
         }
         else
         {

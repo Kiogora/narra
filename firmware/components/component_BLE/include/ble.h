@@ -99,6 +99,14 @@ enum
     USAGE_IDX_DISPLAY_STRING_VAL,
     USAGE_IDX_DISPLAY_STRING_CFG_1,
 
+    USAGE_IDX_STARTUP_STRING_CHAR,
+    USAGE_IDX_STARTUP_STRING_VAL,
+    USAGE_IDX_STARTUP_STRING_CFG_1,
+
+    USAGE_IDX_SHUTDOWN_STRING_CHAR,
+    USAGE_IDX_SHUTDOWN_STRING_VAL,
+    USAGE_IDX_SHUTDOWN_STRING_CFG_1,
+
     USAGE_IDX_DEVICE_STATE_CHAR,
     USAGE_IDX_DEVICE_STATE_VAL,
     USAGE_IDX_DEVICE_STATE_CFG_1,
@@ -106,13 +114,17 @@ enum
     USAGE_IDX_NB,
 };
 
-esp_attr_value_t* get_usage_state_attribute(void);
-
-esp_attr_value_t* get_usage_string_attribute(void);
-
 void gatts_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, 
 									esp_ble_gatts_cb_param_t *param);
 
 void gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *param);
+
+esp_attr_value_t* get_usage_state_attribute(void);
+
+esp_attr_value_t* get_usage_runtime_string_attribute(void);
+
+esp_attr_value_t* get_usage_startup_string_attribute(void);
+
+esp_attr_value_t* get_usage_shutdown_string_attribute(void);
 
 #endif /*__BLE_H_*/

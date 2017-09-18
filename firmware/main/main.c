@@ -118,10 +118,14 @@ void bleTask(void *pvParameters)
     /*We could increase the priority of ble task during writes to ensure it is not preempted by a separate task*/
     /*This is if there are writes from multiple sources to say a pointer*/
     esp_attr_value_t* usage_state_attr = get_usage_state_attribute();
-    esp_attr_value_t* usage_string_attr = get_usage_string_attribute();
+    esp_attr_value_t* usage_runtime_string_attr = get_usage_runtime_string_attribute();
+    esp_attr_value_t* usage_startup_string_attr = get_usage_startup_string_attribute();
+    esp_attr_value_t* usage_shutdown_string_attr = get_usage_shutdown_string_attribute();
 
     usage_state_attr->attr_value = (uint8_t*) &(ble_param->matrix_instance_ptr->system_state);
-    usage_string_attr->attr_value = (uint8_t*) ble_param->system_variables_ptr->active_msg;
+    usage_runtime_string_attr->attr_value = (uint8_t*) ble_param->system_variables_ptr->active_msg;
+    usage_startup_string_attr->attr_value = (uint8_t*) ble_param->system_variables_ptr->startup_msg;
+    usage_shutdown_string_attr->attr_value = (uint8_t*) ble_param->system_variables_ptr->shutdown_msg;
 
     esp_ble_gatts_register_callback(gatts_event_handler);
     esp_ble_gap_register_callback(gap_event_handler);
@@ -138,12 +142,6 @@ void displayTask(void *pvParameters)
 {
     init_pin_interface(&matrix);
 
-/*    char* new_text="***WELCOME TO HEAVEN***";
-    system_update_startup(new_text);
-presentation_t
-    char* active_text="***VIVO-ENERGY©µ***";    
-    system_update_active(active_text);
-*/
     if(matrix_init(&matrix, &system_variables, narra_speed_15) == ESP_OK)
     {
         /*Call xTaskCreate for the BLE task here*/
