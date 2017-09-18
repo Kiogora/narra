@@ -16,11 +16,12 @@
 #include "system_controller.h"/*Sets the matrix description struct, enable state member*/
 #include "utf8_decoder.h"
 
-static const char* TAG = "Component_updater";
+static const char* TAG = "UPDATER_API";
 
 #if defined ALLOW_SIMPLE_STARTUP_MSG_UPDATE || defined ALLOW_COMPLEX_STARTUP_MSG_UPDATE
 int32_t system_update_startup(char* new_startup_msg)
 {
+    ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
     narra_nvs_init();
     nvs_handle system_updater;
     nvs_open("system", NVS_READWRITE, &system_updater);
@@ -54,6 +55,7 @@ int32_t system_update_startup(char* new_startup_msg)
 #if defined ALLOW_SIMPLE_ACTIVE_MSG_UPDATE || defined ALLOW_COMPLEX_ACTIVE_MSG_UPDATE
 int32_t system_update_active(char* new_active_msg)
 {
+    ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
     narra_nvs_init();
     nvs_handle system_updater;
     nvs_open("system", NVS_READWRITE, &system_updater);
@@ -86,6 +88,7 @@ int32_t system_update_active(char* new_active_msg)
 #if defined ALLOW_SIMPLE_SHUTDOWN_MSG_UPDATE || defined ALLOW_COMPLEX_SHUTDOWN_MSG_UPDATE
 int32_t system_update_shutdown(char* new_shutdown_msg)
 {
+    ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
     narra_nvs_init();
     nvs_handle system_updater;
     nvs_open("system", NVS_READWRITE, &system_updater);

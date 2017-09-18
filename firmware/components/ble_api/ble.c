@@ -26,6 +26,8 @@
 #include "system_loader.h"
 
 
+const char* BLE_TAG = "BLE_API";
+
 uint16_t system_handle_table[SYSTEM_IDX_NB];
 uint16_t usage_handle_table[USAGE_IDX_NB];
 
@@ -196,6 +198,7 @@ static void usage_profile_exec_write_event_handler(prepare_write_t* prepare_writ
 
 void gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *param)
 {
+    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
     switch (event) 
     {
     case ESP_GAP_BLE_ADV_DATA_SET_COMPLETE_EVT:
@@ -210,21 +213,21 @@ void gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *par
     case ESP_GAP_BLE_ADV_START_COMPLETE_EVT:
         if (param->adv_start_cmpl.status != ESP_BT_STATUS_SUCCESS)
         {
-            ESP_LOGE(GATTS_TABLE_TAG, "Advertising start failed\n");
+            ESP_LOGE(BLE_TAG, "Advertising start failed\n");
         }
         break;
     case ESP_GAP_BLE_ADV_STOP_COMPLETE_EVT:
         if (param->adv_stop_cmpl.status != ESP_BT_STATUS_SUCCESS)
         {
-            ESP_LOGE(GATTS_TABLE_TAG, "Advertising stop failed\n");
+            ESP_LOGE(BLE_TAG, "Advertising stop failed\n");
         }
         else
         {
-            ESP_LOGI(GATTS_TABLE_TAG, "Stop adv successfully\n");
+            ESP_LOGI(BLE_TAG, "Stop adv successfully\n");
         }
         break;
     case ESP_GAP_BLE_UPDATE_CONN_PARAMS_EVT:
-         ESP_LOGI(GATTS_TABLE_TAG, 
+         ESP_LOGI(BLE_TAG, 
                   "update connetion params status=%d, min_int=%d, max_int=%d, conn_int=%d, latency=%d, timeout=%d",
                   param->update_conn_params.status,
                   param->update_conn_params.min_int,
@@ -487,18 +490,19 @@ esp_gatts_attr_db_t usage_gatt_db[USAGE_IDX_NB] =
 static void system_profile_event_handler(esp_gatts_cb_event_t event,
                                          esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param) 
 {
+    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
     switch (event) {
     	case ESP_GATTS_REG_EVT:
-            ESP_LOGI(GATTS_TABLE_TAG, "%s %d\n", __func__, __LINE__);
+            ESP_LOGI(BLE_TAG, "%s %d\n", __func__, __LINE__);
             //TODO Redo the advertised name as there may be more than one beacon in a vicinity.
             esp_ble_gap_set_device_name(ADVERTISED_DEVICE_NAME);
 
-            ESP_LOGI(GATTS_TABLE_TAG, "%s %d\n", __func__, __LINE__);
+            ESP_LOGI(BLE_TAG, "%s %d\n", __func__, __LINE__);
 
             esp_ble_gap_config_adv_data_raw(raw_adv_data, sizeof(raw_adv_data));
             esp_ble_gap_config_scan_rsp_data_raw(raw_scan_rsp_data, sizeof(raw_scan_rsp_data));
 
-            ESP_LOGI(GATTS_TABLE_TAG, "%s %d\n", __func__, __LINE__);
+            ESP_LOGI(BLE_TAG, "%s %d\n", __func__, __LINE__);
 
             esp_ble_gatts_create_attr_tab(system_gatt_db, gatts_if, SYSTEM_IDX_NB, SYSTEM_SERVICE_INSTANCE_ID);
        	    break;
@@ -537,15 +541,15 @@ static void system_profile_event_handler(esp_gatts_cb_event_t event,
 		    break;
         case ESP_GATTS_CREAT_ATTR_TAB_EVT:
         {
-            ESP_LOGI(GATTS_TABLE_TAG, "NUMBER OF ATT TABLE HANDLES CREATED: %d\n",param->add_attr_tab.num_handle);
+            ESP_LOGI(BLE_TAG, "NUMBER OF ATT TABLE HANDLES CREATED: %d\n",param->add_attr_tab.num_handle);
             if (param->add_attr_tab.status != ESP_GATT_OK)
             {
-                ESP_LOGE(GATTS_TABLE_TAG, "CREATE ATT TABLE FAILED, ERROR CODE: 0x%x", 
+                ESP_LOGE(BLE_TAG, "CREATE ATT TABLE FAILED, ERROR CODE: 0x%x", 
                          param->add_attr_tab.status);
             }
             else if (param->add_attr_tab.num_handle != SYSTEM_IDX_NB)
             {
-                ESP_LOGE(GATTS_TABLE_TAG, "ATTRIBUTE HANDLE TABLE ABNORMAL, NUMBER OF ATT TABLE HANDLES: %d \
+                ESP_LOGE(BLE_TAG, "ATTRIBUTE HANDLE TABLE ABNORMAL, NUMBER OF ATT TABLE HANDLES: %d \
                         DOESN'T EQUAL SYSTEM_IDX_NB: %d", param->add_attr_tab.num_handle, SYSTEM_IDX_NB);
             }
             else
@@ -567,6 +571,7 @@ static void system_profile_event_handler(esp_gatts_cb_event_t event,
 static void usage_profile_read_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if,
                                              esp_ble_gatts_cb_param_t *param)
 {
+    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
     if (param->read.handle == usage_handle_table[USAGE_IDX_DEVICE_STATE_VAL])
     {
         read_attribute_by_app(&usage_state_attribute, event, gatts_if, param);
@@ -592,7 +597,7 @@ static void usage_profile_read_event_handler(esp_gatts_cb_event_t event, esp_gat
 static void read_attribute_by_app(esp_attr_value_t* attribute, esp_gatts_cb_event_t event, 
                                   esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param)
 {
-  
+    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
     update_attribute_length(attribute, param);
 
     esp_gatt_status_t status = ESP_GATT_OK;
@@ -629,6 +634,7 @@ static void read_attribute_by_app(esp_attr_value_t* attribute, esp_gatts_cb_even
 
 static void update_attribute_length(esp_attr_value_t* attribute, esp_ble_gatts_cb_param_t *param)
 {
+    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
     /*Do not get and update the length of attribute at global level, perform this at local at each read event.*/
     if (param->read.handle == usage_handle_table[USAGE_IDX_DEVICE_STATE_VAL])
     {
@@ -646,7 +652,7 @@ static void update_attribute_length(esp_attr_value_t* attribute, esp_ble_gatts_c
     {
         attribute->attr_len = strlen((char*)attribute->attr_value);
     }
-    ESP_LOGI(GATTS_TABLE_TAG,"ATTRIBUTE LENGTH READ IS %u", attribute->attr_len);
+    ESP_LOGI(BLE_TAG,"ATTRIBUTE LENGTH READ IS %u", attribute->attr_len);
 }
 
 
@@ -655,6 +661,7 @@ static void update_attribute_length(esp_attr_value_t* attribute, esp_ble_gatts_c
 static void usage_profile_prepare_write_event_handler(prepare_write_t *prepare_write_env, esp_gatt_if_t gatts_if,
                                                       esp_ble_gatts_cb_param_t *param)
 {
+    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
     if (param->write.need_rsp)
     {
         if (param->write.is_prep)
@@ -706,6 +713,7 @@ static void usage_profile_prepare_write_event_handler(prepare_write_t *prepare_w
 static esp_gatt_status_t prepare_write_buffer(prepare_write_t *prepare_write_env, esp_gatt_if_t gatts_if,
                                               esp_ble_gatts_cb_param_t *param)
 {
+    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
     esp_gatt_status_t status = ESP_GATT_OK;
     if (prepare_write_env->prepare_buf == NULL)
     {
@@ -755,6 +763,7 @@ static esp_gatt_status_t prepare_write_buffer(prepare_write_t *prepare_write_env
 
 static void clear_write_buffer(prepare_write_t *prepare_write_env)
 {
+    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
     if (prepare_write_env->prepare_buf)
     {
         free(prepare_write_env->prepare_buf);
@@ -782,26 +791,28 @@ static void clear_write_buffer(prepare_write_t *prepare_write_env)
 static void uint8_check_then_write(esp_attr_value_t* attribute, prepare_write_t* prepare_write_env, 
                                      esp_ble_gatts_cb_param_t *param)
 {
+    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
     /*Check buffer length, should be a byte long*/
     if(prepare_write_env->prepare_len != sizeof(uint8_t))
     {
-        ESP_LOGI(GATTS_TABLE_TAG, "INVALID STATE VALUE. VALUE NOT WRITTEN");
+        ESP_LOGI(BLE_TAG, "INVALID STATE VALUE. VALUE NOT WRITTEN");
         return;
     }
     else
     {
         /*commit the value write*/
         /*In the case of multiple values, check handle against the GATT attribute handle table*/
-        ESP_LOGI(GATTS_TABLE_TAG, "VALID STATE VALUE. VALUE WRITTEN :D");
-        ESP_LOGI(GATTS_TABLE_TAG, "STATE LEN IS: %d", prepare_write_env->prepare_len)
-        ESP_LOGI(GATTS_TABLE_TAG, "STATE VAL WRITTEN IS: DECIMAL %u, HEX 0x%02X", *(prepare_write_env->prepare_buf),
-                                                                                  *(prepare_write_env->prepare_buf));
+        ESP_LOGI(BLE_TAG, "VALID STATE VALUE. VALUE WRITTEN :D");
+        ESP_LOGI(BLE_TAG, "STATE LEN IS: %d", prepare_write_env->prepare_len)
+        ESP_LOGI(BLE_TAG, "STATE VAL WRITTEN IS: DECIMAL %u, HEX 0x%02X",*(prepare_write_env->prepare_buf),
+                                                                                 *(prepare_write_env->prepare_buf));
     }
 }
 
 static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_write_t* prepare_write_env, 
                                         esp_ble_gatts_cb_param_t *param)
 {
+    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
     /* sanity check variable that holds the (in)validity of the byte buffer as a UTF8 string*/
     uint8_t invalid=0;
     size_t bytestring_length;
@@ -829,13 +840,13 @@ static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_wri
             {
                 system_update_shutdown((char*)nul_terminated_buffer);
             }            
-            ESP_LOGI(GATTS_TABLE_TAG, "NUL TERMINATOR FOUND, WRITING STRING :D");
-            ESP_LOGI(GATTS_TABLE_TAG, "STRING LEN IS: %d", strlen((char*)nul_terminated_buffer));
-            ESP_LOGI(GATTS_TABLE_TAG, "STRING VAL WRITTEN IS: %s", (char*)nul_terminated_buffer);
+            ESP_LOGI(BLE_TAG, "NUL TERMINATOR FOUND, WRITING STRING :D");
+            ESP_LOGI(BLE_TAG, "STRING LEN IS: %d", strlen((char*)nul_terminated_buffer));
+            ESP_LOGI(BLE_TAG, "STRING VAL WRITTEN IS: %s", (char*)nul_terminated_buffer);
         }
         else
         {
-            ESP_LOGI(GATTS_TABLE_TAG, "NO NUL TERMINATOR FOUND, INVALID STRING AFTER NUL CHAR ADDITION");
+            ESP_LOGI(BLE_TAG, "NO NUL TERMINATOR FOUND, INVALID STRING AFTER NUL CHAR ADDITION");
             return;
         }
         free(nul_terminated_buffer);
@@ -861,13 +872,13 @@ static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_wri
             /*commit the utf8 string write*/
             /*In the case of multiple system messages, check handle against the GATT attribute handle table*/
             system_update_active((char*)prepare_write_env->prepare_buf);
-            ESP_LOGI(GATTS_TABLE_TAG, "NULL TERMINATOR FOUND, WRITING STRING :D");
-            ESP_LOGI(GATTS_TABLE_TAG, "STRING WRITTEN IS: %s", (char*)prepare_write_env->prepare_buf);
+            ESP_LOGI(BLE_TAG, "NULL TERMINATOR FOUND, WRITING STRING :D");
+            ESP_LOGI(BLE_TAG, "STRING WRITTEN IS: %s", (char*)prepare_write_env->prepare_buf);
             
         }
         else
         {
-            ESP_LOGI(GATTS_TABLE_TAG, "NUL TERMINATOR FOUND, BUT INVALID STRING");
+            ESP_LOGI(BLE_TAG, "NUL TERMINATOR FOUND, BUT INVALID STRING");
             return;
         }
     }
@@ -876,7 +887,7 @@ static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_wri
 static void usage_profile_exec_write_event_handler(prepare_write_t* prepare_write_env, 
                                                    esp_ble_gatts_cb_param_t* param)
 {
-    
+    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
     if (prepare_write_env->handle == usage_handle_table[USAGE_IDX_DEVICE_STATE_VAL])
     {
         if (param->exec_write.exec_write_flag == ESP_GATT_PREP_WRITE_EXEC)
@@ -885,7 +896,7 @@ static void usage_profile_exec_write_event_handler(prepare_write_t* prepare_writ
         }
         else
         {
-            ESP_LOGI(GATTS_TABLE_TAG,"ESP_GATT_PREP_WRITE_EXEC_CANCEL");
+            ESP_LOGI(BLE_TAG,"ESP_GATT_PREP_WRITE_EXEC_CANCEL");
         }
         clear_write_buffer(prepare_write_env);
     }
@@ -897,7 +908,7 @@ static void usage_profile_exec_write_event_handler(prepare_write_t* prepare_writ
         }
         else
         {
-            ESP_LOGI(GATTS_TABLE_TAG,"ESP_GATT_PREP_WRITE_EXEC_CANCEL");
+            ESP_LOGI(BLE_TAG,"ESP_GATT_PREP_WRITE_EXEC_CANCEL");
         }
         clear_write_buffer(prepare_write_env);
     }
@@ -909,7 +920,7 @@ static void usage_profile_exec_write_event_handler(prepare_write_t* prepare_writ
         }
         else
         {
-            ESP_LOGI(GATTS_TABLE_TAG,"ESP_GATT_PREP_WRITE_EXEC_CANCEL");
+            ESP_LOGI(BLE_TAG,"ESP_GATT_PREP_WRITE_EXEC_CANCEL");
         }
         clear_write_buffer(prepare_write_env);
     }
@@ -921,7 +932,7 @@ static void usage_profile_exec_write_event_handler(prepare_write_t* prepare_writ
         }
         else
         {
-            ESP_LOGI(GATTS_TABLE_TAG,"ESP_GATT_PREP_WRITE_EXEC_CANCEL");
+            ESP_LOGI(BLE_TAG,"ESP_GATT_PREP_WRITE_EXEC_CANCEL");
         }
         clear_write_buffer(prepare_write_env);
     }
@@ -935,9 +946,10 @@ static void usage_profile_exec_write_event_handler(prepare_write_t* prepare_writ
 static void usage_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if,
                                         esp_ble_gatts_cb_param_t *param) 
 {
+    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
     switch (event) {
     	case ESP_GATTS_REG_EVT:
-            ESP_LOGI(GATTS_TABLE_TAG, "%s %d\n", __func__, __LINE__);
+            ESP_LOGI(BLE_TAG, "%s %d\n", __func__, __LINE__);
             esp_ble_gatts_create_attr_tab(usage_gatt_db, gatts_if, USAGE_IDX_NB, USAGE_SERVICE_INSTANCE_ID);
        	    break;
     	case ESP_GATTS_READ_EVT:
@@ -977,15 +989,15 @@ static void usage_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_
 		    break;
         case ESP_GATTS_CREAT_ATTR_TAB_EVT:
         {
-            ESP_LOGI(GATTS_TABLE_TAG, "NUMBER OF ATT TABLE HANDLES CREATED: %d\n",param->add_attr_tab.num_handle);
+            ESP_LOGI(BLE_TAG, "NUMBER OF ATT TABLE HANDLES CREATED: %d\n",param->add_attr_tab.num_handle);
             if (param->add_attr_tab.status != ESP_GATT_OK)
             {
-                ESP_LOGE(GATTS_TABLE_TAG, "CREATE ATT TABLE FAILED, ERROR CODE: 0x%x", 
+                ESP_LOGE(BLE_TAG, "CREATE ATT TABLE FAILED, ERROR CODE: 0x%x", 
                          param->add_attr_tab.status);
             }
             else if (param->add_attr_tab.num_handle != USAGE_IDX_NB)
             {
-                ESP_LOGE(GATTS_TABLE_TAG, "ATTRIBUTE HANDLE TABLE ABNORMAL, NUMBER OF ATT TABLE HANDLES: %d \
+                ESP_LOGE(BLE_TAG, "ATTRIBUTE HANDLE TABLE ABNORMAL, NUMBER OF ATT TABLE HANDLES: %d \
                         DOESN'T EQUAL USAGE_IDX_NB: %d", param->add_attr_tab.num_handle, USAGE_IDX_NB);
             }
             else 
@@ -1002,7 +1014,8 @@ static void usage_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_
 
 void gatts_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param)
 {
-    ESP_LOGI(GATTS_TABLE_TAG, "EVENT TYPE: %s, EVENT ID: %d, GATTS IF: %d\n", gatts_event[event], event, gatts_if);
+    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
+    ESP_LOGI(BLE_TAG, "EVENT TYPE: %s, EVENT ID: %d, GATTS IF: %d\n", gatts_event[event], event, gatts_if);
     /* If event is register event, store the gatts_if for each profile */
     if (event == ESP_GATTS_REG_EVT) {
         if (param->reg.status == ESP_GATT_OK) 
@@ -1011,7 +1024,7 @@ void gatts_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, esp
         } 
         else 
         {
-            ESP_LOGI(GATTS_TABLE_TAG, "REG APP FAILED, APP_ID: 0x%04x, STATUS: %d\n",
+            ESP_LOGI(BLE_TAG, "REG APP FAILED, APP_ID: 0x%04x, STATUS: %d\n",
                      param->reg.app_id, param->reg.status);
             return;
         }

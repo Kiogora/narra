@@ -22,13 +22,14 @@
 #include "scrolling_effect.h"
 #include "utf8_decoder.h"
 
-static const char* TAG = "Component_controller";
+static const char* TAG = "CONTROLLER_API";
 
 /*Private functions*/
 /*******************/
 /* You can change this function's contents depending on the embedded platform*/
 static esp_err_t init_pin_interface(Matrix* matrixInstanceptr)
 {
+    ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
     gpio_pad_select_gpio(matrixInstanceptr->serial_pin);
     gpio_pad_select_gpio(matrixInstanceptr->shift_pin);
     gpio_pad_select_gpio(matrixInstanceptr->latch_pin);
@@ -45,6 +46,7 @@ static esp_err_t init_pin_interface(Matrix* matrixInstanceptr)
 
 static char* add_txt_spacer(Matrix* matrixInstanceptr, char* spacer)
 {
+    ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
     if(spacer != NULL && matrixInstanceptr->current_message != NULL)
     {
 /*
@@ -74,6 +76,7 @@ static char* add_txt_spacer(Matrix* matrixInstanceptr, char* spacer)
 /*setup matrix*/
 esp_err_t matrix_init(Matrix* matrixInstanceptr, System_variables* system_variables, narra_speed_enum _speed)
 {
+    ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
     int32_t loader_return_code = system_loader(system_variables);
 
     if (loader_return_code == NVS_INIT_ERROR)
@@ -118,23 +121,27 @@ esp_err_t matrix_init(Matrix* matrixInstanceptr, System_variables* system_variab
 
 void matrix_activate(Matrix* matrixInstanceptr)
 {
+    ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
     matrixInstanceptr->system_state=active;
 }
 
 void matrix_deactivate(Matrix* matrixInstanceptr, System_variables* system_variables)
 {
+    ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
     matrixInstanceptr->system_state=shutdown;
     matrix_display(matrixInstanceptr, system_variables, scroll);
 }
 
 void matrix_reboot(void)
 {
+    ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
     esp_restart();
 }
     
 /*Matrix display function*/
 void matrix_display(Matrix* matrixInstanceptr, System_variables* system_variables, narra_rendertype_enum _renderx)
 {
+    ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
     if (matrixInstanceptr->system_state== startup || matrixInstanceptr->system_state== active)
     {
         switch(matrixInstanceptr->system_state)

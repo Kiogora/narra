@@ -7,6 +7,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/gpio.h"
+#include "esp_log.h"
 
 /*project libs*/
 #include "glyphmap.h"
@@ -15,10 +16,11 @@
 #include "utf8_decoder.h"
 #include "scrolling_effect.h"
 
-static const char* TAG = "Component_renderer_scrolling_effect";
+static const char* TAG = "RENDERER_API";
 
 static void shift_and_latch(Matrix* matrixInstanceptr, uint32_t row_data)
 {
+//    ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
     /* The effect of clockskew should be accounted for,to ensure the clock pulse has effectively propagated*/ 
     uint32_t Mask = 0x80000000;
     uint32_t flag=0;
@@ -49,6 +51,7 @@ static void shift_and_latch(Matrix* matrixInstanceptr, uint32_t row_data)
 
 void scrolling_effect(Matrix* matrixInstanceptr, uint32_t* _utf8string, size_t _utf8_length)
 {
+//    ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
     uint32_t buffer[8]={0,0,0,0,0,0,0,0};
     uint32_t  temp=0;
     uint8_t shift_step=1;

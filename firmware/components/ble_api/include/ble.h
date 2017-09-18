@@ -4,7 +4,6 @@
 #include <stdint.h>
 #include "sdkconfig.h"
 
-#define GATTS_TABLE_TAG "GATTS_TABLE_DEMO"
 /*Number of profiles*/
 #define NARRA_PROFILE_NUM 			    0x02
 
