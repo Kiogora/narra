@@ -484,8 +484,8 @@ esp_gatts_attr_db_t usage_gatt_db[USAGE_IDX_NB] =
      ESP_GATT_PERM_READ, sizeof(uint8_presentation), sizeof(uint8_presentation), (uint8_t *)&uint8_presentation}},
 };
 
-static void system_profile_event_handler(esp_gatts_cb_event_t event, 
-										esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param) 
+static void system_profile_event_handler(esp_gatts_cb_event_t event,
+                                         esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param) 
 {
     switch (event) {
     	case ESP_GATTS_REG_EVT:
@@ -524,7 +524,7 @@ static void system_profile_event_handler(esp_gatts_cb_event_t event,
         	break;
     	case ESP_GATTS_DISCONNECT_EVT:
             esp_ble_gap_start_advertising(&bitsoko_advert_params);
-		    break;
+            break;
     	case ESP_GATTS_OPEN_EVT:
 		    break;
     	case ESP_GATTS_CANCEL_OPEN_EVT:
@@ -652,7 +652,7 @@ static void update_attribute_length(esp_attr_value_t* attribute, esp_ble_gatts_c
 
 /**Write operation funcs**/
 
-static void usage_profile_prepare_write_event_handler(prepare_write_t *prepare_write_env, esp_gatt_if_t gatts_if, 
+static void usage_profile_prepare_write_event_handler(prepare_write_t *prepare_write_env, esp_gatt_if_t gatts_if,
                                                       esp_ble_gatts_cb_param_t *param)
 {
     if (param->write.need_rsp)
@@ -703,8 +703,8 @@ static void usage_profile_prepare_write_event_handler(prepare_write_t *prepare_w
     }
 }
 
-static esp_gatt_status_t prepare_write_buffer(prepare_write_t *prepare_write_env, esp_gatt_if_t gatts_if, 
-                                    esp_ble_gatts_cb_param_t *param)
+static esp_gatt_status_t prepare_write_buffer(prepare_write_t *prepare_write_env, esp_gatt_if_t gatts_if,
+                                              esp_ble_gatts_cb_param_t *param)
 {
     esp_gatt_status_t status = ESP_GATT_OK;
     if (prepare_write_env->prepare_buf == NULL)
@@ -932,14 +932,13 @@ static void usage_profile_exec_write_event_handler(prepare_write_t* prepare_writ
     
 }
 
-static void usage_profile_event_handler(esp_gatts_cb_event_t event, 
-										esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param) 
+static void usage_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if,
+                                        esp_ble_gatts_cb_param_t *param) 
 {
     switch (event) {
     	case ESP_GATTS_REG_EVT:
-        	ESP_LOGI(GATTS_TABLE_TAG, "%s %d\n", __func__, __LINE__);
-		    esp_ble_gatts_create_attr_tab(usage_gatt_db, gatts_if, USAGE_IDX_NB,
-                                          USAGE_SERVICE_INSTANCE_ID);
+            ESP_LOGI(GATTS_TABLE_TAG, "%s %d\n", __func__, __LINE__);
+            esp_ble_gatts_create_attr_tab(usage_gatt_db, gatts_if, USAGE_IDX_NB, USAGE_SERVICE_INSTANCE_ID);
        	    break;
     	case ESP_GATTS_READ_EVT:
             usage_profile_read_event_handler(event, gatts_if, param);
@@ -1001,11 +1000,9 @@ static void usage_profile_event_handler(esp_gatts_cb_event_t event,
     }
 }
 
-void gatts_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, 
-									esp_ble_gatts_cb_param_t *param)
+void gatts_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param)
 {
     ESP_LOGI(GATTS_TABLE_TAG, "EVENT TYPE: %s, EVENT ID: %d, GATTS IF: %d\n", gatts_event[event], event, gatts_if);
-
     /* If event is register event, store the gatts_if for each profile */
     if (event == ESP_GATTS_REG_EVT) {
         if (param->reg.status == ESP_GATT_OK) 
