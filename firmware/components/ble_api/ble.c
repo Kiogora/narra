@@ -28,83 +28,21 @@
 
 const char* BLE_TAG = "BLE_API";
 
+/************************************************************************************************************
+*GATT PROFILE BASED ATTRIBUTE HANDLE TABLE DECLARATION
+*************************************************************************************************************/
 uint16_t system_handle_table[SYSTEM_IDX_NB];
 uint16_t usage_handle_table[USAGE_IDX_NB];
 
-/**********************************************ADVERTISING****************************************************/
-static uint8_t raw_adv_data[] = {
-0x02, // Len
-0x01, // Type Flags
-0x06, // GENERAL_DISC_MODE 0x02 | BR_EDR_NOT_SUPPORTED 0x04
+/************************************************************************************************************
+*DATATYPE TO ALLOW PREPARE AND EXECUTE WRITE OPERATIONS.
+*************************************************************************************************************/
+/*The form of the datatype defined below is declared in ble.h*/
+static prepare_write_t prepare_write_tracker;
 
-0x03, // Len
-0x03, // Type 16-Bit UUID
-0xAA, // Eddystone UUID 2 -> 0xFEAA LSB
-0xFE, // Eddystone UUID 1 MSB
-0x13, // Length of Beacon Data
-0x16, // Type Service Data
-0xAA, // Eddystone UUID 2 -> 0xFEAA LSB
-0xFE, // Eddystone UUID 1 MSB
-0x10, // Eddystone Frame Type
-0x04, // Beacons TX power at 0m
-0x03, // URL Scheme 'https://'
-0x67, // URL add  1 'g'
-0x6F, // URL add  2 'o'
-0x6F, // URL add  3 'o'
-0x2E, // URL add  4 '.'
-0x67, // URL add  5 'g'
-0x6C, // URL add  6 'l'
-0x2F, // URL add  7 '/'
-0x32, // URL add  8 '2'
-0x79, // URL add  9 'y'
-0x43, // URL add 10 'C'
-0x36, // URL add 11 '6'
-0x4B, // URL add 12 'K'
-0x58  // URL add 13 'X'
-};
-static uint8_t raw_scan_rsp_data[] = {
-9,    // Length
-0x09, //<<AD Type-Complete local name>>
-0x4E, //N
-0x61, //a
-0x72, //r
-0x72, //r
-0x61, //a
-0x5f, //
-0x30, //0
-0x31, //1
-17,   //Length
-0x06, //<<AD type-Incomplete list 128 bit UUID's>>
-0x93, //lsb
-0x53,
-0x03,
-0x97,
-0x22,
-0x59,
-0x53,
-0x9c,
-0x6d,
-0x42,
-0xb6,
-0xbc,
-0x46,
-0x95,
-0x70,
-0xdb  //msb
-};
-
-static esp_ble_adv_params_t bitsoko_advert_params = 
-{
-    .adv_int_min        = 0x20,
-    .adv_int_max        = 0x40,
-    .adv_type           = ADV_TYPE_IND,
-    .own_addr_type      = BLE_ADDR_TYPE_PUBLIC,
-    //.peer_addr            =
-    //.peer_addr_type       =
-    .channel_map        = ADV_CHNL_ALL,
-    .adv_filter_policy = ADV_FILTER_ALLOW_SCAN_ANY_CON_ANY,
-};
-
+/************************************************************************************************************
+*EVENT ID TO EVENT NAME RESOLVER. FOR DEBUGGING OF GATT EVENTS.
+*************************************************************************************************************/
 #if CONFIG_LOG_DEFAULT_LEVEL >= 3
 const char* gatts_event[24]=
 {
@@ -135,8 +73,9 @@ const char* gatts_event[24]=
 };
 #endif
 
-/** GATT ATTRIBUTES**/
-
+/************************************************************************************************************
+*PROPRIETARY GATT ATTRIBUTES-NOT DEFINED BY THE SIG
+*************************************************************************************************************/
 esp_attr_value_t usage_state_attribute = 
 {
     .attr_max_len= CHAR_VAL_LEN_MAX,
@@ -164,6 +103,49 @@ esp_attr_value_t usage_shutdown_string_attribute =
     .attr_value  = NULL,
     .attr_len    = UNINITIALISED,
 };
+
+
+/************************************************************************************************************
+*GATT profile declaration
+*************************************************************************************************************/
+
+struct gatts_profile_inst 
+{
+    esp_gatts_cb_t gatts_cb;
+    uint16_t gatts_if;
+    uint16_t app_id;
+    uint16_t conn_id;
+    uint16_t service_handle;
+    esp_gatt_srvc_id_t service_id;
+    uint16_t char_handle;
+    esp_bt_uuid_t char_uuid;
+    esp_gatt_perm_t perm;
+    esp_gatt_char_prop_t property;
+    uint16_t descr_handle;
+    esp_bt_uuid_t descr_uuid;
+};
+
+/* One app_id struct containing the initialised\ callback function(func pointer) and one gatts_if from reg event*/
+static struct gatts_profile_inst narra_profile_table[NARRA_PROFILE_NUM] = 
+{
+    [SYSTEM_PROFILE_APP_IDX] = 
+    {
+        .gatts_cb = system_profile_event_handler,
+        .gatts_if = ESP_GATT_IF_NONE,/* Get the gatt_if after reg event, so initial is ESP_GATT_IF_NONE */
+    },
+
+    [USAGE_PROFILE_APP_IDX] = 
+    {
+        .gatts_cb = usage_profile_event_handler,
+        .gatts_if = ESP_GATT_IF_NONE, /* Get the gatt_if after reg event, so initial is ESP_GATT_IF_NONE */
+    },
+    
+};
+
+
+/************************************************************************************************************
+*Public and private function prototypes
+*************************************************************************************************************/
 
 static void system_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, 
                                          esp_ble_gatts_cb_param_t *param);
@@ -195,6 +177,22 @@ static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_wri
 
 static void usage_profile_exec_write_event_handler(prepare_write_t* prepare_write_env, 
                                                    esp_ble_gatts_cb_param_t* param);
+
+void gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *param)
+
+/************************************************************************************************************
+*BEACON/ADVERTISING CODE
+*************************************************************************************************************/
+
+static esp_ble_adv_params_t bitsoko_advert_params = 
+{
+    .adv_int_min        = 0x20,
+    .adv_int_max        = 0x40,
+    .adv_type           = ADV_TYPE_IND,
+    .own_addr_type      = BLE_ADDR_TYPE_PUBLIC,
+    .channel_map        = ADV_CHNL_ALL,
+    .adv_filter_policy = ADV_FILTER_ALLOW_SCAN_ANY_CON_ANY,
+};
 
 void gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *param)
 {
@@ -241,12 +239,13 @@ void gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *par
     }
 }
 
-/******************************************END ADVERTISING***************************************************/
+/************************************************************************************************************
+*END BEACON/ADVERTISING CODE
+*************************************************************************************************************/
 
-/********************************************GATT SERVER ************************************************/
-
-/*The form of the datatype defined below is declared in ble.h*/
-static prepare_write_t prepare_write_tracker;
+/************************************************************************************************************
+*GATT SERVER CODE
+*************************************************************************************************************/
 
 esp_attr_value_t* get_usage_state_attribute(void)
 {
@@ -268,225 +267,47 @@ esp_attr_value_t* get_usage_shutdown_string_attribute(void)
     return &usage_shutdown_string_attribute;
 }
 
-struct gatts_profile_inst 
-{
-    esp_gatts_cb_t gatts_cb;
-    uint16_t gatts_if;
-    uint16_t app_id;
-    uint16_t conn_id;
-    uint16_t service_handle;
-    esp_gatt_srvc_id_t service_id;
-    uint16_t char_handle;
-    esp_bt_uuid_t char_uuid;
-    esp_gatt_perm_t perm;
-    esp_gatt_char_prop_t property;
-    uint16_t descr_handle;
-    esp_bt_uuid_t descr_uuid;
-};
+/************************************************************************************************************
+*GATT SERVER CODE-GLOBAL EVENT HANDLER. PROFILE INDEPENDENT
+*************************************************************************************************************/
 
-/* One app_id struct containing the initialised\ callback function(func pointer) and one gatts_if from reg event*/
-static struct gatts_profile_inst narra_profile_table[NARRA_PROFILE_NUM] = 
+void gatts_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param)
 {
-    [SYSTEM_PROFILE_APP_IDX] = 
+    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
+    ESP_LOGI(BLE_TAG, "EVENT TYPE: %s, EVENT ID: %d, GATTS IF: %d\n", gatts_event[event], event, gatts_if);
+    /* If event is register event, store the gatts_if for each profile */
+    if (event == ESP_GATTS_REG_EVT)
     {
-        .gatts_cb = system_profile_event_handler,
-        .gatts_if = ESP_GATT_IF_NONE,/* Get the gatt_if after reg event, so initial is ESP_GATT_IF_NONE */
-    },
+        if (param->reg.status == ESP_GATT_OK) 
+        {
+            narra_profile_table[param->reg.app_id].gatts_if = gatts_if;
+        } 
+        else 
+        {
+            ESP_LOGI(BLE_TAG, "REG APP FAILED, APP_ID: 0x%04x, STATUS: %d\n",
+                     param->reg.app_id, param->reg.status);
+            return;
+        }
+    }
+	
+    do {
+        int idx;
+        for (idx = 0; idx < NARRA_PROFILE_NUM; idx++) 
+        {
+            if (gatts_if == ESP_GATT_IF_NONE || gatts_if == narra_profile_table[idx].gatts_if) 
+            {
+                if (narra_profile_table[idx].gatts_cb) 
+                {
+                    narra_profile_table[idx].gatts_cb(event, gatts_if, param);
+                }
+            }
+        }
+    } while (0);
+}
 
-    [USAGE_PROFILE_APP_IDX] = 
-    {
-        .gatts_cb = usage_profile_event_handler,
-        .gatts_if = ESP_GATT_IF_NONE, /* Get the gatt_if after reg event, so initial is ESP_GATT_IF_NONE */
-    },
-    
-};
-
-#define CHAR_DECLARATION_SIZE   (sizeof(uint8_t))
-//Device info Service
-//https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.service.device_information.xml
-static const uint16_t device_info_svc = ESP_GATT_UUID_DEVICE_INFO_SVC;
-//Reads are mandatory according to the service description xml for interoperability
-static const esp_gatt_char_prop_t  sys_char_prop_indicate = ESP_GATT_CHAR_PROP_BIT_INDICATE;
-static const esp_gatt_char_prop_t  sys_char_prop_notify = ESP_GATT_CHAR_PROP_BIT_NOTIFY;
-static const esp_gatt_char_prop_t  sys_char_prop_read = ESP_GATT_CHAR_PROP_BIT_READ;
-static const esp_gatt_char_prop_t  sys_char_prop_read_write = ESP_GATT_CHAR_PROP_BIT_WRITE|
-                                                              ESP_GATT_CHAR_PROP_BIT_READ;
-//Service type uuid
-static const uint16_t sys_primary_service_uuid = ESP_GATT_UUID_PRI_SERVICE;
-//GATT declaration
-static const uint16_t sys_character_declaration_uuid = ESP_GATT_UUID_CHAR_DECLARE;
-//GATT descriptor
-static const uint16_t sys_character_client_config_uuid = ESP_GATT_UUID_CHAR_CLIENT_CONFIG;
-//Device info service characteristics implemented
-static const uint16_t character_manufacturer_name_uuid = ESP_GATT_UUID_MANU_NAME;
-static const uint8_t  man_name_val[14]={0x42,0x49,0x54,0x53,0x4F,0x4B,0x4F,0x5F,0x4C,0x54,0x44,0x5F,0x4B,0x45};
-
-static const uint16_t character_fw_ver_string_uuid = ESP_GATT_UUID_FW_VERSION_STR;
-static const uint8_t  fw_ver_string_val[3] = {0x35,0x2e,0x31};
-
-//Device ID with Byte Order Mark for endianness identification.
-static const uint16_t character_dev_id_uuid = ESP_GATT_UUID_SYSTEM_ID;
-static const uint8_t  dev_id_val[DEV_ID_LEN] = {0x24,0x0a,0xc4,0xFF,0xFE,0x05,0x8a,0x46};
-
-static const esp_gatts_attr_db_t system_gatt_db[SYSTEM_IDX_NB] =
-{
-    [SYSTEM_IDX_SYSTEM_INFO_SERVICE]    =  
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&sys_primary_service_uuid, ESP_GATT_PERM_READ,
-      sizeof(uint16_t), sizeof(uint16_t), (uint8_t *)&device_info_svc}},
-
-    [SYSTEM_IDX_MAN_NAME_CHAR]       	=    
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&sys_character_declaration_uuid, ESP_GATT_PERM_READ, 
-    CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE, (uint8_t *)&sys_char_prop_read}},
-
-    [SYSTEM_IDX_MAN_NAME_VAL]        	=    
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_manufacturer_name_uuid, ESP_GATT_PERM_READ, 
-    sizeof(man_name_val), sizeof(man_name_val), (uint8_t *)man_name_val}},
-
-    [SYSTEM_IDX_DEV_ID_CHAR]     	    =    
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&sys_character_declaration_uuid, ESP_GATT_PERM_READ, 
-    CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE, (uint8_t *)&sys_char_prop_read}},
-
-    [SYSTEM_IDX_DEV_ID_VAL]     	    =    
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_dev_id_uuid, ESP_GATT_PERM_READ, 
-    sizeof(dev_id_val), sizeof(dev_id_val), (uint8_t *)dev_id_val}},
-
-    [SYSTEM_IDX_FW_VER_STRING_CHAR]     =    
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&sys_character_declaration_uuid, ESP_GATT_PERM_READ, 
-    CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE, (uint8_t *)&sys_char_prop_read}},
-
-    [SYSTEM_IDX_FW_VER_STRING_VAL]     	=    
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_fw_ver_string_uuid, ESP_GATT_PERM_READ, 
-    sizeof(fw_ver_string_val), sizeof(fw_ver_string_val), (uint8_t *)fw_ver_string_val}},
-
-};
-
-//Usage Service
-//https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.service.device_information.xml
-//Reads are mandatory according to the service description xml for interoperability
-esp_gatt_char_prop_t  usage_char_prop_indicate = ESP_GATT_CHAR_PROP_BIT_INDICATE;
-esp_gatt_char_prop_t  usage_char_prop_notify = ESP_GATT_CHAR_PROP_BIT_NOTIFY;
-esp_gatt_char_prop_t  usage_char_prop_read = ESP_GATT_CHAR_PROP_BIT_READ;
-esp_gatt_char_prop_t  usage_char_prop_read_write = ESP_GATT_CHAR_PROP_BIT_WRITE| ESP_GATT_CHAR_PROP_BIT_READ;
-
-presentation_t utf8_presentation = 
-{
-    ._format=utf_8_string,
-    ._exponent=UNINITIALISED,
-    ._unit=UNINITIALISED,
-    ._namespace=UNINITIALISED,
-    ._description=UNINITIALISED,
-};
-
-presentation_t uint8_presentation = 
-{
-    ._format=unsigned_8_bit_int,
-    ._exponent=UNINITIALISED,
-    ._unit=UNINITIALISED,
-    ._namespace=UNINITIALISED,
-    ._description=UNINITIALISED,
-};
-
-/*Service type uuid*/
-static const uint16_t usage_primary_service_uuid = ESP_GATT_UUID_PRI_SERVICE;
-/*GATT declaration*/
-static const uint16_t usage_character_declaration_uuid = ESP_GATT_UUID_CHAR_DECLARE;
-/*GATT presentation*/
-static const uint16_t usage_character_char_presentation_uuid = ESP_GATT_UUID_CHAR_PRESENT_FORMAT;
-/*GATT descriptor&*/
-static const uint16_t usage_character_client_config_uuid = ESP_GATT_UUID_CHAR_CLIENT_CONFIG;
-
-/*Usage service characteristics implemented*/
-
-/*db709546-bcb6-426d-9c53-592297035393*/
-static const uint8_t usage_svc[ESP_UUID_LEN_128] =
-{
-/* LSB <---------------------------------------------------------------> MSB */
-0x93,0x53,0x03,0x97,0x22,0x59,0x53,0x9c,0x6d,0x42,0xb6,0xbc,0x46,0x95,0x70,0xdb,
-};
-
-/*8f5d6995-35e5-4a1f-8280-a70697147c19*/
-static const uint8_t character_display_string_uuid[ESP_UUID_LEN_128] =
-{
-/* LSB <---------------------------------------------------------------> MSB */
-0x19,0x7c,0x14,0x97,0x06,0xa7,0x80,0x82,0x1f,0x4a,0xe5,0x35,0x95,0x69,0x5d,0x8f,
-};
-
-/*7351f963-fbc7-42cc-88ca-dc084155c2db*/
-static const uint8_t character_device_state_uuid[ESP_UUID_LEN_128] =
-{
-/* LSB <---------------------------------------------------------------> MSB */
-0xdb,0xc2,0x55,0x41,0x08,0xdc,0xca,0x88,0xcc,0x42,0xc7,0xfb,0x63,0xf9,0x51,0x73,
-};
-
-/*5c5be607-4f2e-4f8e-b2b2-c16116c6783c*/
-static const uint8_t character_startup_string_uuid[ESP_UUID_LEN_128] =
-{
-/* LSB <---------------------------------------------------------------> MSB */
-0x3c,0x78,0xc6,0x16,0x61,0xc1,0xb2,0xb2,0x8e,0x4f,0x2e,0x4f,0x07,0xe6,0x5b,0x5c,
-};
-
-/*b66a931a-fc23-43b4-9e5a-b74a04282516*/
-static const uint8_t character_shutdown_string_uuid[ESP_UUID_LEN_128] =
-{
-/* LSB <---------------------------------------------------------------> MSB */
-0x16,0x25,0x28,0x04,0x4a,0xb7,0x5a,0x9e,0xb4,0x43,0x23,0xfc,0x1a,0x93,0x6a,0xb6,
-};
-
-esp_gatts_attr_db_t usage_gatt_db[USAGE_IDX_NB] =
-{
-    [USAGE_IDX_USAGE_SERVICE]               =  
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_primary_service_uuid, ESP_GATT_PERM_READ,
-      sizeof(usage_svc), sizeof(usage_svc), (uint8_t *)usage_svc}},
-
-    [USAGE_IDX_DISPLAY_STRING_CHAR]         =
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_declaration_uuid, ESP_GATT_PERM_READ,
-      CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE,(uint8_t *)&usage_char_prop_read_write}},
-
-    [USAGE_IDX_DISPLAY_STRING_VAL]          =    
-    {{ESP_GATT_RSP_BY_APP}, {ESP_UUID_LEN_128, (uint8_t *)&character_display_string_uuid, ESP_GATT_PERM_READ|
-      ESP_GATT_PERM_WRITE, UNINITIALISED, UNINITIALISED, NULL}},
-
-    [USAGE_IDX_DISPLAY_STRING_CFG_1]     	=    
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_char_presentation_uuid,
-     ESP_GATT_PERM_READ, sizeof(utf8_presentation), sizeof(utf8_presentation), (uint8_t *)&utf8_presentation}},
-
-    [USAGE_IDX_STARTUP_STRING_CHAR]         =
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_declaration_uuid, ESP_GATT_PERM_READ,
-      CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE,(uint8_t *)&usage_char_prop_read_write}},
-
-    [USAGE_IDX_STARTUP_STRING_VAL]          =    
-    {{ESP_GATT_RSP_BY_APP}, {ESP_UUID_LEN_128, (uint8_t *)&character_startup_string_uuid, ESP_GATT_PERM_READ|
-      ESP_GATT_PERM_WRITE, UNINITIALISED, UNINITIALISED, NULL}},
-
-    [USAGE_IDX_STARTUP_STRING_CFG_1]     	=    
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_char_presentation_uuid,
-     ESP_GATT_PERM_READ, sizeof(utf8_presentation), sizeof(utf8_presentation), (uint8_t *)&utf8_presentation}},
-
-    [USAGE_IDX_SHUTDOWN_STRING_CHAR]        =
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_declaration_uuid, ESP_GATT_PERM_READ,
-      CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE,(uint8_t *)&usage_char_prop_read_write}},
-
-    [USAGE_IDX_SHUTDOWN_STRING_VAL]         =    
-    {{ESP_GATT_RSP_BY_APP}, {ESP_UUID_LEN_128, (uint8_t *)&character_shutdown_string_uuid, ESP_GATT_PERM_READ|
-      ESP_GATT_PERM_WRITE, UNINITIALISED, UNINITIALISED, NULL}},
-
-    [USAGE_IDX_SHUTDOWN_STRING_CFG_1]       =    
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_char_presentation_uuid,
-     ESP_GATT_PERM_READ, sizeof(utf8_presentation), sizeof(utf8_presentation), (uint8_t *)&utf8_presentation}},
-
-    [USAGE_IDX_DEVICE_STATE_CHAR]           =    
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_declaration_uuid, ESP_GATT_PERM_READ, 
-    CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE, (uint8_t *)&usage_char_prop_read_write}},
-
-    [USAGE_IDX_DEVICE_STATE_VAL]     	    =    
-    {{ESP_GATT_RSP_BY_APP}, {ESP_UUID_LEN_128, (uint8_t *)&character_device_state_uuid, ESP_GATT_PERM_READ|
-    ESP_GATT_PERM_WRITE, UNINITIALISED, UNINITIALISED, NULL}},
-
-    [USAGE_IDX_DEVICE_STATE_CFG_1]          =    
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_char_presentation_uuid,
-     ESP_GATT_PERM_READ, sizeof(uint8_presentation), sizeof(uint8_presentation), (uint8_t *)&uint8_presentation}},
-};
-
+/************************************************************************************************************
+*GATT SERVER CODE-SYSTEM PROFILE EVENT HANDLER
+*************************************************************************************************************/
 static void system_profile_event_handler(esp_gatts_cb_event_t event,
                                          esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param) 
 {
@@ -565,7 +386,234 @@ static void system_profile_event_handler(esp_gatts_cb_event_t event,
     }
 }
 
-/**Read operation funcs**/
+/************************************************************************************************************
+*GATT SERVER CODE-USAGE PROFILE EVENT HANDLER
+*************************************************************************************************************/
+static void usage_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if,
+                                        esp_ble_gatts_cb_param_t *param) 
+{
+    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
+    switch (event) {
+    	case ESP_GATTS_REG_EVT:
+            ESP_LOGI(BLE_TAG, "%s %d\n", __func__, __LINE__);
+            esp_ble_gatts_create_attr_tab(usage_gatt_db, gatts_if, USAGE_IDX_NB, USAGE_SERVICE_INSTANCE_ID);
+       	    break;
+    	case ESP_GATTS_READ_EVT:
+            usage_profile_read_event_handler(event, gatts_if, param);
+       	    break;
+    	case ESP_GATTS_WRITE_EVT:
+            usage_profile_prepare_write_event_handler(&prepare_write_tracker, gatts_if, param);
+      	 	break;
+    	case ESP_GATTS_EXEC_WRITE_EVT:
+            usage_profile_exec_write_event_handler(&prepare_write_tracker, param);
+		    break;
+    	case ESP_GATTS_MTU_EVT:
+		    break;
+   	    case ESP_GATTS_CONF_EVT:
+		    break;
+    	case ESP_GATTS_UNREG_EVT:
+        	break;
+    	case ESP_GATTS_DELETE_EVT:
+        	break;
+    	case ESP_GATTS_START_EVT:
+        	break;
+    	case ESP_GATTS_STOP_EVT:
+        	break;
+    	case ESP_GATTS_CONNECT_EVT:
+        	break;
+    	case ESP_GATTS_DISCONNECT_EVT:
+		    break;
+    	case ESP_GATTS_OPEN_EVT:
+		    break;
+    	case ESP_GATTS_CANCEL_OPEN_EVT:
+		    break;
+    	case ESP_GATTS_CLOSE_EVT:
+		    break;
+    	case ESP_GATTS_LISTEN_EVT:
+		    break;
+    	case ESP_GATTS_CONGEST_EVT:
+		    break;
+        case ESP_GATTS_CREAT_ATTR_TAB_EVT:
+        {
+            ESP_LOGI(BLE_TAG, "NUMBER OF ATT TABLE HANDLES CREATED: %d\n",param->add_attr_tab.num_handle);
+            if (param->add_attr_tab.status != ESP_GATT_OK)
+            {
+                ESP_LOGE(BLE_TAG, "CREATE ATT TABLE FAILED, ERROR CODE: 0x%x", 
+                         param->add_attr_tab.status);
+            }
+            else if (param->add_attr_tab.num_handle != USAGE_IDX_NB)
+            {
+                ESP_LOGE(BLE_TAG, "ATTRIBUTE HANDLE TABLE ABNORMAL, NUMBER OF ATT TABLE HANDLES: %d \
+                        DOESN'T EQUAL USAGE_IDX_NB: %d", param->add_attr_tab.num_handle, USAGE_IDX_NB);
+            }
+            else 
+            {
+                memcpy(usage_handle_table, param->add_attr_tab.handles, sizeof(usage_handle_table));
+                esp_ble_gatts_start_service(usage_handle_table[USAGE_IDX_USAGE_SERVICE]);
+            }
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+/************************************************************************************************************
+*GATT SERVER CODE-SYSTEM PROFILE ATTRIBUTE TAB
+*************************************************************************************************************/
+
+#define CHAR_DECLARATION_SIZE   (sizeof(uint8_t))
+//Device info Service
+//https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.service.device_information.xml
+static const uint16_t device_info_svc = ESP_GATT_UUID_DEVICE_INFO_SVC;
+//Reads are mandatory according to the service description xml for interoperability
+static const esp_gatt_char_prop_t  sys_char_prop_indicate = ESP_GATT_CHAR_PROP_BIT_INDICATE;
+static const esp_gatt_char_prop_t  sys_char_prop_notify = ESP_GATT_CHAR_PROP_BIT_NOTIFY;
+static const esp_gatt_char_prop_t  sys_char_prop_read = ESP_GATT_CHAR_PROP_BIT_READ;
+static const esp_gatt_char_prop_t  sys_char_prop_read_write = ESP_GATT_CHAR_PROP_BIT_WRITE|
+                                                              ESP_GATT_CHAR_PROP_BIT_READ;
+//Service type uuid
+static const uint16_t sys_primary_service_uuid = ESP_GATT_UUID_PRI_SERVICE;
+//GATT declaration
+static const uint16_t sys_character_declaration_uuid = ESP_GATT_UUID_CHAR_DECLARE;
+//GATT descriptor
+static const uint16_t sys_character_client_config_uuid = ESP_GATT_UUID_CHAR_CLIENT_CONFIG;
+//Device info service characteristics implemented
+static const uint16_t character_manufacturer_name_uuid = ESP_GATT_UUID_MANU_NAME;
+
+static const uint16_t character_fw_ver_string_uuid = ESP_GATT_UUID_FW_VERSION_STR;
+
+//Device ID with Byte Order Mark for endianness identification.
+static const uint16_t character_dev_id_uuid = ESP_GATT_UUID_SYSTEM_ID;
+
+static const esp_gatts_attr_db_t system_gatt_db[SYSTEM_IDX_NB] =
+{
+    [SYSTEM_IDX_SYSTEM_INFO_SERVICE]    =  
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&sys_primary_service_uuid, ESP_GATT_PERM_READ,
+      sizeof(uint16_t), sizeof(uint16_t), (uint8_t *)&device_info_svc}},
+
+    [SYSTEM_IDX_MAN_NAME_CHAR]       	=    
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&sys_character_declaration_uuid, ESP_GATT_PERM_READ, 
+    CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE, (uint8_t *)&sys_char_prop_read}},
+
+    [SYSTEM_IDX_MAN_NAME_VAL]        	=    
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_manufacturer_name_uuid, ESP_GATT_PERM_READ, 
+    sizeof(man_name_val), sizeof(man_name_val), (uint8_t *)man_name_val}},
+
+    [SYSTEM_IDX_DEV_ID_CHAR]     	    =    
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&sys_character_declaration_uuid, ESP_GATT_PERM_READ, 
+    CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE, (uint8_t *)&sys_char_prop_read}},
+
+    [SYSTEM_IDX_DEV_ID_VAL]     	    =    
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_dev_id_uuid, ESP_GATT_PERM_READ, 
+    sizeof(dev_id_val), sizeof(dev_id_val), (uint8_t *)dev_id_val}},
+
+    [SYSTEM_IDX_FW_VER_STRING_CHAR]     =    
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&sys_character_declaration_uuid, ESP_GATT_PERM_READ, 
+    CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE, (uint8_t *)&sys_char_prop_read}},
+
+    [SYSTEM_IDX_FW_VER_STRING_VAL]     	=    
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_fw_ver_string_uuid, ESP_GATT_PERM_READ, 
+    sizeof(fw_ver_string_val), sizeof(fw_ver_string_val), (uint8_t *)fw_ver_string_val}},
+
+};
+
+/************************************************************************************************************
+*GATT SERVER CODE-USAGE PROFILE ATTRIBUTE TABLE
+*************************************************************************************************************/
+//Usage Service
+//https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.service.device_information.xml
+//Reads are mandatory according to the service description xml for interoperability
+esp_gatt_char_prop_t  usage_char_prop_indicate = ESP_GATT_CHAR_PROP_BIT_INDICATE;
+esp_gatt_char_prop_t  usage_char_prop_notify = ESP_GATT_CHAR_PROP_BIT_NOTIFY;
+esp_gatt_char_prop_t  usage_char_prop_read = ESP_GATT_CHAR_PROP_BIT_READ;
+esp_gatt_char_prop_t  usage_char_prop_read_write = ESP_GATT_CHAR_PROP_BIT_WRITE| ESP_GATT_CHAR_PROP_BIT_READ;
+
+presentation_t utf8_presentation = 
+{
+    ._format=utf_8_string,
+    ._exponent=UNINITIALISED,
+    ._unit=UNINITIALISED,
+    ._namespace=UNINITIALISED,
+    ._description=UNINITIALISED,
+};
+
+presentation_t uint8_presentation = 
+{
+    ._format=unsigned_8_bit_int,
+    ._exponent=UNINITIALISED,
+    ._unit=UNINITIALISED,
+    ._namespace=UNINITIALISED,
+    ._description=UNINITIALISED,
+};
+
+/*Service type uuid*/
+static const uint16_t usage_primary_service_uuid = ESP_GATT_UUID_PRI_SERVICE;
+/*GATT declaration*/
+static const uint16_t usage_character_declaration_uuid = ESP_GATT_UUID_CHAR_DECLARE;
+/*GATT presentation*/
+static const uint16_t usage_character_char_presentation_uuid = ESP_GATT_UUID_CHAR_PRESENT_FORMAT;
+/*GATT descriptor&*/
+static const uint16_t usage_character_client_config_uuid = ESP_GATT_UUID_CHAR_CLIENT_CONFIG;
+
+esp_gatts_attr_db_t usage_gatt_db[USAGE_IDX_NB] =
+{
+    [USAGE_IDX_USAGE_SERVICE]               =  
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_primary_service_uuid, ESP_GATT_PERM_READ,
+      sizeof(usage_svc), sizeof(usage_svc), (uint8_t *)usage_svc}},
+
+    [USAGE_IDX_DISPLAY_STRING_CHAR]         =
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_declaration_uuid, ESP_GATT_PERM_READ,
+      CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE,(uint8_t *)&usage_char_prop_read_write}},
+
+    [USAGE_IDX_DISPLAY_STRING_VAL]          =    
+    {{ESP_GATT_RSP_BY_APP}, {ESP_UUID_LEN_128, (uint8_t *)&character_display_string_uuid, ESP_GATT_PERM_READ|
+      ESP_GATT_PERM_WRITE, UNINITIALISED, UNINITIALISED, NULL}},
+
+    [USAGE_IDX_DISPLAY_STRING_CFG_1]     	=    
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_char_presentation_uuid,
+     ESP_GATT_PERM_READ, sizeof(utf8_presentation), sizeof(utf8_presentation), (uint8_t *)&utf8_presentation}},
+
+    [USAGE_IDX_STARTUP_STRING_CHAR]         =
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_declaration_uuid, ESP_GATT_PERM_READ,
+      CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE,(uint8_t *)&usage_char_prop_read_write}},
+
+    [USAGE_IDX_STARTUP_STRING_VAL]          =    
+    {{ESP_GATT_RSP_BY_APP}, {ESP_UUID_LEN_128, (uint8_t *)&character_startup_string_uuid, ESP_GATT_PERM_READ|
+      ESP_GATT_PERM_WRITE, UNINITIALISED, UNINITIALISED, NULL}},
+
+    [USAGE_IDX_STARTUP_STRING_CFG_1]     	=    
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_char_presentation_uuid,
+     ESP_GATT_PERM_READ, sizeof(utf8_presentation), sizeof(utf8_presentation), (uint8_t *)&utf8_presentation}},
+
+    [USAGE_IDX_SHUTDOWN_STRING_CHAR]        =
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_declaration_uuid, ESP_GATT_PERM_READ,
+      CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE,(uint8_t *)&usage_char_prop_read_write}},
+
+    [USAGE_IDX_SHUTDOWN_STRING_VAL]         =    
+    {{ESP_GATT_RSP_BY_APP}, {ESP_UUID_LEN_128, (uint8_t *)&character_shutdown_string_uuid, ESP_GATT_PERM_READ|
+      ESP_GATT_PERM_WRITE, UNINITIALISED, UNINITIALISED, NULL}},
+
+    [USAGE_IDX_SHUTDOWN_STRING_CFG_1]       =    
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_char_presentation_uuid,
+     ESP_GATT_PERM_READ, sizeof(utf8_presentation), sizeof(utf8_presentation), (uint8_t *)&utf8_presentation}},
+
+    [USAGE_IDX_DEVICE_STATE_CHAR]           =    
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_declaration_uuid, ESP_GATT_PERM_READ, 
+    CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE, (uint8_t *)&usage_char_prop_read_write}},
+
+    [USAGE_IDX_DEVICE_STATE_VAL]     	    =    
+    {{ESP_GATT_RSP_BY_APP}, {ESP_UUID_LEN_128, (uint8_t *)&character_device_state_uuid, ESP_GATT_PERM_READ|
+    ESP_GATT_PERM_WRITE, UNINITIALISED, UNINITIALISED, NULL}},
+
+    [USAGE_IDX_DEVICE_STATE_CFG_1]          =    
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_char_presentation_uuid,
+     ESP_GATT_PERM_READ, sizeof(uint8_presentation), sizeof(uint8_presentation), (uint8_t *)&uint8_presentation}},
+};
+
+/************************************************************************************************************
+*GATT SERVER CODE-APP CONTROLLED READ FUNCTIONS
+*************************************************************************************************************/
 
 //Remember The Max MTU negotiable ESP_GATT_MAX_MTU_SIZE(517) < ESP_GATT_MAX_ATTR_LEN(600)
 static void usage_profile_read_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if,
@@ -655,9 +703,9 @@ static void update_attribute_length(esp_attr_value_t* attribute, esp_ble_gatts_c
     ESP_LOGI(BLE_TAG,"ATTRIBUTE LENGTH READ IS %u", attribute->attr_len);
 }
 
-
-/**Write operation funcs**/
-
+/************************************************************************************************************
+*GATT SERVER CODE-APP CONTROLLED WRITE FUNCTIONS
+*************************************************************************************************************/
 static void usage_profile_prepare_write_event_handler(prepare_write_t *prepare_write_env, esp_gatt_if_t gatts_if,
                                                       esp_ble_gatts_cb_param_t *param)
 {
@@ -942,106 +990,6 @@ static void usage_profile_exec_write_event_handler(prepare_write_t* prepare_writ
     }
     
 }
-
-static void usage_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if,
-                                        esp_ble_gatts_cb_param_t *param) 
-{
-    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
-    switch (event) {
-    	case ESP_GATTS_REG_EVT:
-            ESP_LOGI(BLE_TAG, "%s %d\n", __func__, __LINE__);
-            esp_ble_gatts_create_attr_tab(usage_gatt_db, gatts_if, USAGE_IDX_NB, USAGE_SERVICE_INSTANCE_ID);
-       	    break;
-    	case ESP_GATTS_READ_EVT:
-            usage_profile_read_event_handler(event, gatts_if, param);
-       	    break;
-    	case ESP_GATTS_WRITE_EVT:
-            usage_profile_prepare_write_event_handler(&prepare_write_tracker, gatts_if, param);
-      	 	break;
-    	case ESP_GATTS_EXEC_WRITE_EVT:
-            usage_profile_exec_write_event_handler(&prepare_write_tracker, param);
-		    break;
-    	case ESP_GATTS_MTU_EVT:
-		    break;
-   	    case ESP_GATTS_CONF_EVT:
-		    break;
-    	case ESP_GATTS_UNREG_EVT:
-        	break;
-    	case ESP_GATTS_DELETE_EVT:
-        	break;
-    	case ESP_GATTS_START_EVT:
-        	break;
-    	case ESP_GATTS_STOP_EVT:
-        	break;
-    	case ESP_GATTS_CONNECT_EVT:
-        	break;
-    	case ESP_GATTS_DISCONNECT_EVT:
-		    break;
-    	case ESP_GATTS_OPEN_EVT:
-		    break;
-    	case ESP_GATTS_CANCEL_OPEN_EVT:
-		    break;
-    	case ESP_GATTS_CLOSE_EVT:
-		    break;
-    	case ESP_GATTS_LISTEN_EVT:
-		    break;
-    	case ESP_GATTS_CONGEST_EVT:
-		    break;
-        case ESP_GATTS_CREAT_ATTR_TAB_EVT:
-        {
-            ESP_LOGI(BLE_TAG, "NUMBER OF ATT TABLE HANDLES CREATED: %d\n",param->add_attr_tab.num_handle);
-            if (param->add_attr_tab.status != ESP_GATT_OK)
-            {
-                ESP_LOGE(BLE_TAG, "CREATE ATT TABLE FAILED, ERROR CODE: 0x%x", 
-                         param->add_attr_tab.status);
-            }
-            else if (param->add_attr_tab.num_handle != USAGE_IDX_NB)
-            {
-                ESP_LOGE(BLE_TAG, "ATTRIBUTE HANDLE TABLE ABNORMAL, NUMBER OF ATT TABLE HANDLES: %d \
-                        DOESN'T EQUAL USAGE_IDX_NB: %d", param->add_attr_tab.num_handle, USAGE_IDX_NB);
-            }
-            else 
-            {
-                memcpy(usage_handle_table, param->add_attr_tab.handles, sizeof(usage_handle_table));
-                esp_ble_gatts_start_service(usage_handle_table[USAGE_IDX_USAGE_SERVICE]);
-            }
-            break;
-        }
-        default:
-            break;
-    }
-}
-
-void gatts_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param)
-{
-    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
-    ESP_LOGI(BLE_TAG, "EVENT TYPE: %s, EVENT ID: %d, GATTS IF: %d\n", gatts_event[event], event, gatts_if);
-    /* If event is register event, store the gatts_if for each profile */
-    if (event == ESP_GATTS_REG_EVT) {
-        if (param->reg.status == ESP_GATT_OK) 
-        {
-            narra_profile_table[param->reg.app_id].gatts_if = gatts_if;
-        } 
-        else 
-        {
-            ESP_LOGI(BLE_TAG, "REG APP FAILED, APP_ID: 0x%04x, STATUS: %d\n",
-                     param->reg.app_id, param->reg.status);
-            return;
-        }
-    }
-	
-    do {
-        int idx;
-        for (idx = 0; idx < NARRA_PROFILE_NUM; idx++) 
-        {
-            if (gatts_if == ESP_GATT_IF_NONE || gatts_if == narra_profile_table[idx].gatts_if) 
-                {
-                    if (narra_profile_table[idx].gatts_cb) 
-                    {
-                        narra_profile_table[idx].gatts_cb(event, gatts_if, param);
-                    }
-                }
-        }
-    } while (0);
-}
-/*****************************************END GATT SERVER ************************************************/
+/************************************************************************************************************
+*END GATT SERVER CODE
+*************************************************************************************************************/
