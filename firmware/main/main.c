@@ -28,10 +28,16 @@
 #include "system_updater.h"
 
 static const char* BLE_TASK_TAG = "BLE_TASK";
+static const char* APP_MAIN_TAG = "APP_MAIN";
+static const char* DISPLAY_TASK_TAG = "DISPLAY_TASK";
 
+/*Task alias/handle*/
 TaskHandle_t xBleTaskHandle = NULL;
 TaskHandle_t xDisplayTaskHandle = NULL;
 TaskHandle_t xLoaderTaskHandle = NULL;
+
+/*Task synchronisation event group*/
+//EventGroupHandle_t xEventGroup = NULL;
 
 typedef struct
 {
@@ -88,30 +94,30 @@ void BleTask(void *pvParameters)
     bt_init_fail = esp_bt_controller_init(&bt_cfg);
     if (bt_init_fail)
     {
-        ESP_LOGE(BLE_TASK_TAG, "%s BLUETOOTH CONTROLLER INIT FAILED\n", __func__);
+        ESP_LOGE(BLE_TASK_TAG, "function:\"%s\" BLUETOOTH CONTROLLER INIT FAILED\n", __func__);
         vTaskDelete(xBleTaskHandle);
     }
 
     bt_init_fail = esp_bt_controller_enable(ESP_BT_MODE_BTDM);
     if (bt_init_fail)
     {
-        ESP_LOGE(BLE_TASK_TAG, "%s  BLUETOOTH CONTROLLER ENABLE FAILED\n", __func__);
+        ESP_LOGE(BLE_TASK_TAG, "function:\"%s\" BLUETOOTH CONTROLLER ENABLE FAILED\n", __func__);
         vTaskDelete(xBleTaskHandle);
     }
 
-    ESP_LOGI(BLE_TASK_TAG, "%s INITIALISED BLUETOOTH CONTROLLER\n", __func__);
+    ESP_LOGI(BLE_TASK_TAG, "function:\"%s\" INITIALISED BLUETOOTH CONTROLLER\n", __func__);
 
     bt_init_fail = esp_bluedroid_init();
     if (bt_init_fail)
     {
-        ESP_LOGE(BLE_TASK_TAG, "%s BLUEDROID STACK INIT FAILED\n", __func__);
+        ESP_LOGE(BLE_TASK_TAG, "function:\"%s\" BLUEDROID STACK INIT FAILED\n", __func__);
         vTaskDelete(xBleTaskHandle);
     }
 
     bt_init_fail = esp_bluedroid_enable();
     if (bt_init_fail) 
     {
-        ESP_LOGE(BLE_TASK_TAG, "%s BLUEDROID STACK ENABLE FAILED\n", __func__);
+        ESP_LOGE(BLE_TASK_TAG, "function:\"%s\" BLUEDROID STACK ENABLE FAILED\n", __func__);
         vTaskDelete(xBleTaskHandle);
     }
 
@@ -149,6 +155,17 @@ void DisplayTask(void *pvParameters)
         /*Call xTaskCreate for the BLE task here*/
         /*pass pointer to a structure of pointers to other structures-crazy*/
         xTaskCreate(BleTask, "BleTask", 4096, (void*)&ble_task_parameters, 1, &xBleTaskHandle);
+
+        if(xBleTaskHandle != NULL)
+        {
+            ESP_LOGI(DISPLAY_TASK_TAG, "Ble_Task created");
+        }
+        else
+        {
+            ESP_LOGE(DISPLAY_TASK_TAG, "function:\"%s\" Ble_Task creation failed! Check heap memory constraints",
+                                        __func__);
+        }
+
         for(;;)
         {
             matrix_display(&matrix, &system_variables, scroll);
@@ -163,7 +180,19 @@ void DisplayTask(void *pvParameters)
 
 void app_main(void)
 {
+//    xEventGroup = xEventGroupCreate();
+
     xTaskCreate(DisplayTask, "DisplayTask", 8192, NULL, 1, &xDisplayTaskHandle);
-    xTaskCreate(loaderTask,  "LoaderTask", 512, NULL, 2, &xLoaderTaskHandle);
+//    xTaskCreate("LoaderTask", loader_task_name, 512, NULL, 2, &xLoaderTaskHandle);
+
+    if(xDisplayTaskHandle != NULL)
+    {
+        ESP_LOGI(APP_MAIN_TAG, "DisplayTask and LoaderTask created");
+    }
+    else
+    {
+        ESP_LOGE(APP_MAIN_TAG, "function:\"%s\" DisplayTask and LoaderTask creation failed! Check heap memory\
+                                constraints", __func__);
+    }
 }
 //TODO: Move speed from system initialisation at start and implement in parameters in func write_speed/update_speed .
