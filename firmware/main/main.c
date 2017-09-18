@@ -27,7 +27,10 @@
 #include "system_controller.h"
 #include "system_updater.h"
 
-static const char* BLE_TASK_TAG = "BLE_task";
+static const char* BLE_TASK_TAG = "BLE_TASK";
+
+TaskHandle_t xBleTaskHandle = NULL;
+TaskHandle_t xDisplayTaskHandle = NULL
 
 typedef struct
 {
@@ -35,7 +38,7 @@ typedef struct
     System_variables* system_variables_ptr;
 } Ble_task_parameters;
 
-/*The below structures declared outside stack. Ensures validity between task frames and context switches*/
+/*The below structures declared outside stack.*/
 Matrix matrix=
 {
     .current_message=NULL,
@@ -67,47 +70,48 @@ void init_pin_interface(Matrix* matrixInstanceptr)
 
 void bleTask(void *pvParameters)
 {
-    esp_err_t ret;
+    esp_err_t nvs_state;
 
     /* Initialise NVS*/
-    ret = nvs_flash_init();
+    nvs_state = nvs_flash_init();
 
-    if (ret == ESP_ERR_NVS_NO_FREE_PAGES)
+    if (nvs_state == ESP_ERR_NVS_NO_FREE_PAGES)
     {
         ESP_ERROR_CHECK(nvs_flash_erase());
-        ret = nvs_flash_init();
+        nvs_state = nvs_flash_init();
     }
-    ESP_ERROR_CHECK( ret );
-
-    /*TODO: cast the pvparameters, passed pointer to a valid type */
+    ESP_ERROR_CHECK(nvs_state);
 
     esp_bt_controller_config_t bt_cfg = BT_CONTROLLER_INIT_CONFIG_DEFAULT();
-    ret = esp_bt_controller_init(&bt_cfg);
-    if (ret)
+
+    bt_init_fail = esp_bt_controller_init(&bt_cfg);
+    if (bt_init_fail)
     {
         ESP_LOGE(BLE_TASK_TAG, "%s BLUETOOTH CONTROLLER INIT FAILED\n", __func__);
-        return;
+        vTaskDelete(xBleTaskHandle);
     }
 
-    ret = esp_bt_controller_enable(ESP_BT_MODE_BTDM);
-    if (ret)
+    bt_init_fail = esp_bt_controller_enable(ESP_BT_MODE_BTDM);
+    if (bt_init_fail)
     {
         ESP_LOGE(BLE_TASK_TAG, "%s  BLUETOOTH CONTROLLER ENABLE FAILED\n", __func__);
-        return;
+        vTaskDelete(xBleTaskHandle);
     }
 
     ESP_LOGI(BLE_TASK_TAG, "%s INITIALISED BLUETOOTH CONTROLLER\n", __func__);
-    ret = esp_bluedroid_init();
-    if (ret)
+
+    bt_init_fail = esp_bluedroid_init(xBleTaskHandle);
+    if (bt_init_fail)
     {
         ESP_LOGE(BLE_TASK_TAG, "%s BLUEDROID STACK INIT FAILED\n", __func__);
-        return;
+        vTaskDelete(xBleTaskHandle);
     }
-    ret = esp_bluedroid_enable();
-    if (ret) 
+
+    bt_init_fail = esp_bluedroid_enable();
+    if (bt_init_fail) 
     {
         ESP_LOGE(BLE_TASK_TAG, "%s BLUEDROID STACK ENABLE FAILED\n", __func__);
-        return;
+        vTaskDelete(xBleTaskHandle);
     }
 
     Ble_task_parameters* ble_param = NULL;
@@ -132,10 +136,7 @@ void bleTask(void *pvParameters)
     esp_ble_gatts_app_register(SYSTEM_APP_ID);
     esp_ble_gatts_app_register(USAGE_APP_ID);
 
-    for(;;)
-    {
-        ;
-    }
+    for(;;) ;
 }
 
 void displayTask(void *pvParameters)
@@ -146,7 +147,7 @@ void displayTask(void *pvParameters)
     {
         /*Call xTaskCreate for the BLE task here*/
         /*pass pointer to a structure of pointers to other structures-crazy*/
-        xTaskCreate(bleTask, "BleTask", 4096, (void*)&ble_task_parameters, 1, NULL);
+        xTaskCreate(bleTask, "BleTask", 4096, (void*)&ble_task_parameters, 1, &xBleTaskHandle);
         for(;;)
         {
             matrix_display(&matrix, &system_variables, scroll);
@@ -154,12 +155,13 @@ void displayTask(void *pvParameters)
     }
     else
     {
-        //implement matrix initialisation exception handling here
+        ; //implement matrix initialisation exception handling here
     }
+    vTaskDelete(xDisplayTaskHandle);
 }
 
 void app_main(void)
 {
-    xTaskCreate(displayTask, "DisplayTask", 8192, NULL, 1, NULL );
+    xTaskCreate(displayTask, "DisplayTask", 8192, NULL, 1, &xDisplayTaskHandle);
 }
 //TODO: Move speed from system initialisation at start and implement in parameters in func write_speed/update_speed .
