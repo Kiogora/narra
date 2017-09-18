@@ -11,6 +11,6 @@ def get_short_url():
     return data['shortUrl']
 
 if __name__=='__main__':
-    print get_short_url()
+    print (get_short_url())
 
 
