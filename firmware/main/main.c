@@ -30,7 +30,7 @@
 static const char* BLE_TASK_TAG = "BLE_TASK";
 
 TaskHandle_t xBleTaskHandle = NULL;
-TaskHandle_t xDisplayTaskHandle = NULL
+TaskHandle_t xDisplayTaskHandle = NULL;
 
 typedef struct
 {
@@ -70,7 +70,7 @@ void init_pin_interface(Matrix* matrixInstanceptr)
 
 void bleTask(void *pvParameters)
 {
-    esp_err_t nvs_state;
+    esp_err_t nvs_state, bt_init_fail;
 
     /* Initialise NVS*/
     nvs_state = nvs_flash_init();
@@ -100,7 +100,7 @@ void bleTask(void *pvParameters)
 
     ESP_LOGI(BLE_TASK_TAG, "%s INITIALISED BLUETOOTH CONTROLLER\n", __func__);
 
-    bt_init_fail = esp_bluedroid_init(xBleTaskHandle);
+    bt_init_fail = esp_bluedroid_init();
     if (bt_init_fail)
     {
         ESP_LOGE(BLE_TASK_TAG, "%s BLUEDROID STACK INIT FAILED\n", __func__);
