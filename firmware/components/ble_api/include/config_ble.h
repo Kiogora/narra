@@ -64,14 +64,19 @@ const uint8_t raw_scan_rsp_data[] = {
 0xdb  //msb
 };
 
-/*System info service characteristics implemented*/
+/************************************************************************************************************
+*SIG DEFINED SERVICE: SYSTEM INFO SERVICE, ATTRIBUTE VALUES
+*************************************************************************************************************/
+
 const uint8_t  man_name_val[14]={0x42,0x49,0x54,0x53,0x4F,0x4B,0x4F,0x5F,0x4C,0x54,0x44,0x5F,0x4B,0x45};
 
 const uint8_t  fw_ver_string_val[3] = {0x35,0x2e,0x31};
 
 const uint8_t  dev_id_val[DEV_ID_LEN] = {0x24,0x0a,0xc4,0xFF,0xFE,0x05,0x8a,0x46};
 
-/*Usage service characteristics implemented*/
+/************************************************************************************************************
+*PROPIETARY SERVICE: USAGE SERVICE, ATTRIBUTE VALUES
+*************************************************************************************************************/
 
 /*db709546-bcb6-426d-9c53-592297035393*/
 static const uint8_t usage_svc[ESP_UUID_LEN_128] =
