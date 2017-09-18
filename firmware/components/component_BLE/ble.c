@@ -281,19 +281,19 @@ struct gatts_profile_inst
     esp_bt_uuid_t descr_uuid;
 };
 
-/* One gatt-based profile one app_id and one gatts_if, this array will store the gatts_if returned by ESP_GATTS_REG_EVT */
+/* One app_id struct containing the initialised\ callback function(func pointer) and one gatts_if from reg event*/
 static struct gatts_profile_inst narra_profile_table[NARRA_PROFILE_NUM] = 
 {
     [SYSTEM_PROFILE_APP_IDX] = 
     {
         .gatts_cb = system_profile_event_handler,
-        .gatts_if = ESP_GATT_IF_NONE,       /* Get the gatt_if after reg evt, so initial is ESP_GATT_IF_NONE */
+        .gatts_if = ESP_GATT_IF_NONE,/* Get the gatt_if after reg event, so initial is ESP_GATT_IF_NONE */
     },
 
     [USAGE_PROFILE_APP_IDX] = 
     {
         .gatts_cb = usage_profile_event_handler,
-        .gatts_if = ESP_GATT_IF_NONE,       /* Get the gatt_if after reg evt, so initial is ESP_GATT_IF_NONE */
+        .gatts_if = ESP_GATT_IF_NONE, /* Get the gatt_if after reg event, so initial is ESP_GATT_IF_NONE */
     },
     
 };
@@ -441,7 +441,7 @@ esp_gatts_attr_db_t usage_gatt_db[USAGE_IDX_NB] =
 
     [USAGE_IDX_DISPLAY_STRING_VAL]          =    
     {{ESP_GATT_RSP_BY_APP}, {ESP_UUID_LEN_128, (uint8_t *)&character_display_string_uuid, ESP_GATT_PERM_READ|
-      ESP_GATT_PERM_WRITE, 0, 0, NULL}},
+      ESP_GATT_PERM_WRITE, UNINITIALISED, UNINITIALISED, NULL}},
 
     [USAGE_IDX_DISPLAY_STRING_CFG_1]     	=    
     {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_char_presentation_uuid,
@@ -453,7 +453,7 @@ esp_gatts_attr_db_t usage_gatt_db[USAGE_IDX_NB] =
 
     [USAGE_IDX_STARTUP_STRING_VAL]          =    
     {{ESP_GATT_RSP_BY_APP}, {ESP_UUID_LEN_128, (uint8_t *)&character_startup_string_uuid, ESP_GATT_PERM_READ|
-      ESP_GATT_PERM_WRITE, 0, 0, NULL}},
+      ESP_GATT_PERM_WRITE, UNINITIALISED, UNINITIALISED, NULL}},
 
     [USAGE_IDX_STARTUP_STRING_CFG_1]     	=    
     {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_char_presentation_uuid,
@@ -465,7 +465,7 @@ esp_gatts_attr_db_t usage_gatt_db[USAGE_IDX_NB] =
 
     [USAGE_IDX_SHUTDOWN_STRING_VAL]         =    
     {{ESP_GATT_RSP_BY_APP}, {ESP_UUID_LEN_128, (uint8_t *)&character_shutdown_string_uuid, ESP_GATT_PERM_READ|
-      ESP_GATT_PERM_WRITE, 0, 0, NULL}},
+      ESP_GATT_PERM_WRITE, UNINITIALISED, UNINITIALISED, NULL}},
 
     [USAGE_IDX_SHUTDOWN_STRING_CFG_1]       =    
     {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_char_presentation_uuid,
@@ -477,7 +477,7 @@ esp_gatts_attr_db_t usage_gatt_db[USAGE_IDX_NB] =
 
     [USAGE_IDX_DEVICE_STATE_VAL]     	    =    
     {{ESP_GATT_RSP_BY_APP}, {ESP_UUID_LEN_128, (uint8_t *)&character_device_state_uuid, ESP_GATT_PERM_READ|
-    ESP_GATT_PERM_WRITE, 0, 0, NULL}},
+    ESP_GATT_PERM_WRITE, UNINITIALISED, UNINITIALISED, NULL}},
 
     [USAGE_IDX_DEVICE_STATE_CFG_1]          =    
     {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_char_presentation_uuid,

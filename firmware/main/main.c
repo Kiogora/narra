@@ -31,6 +31,7 @@ static const char* BLE_TASK_TAG = "BLE_TASK";
 
 TaskHandle_t xBleTaskHandle = NULL;
 TaskHandle_t xDisplayTaskHandle = NULL;
+TaskHandle_t xLoaderTaskHandle = NULL;
 
 typedef struct
 {
@@ -68,7 +69,7 @@ void init_pin_interface(Matrix* matrixInstanceptr)
     matrixInstanceptr->rowrst_pin=GPIO_NUM_14;
 }
 
-void bleTask(void *pvParameters)
+void BleTask(void *pvParameters)
 {
     esp_err_t nvs_state, bt_init_fail;
 
@@ -139,7 +140,7 @@ void bleTask(void *pvParameters)
     for(;;) ;
 }
 
-void displayTask(void *pvParameters)
+void DisplayTask(void *pvParameters)
 {
     init_pin_interface(&matrix);
 
@@ -147,7 +148,7 @@ void displayTask(void *pvParameters)
     {
         /*Call xTaskCreate for the BLE task here*/
         /*pass pointer to a structure of pointers to other structures-crazy*/
-        xTaskCreate(bleTask, "BleTask", 4096, (void*)&ble_task_parameters, 1, &xBleTaskHandle);
+        xTaskCreate(BleTask, "BleTask", 4096, (void*)&ble_task_parameters, 1, &xBleTaskHandle);
         for(;;)
         {
             matrix_display(&matrix, &system_variables, scroll);
@@ -162,6 +163,7 @@ void displayTask(void *pvParameters)
 
 void app_main(void)
 {
-    xTaskCreate(displayTask, "DisplayTask", 8192, NULL, 1, &xDisplayTaskHandle);
+    xTaskCreate(DisplayTask, "DisplayTask", 8192, NULL, 1, &xDisplayTaskHandle);
+    xTaskCreate(loaderTask,  "LoaderTask", 512, NULL, 2, &xLoaderTaskHandle);
 }
 //TODO: Move speed from system initialisation at start and implement in parameters in func write_speed/update_speed .
