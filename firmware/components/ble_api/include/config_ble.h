@@ -1,7 +1,8 @@
 #ifndef __CONFIG_BLE_H_
 #define __CONFIG_BLE_H_
 
-const uint8_t raw_adv_data[] = {
+uint8_t raw_adv_data[] = 
+{
 0x02, // Len
 0x01, // Type Flags
 0x06, // GENERAL_DISC_MODE 0x02 | BR_EDR_NOT_SUPPORTED 0x04
@@ -18,64 +19,38 @@ const uint8_t raw_adv_data[] = {
 0x10, // Eddystone Frame Type
 0x04, // Beacons TX power at 0m
 0x03, // URL Scheme 'https://'
-0x67, // URL add  1 'g'
-0x6F, // URL add  2 'o'
-0x6F, // URL add  3 'o'
-0x2E, // URL add  4 '.'
-0x67, // URL add  5 'g'
-0x6C, // URL add  6 'l'
-0x2F, // URL add  7 '/'
-0x32, // URL add  8 '2'
-0x79, // URL add  9 'y'
-0x43, // URL add 10 'C'
-0x36, // URL add 11 '6'
-0x4B, // URL add 12 'K'
-0x58  // URL add 13 'X'
+0x67,
+0x6F,
+0x6F,
+0x2E,
+0x67,
+0x6C,
+0x2F,
+0x46,
+0x39,
+0x31,
+0x55,
+0x72,
+0x72
 };
 
-const uint8_t raw_scan_rsp_data[] = {
-9,    // Length
-0x09, //<<AD Type-Complete local name>>
-0x4E, //N
-0x61, //a
-0x72, //r
-0x72, //r
-0x61, //a
-0x5f, //
-0x30, //0
-0x31, //1
-17,   //Length
-0x06, //<<AD type-Incomplete list 128 bit UUID's>>
-0x93, //lsb
-0x53,
-0x03,
-0x97,
-0x22,
-0x59,
-0x53,
-0x9c,
-0x6d,
-0x42,
-0xb6,
-0xbc,
-0x46,
-0x95,
-0x70,
-0xdb  //msb
+uint8_t raw_scan_rsp_data[] = 
+{
+
 };
 
 /************************************************************************************************************
 *SIG DEFINED SERVICE: SYSTEM INFO SERVICE, ATTRIBUTE VALUES
 *************************************************************************************************************/
 
-const uint8_t  man_name_val[14]={0x42,0x49,0x54,0x53,0x4F,0x4B,0x4F,0x5F,0x4C,0x54,0x44,0x5F,0x4B,0x45};
+const uint8_t  man_name_val[16]={0x42,0x49,0x54,0x53,0x4F,0x4B,0x4F,0x5F,0x53,0x45,0x52,0x56,0x49,0x43,0x45,0x53};
 
-const uint8_t  fw_ver_string_val[3] = {0x35,0x2e,0x31};
+const uint8_t  fw_ver_string_val[3] = {0x35,0x2E,0x31};
 
-const uint8_t  dev_id_val[DEV_ID_LEN] = {0x24,0x0a,0xc4,0xFF,0xFE,0x05,0x8a,0x46};
+const uint8_t  dev_id_val[DEV_ID_LEN] = {0x24,0x0A,0xC4,0xFF,0xFE,0x04,0xA6,0x76};
 
 /************************************************************************************************************
-*PROPIETARY SERVICE: USAGE SERVICE, ATTRIBUTE VALUES
+*PROPIETARY SERVICE: USAGE SERVICE, ATTRIBUTE UUID VALUES
 *************************************************************************************************************/
 
 /*db709546-bcb6-426d-9c53-592297035393*/
