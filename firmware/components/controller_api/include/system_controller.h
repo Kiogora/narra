@@ -19,5 +19,6 @@ void matrix_deactivate(Matrix* matrixInstanceptr, System_variables* system_varia
 
 void matrix_reboot(void);
 
+
 #endif /*__SYSTEM_CONTROLLER_H_*/
 

@@ -12,6 +12,7 @@
 #include "nvs_flash.h"
 #include "bt.h"
 #include "bta_api.h"
+#include "esp_task_wdt.h"
 
 #include "esp_gap_ble_api.h"
 #include "esp_gatts_api.h"
@@ -30,6 +31,12 @@
 static const char* BLE_TASK_TAG = "BLE_TASK";
 static const char* APP_MAIN_TAG = "APP_MAIN";
 static const char* DISPLAY_TASK_TAG = "DISPLAY_TASK";
+static const char* LOADER_TASK_TAG = "LOADER_TASK";
+
+/*UPDATE_BIT defines that an update of a characteristic has occurred*/
+#define UPDATE_BIT   (1<<0)
+/*SCROLL_BIT defines that the scrolling effect is done*/
+#define SCROLL_BIT   (1<<1)
 
 /*Task alias/handle*/
 TaskHandle_t xBleTaskHandle = NULL;
@@ -37,7 +44,7 @@ TaskHandle_t xDisplayTaskHandle = NULL;
 TaskHandle_t xLoaderTaskHandle = NULL;
 
 /*Task synchronisation event group*/
-//EventGroupHandle_t xEventGroup = NULL;
+EventGroupHandle_t xEventGroup = NULL;
 
 typedef struct
 {
@@ -65,7 +72,6 @@ Ble_task_parameters ble_task_parameters=
     .system_variables_ptr=&system_variables
 };
 
-
 void init_pin_interface(Matrix* matrixInstanceptr)
 {
     matrixInstanceptr->serial_pin=GPIO_NUM_25;
@@ -77,6 +83,7 @@ void init_pin_interface(Matrix* matrixInstanceptr)
 
 void BleTask(void *pvParameters)
 {
+    ESP_LOGD(BLE_TASK_TAG, "ENTERED TASK");
     esp_err_t nvs_state, bt_init_fail;
 
     /* Initialise NVS*/
@@ -121,8 +128,7 @@ void BleTask(void *pvParameters)
         vTaskDelete(xBleTaskHandle);
     }
 
-    Ble_task_parameters* ble_param = NULL;
-    ble_param = (Ble_task_parameters*)pvParameters;
+    Ble_task_parameters* ble_param = (Ble_task_parameters*)pvParameters;    
 
     /*The usage attributes are global in ble.c thus are available to the whole program after linking*/
     /*We assign the below variables via a safe way instead of at the global level*/
@@ -138,6 +144,8 @@ void BleTask(void *pvParameters)
     usage_startup_string_attr->attr_value = (uint8_t*) ble_param->system_variables_ptr->startup_msg;
     usage_shutdown_string_attr->attr_value = (uint8_t*) ble_param->system_variables_ptr->shutdown_msg;
 
+    set_ble_event_group(xEventGroup);
+
     esp_ble_gatts_register_callback(gatts_event_handler);
     esp_ble_gap_register_callback(gap_event_handler);
     esp_ble_gatts_app_register(SYSTEM_APP_ID);
@@ -148,6 +156,7 @@ void BleTask(void *pvParameters)
 
 void DisplayTask(void *pvParameters)
 {
+    ESP_LOGD(DISPLAY_TASK_TAG, "ENTERED TASK");
     init_pin_interface(&matrix);
 
     if(matrix_init(&matrix, &system_variables, narra_speed_15) == ESP_OK)
@@ -178,12 +187,33 @@ void DisplayTask(void *pvParameters)
     vTaskDelete(xDisplayTaskHandle);
 }
 
+void LoaderTask(void *pvParameters)
+{
+    ESP_LOGD(LOADER_TASK_TAG, "ENTERED TASK");
+
+    System_variables* LoaderSysVars = (System_variables*)pvParameters;
+
+    EventBits_t xEventGroupValue;
+    EventBits_t xBitstoWaitFor = (UPDATE_BIT);
+
+    for(;;)
+    {
+        xEventGroupValue = xEventGroupWaitBits(xEventGroup, xBitstoWaitFor, pdTRUE, pdTRUE, portMAX_DELAY); 
+
+        if(xEventGroupValue & xBitstoWaitFor)
+        {
+            system_loader(LoaderSysVars);
+        }      
+    }
+        
+}
+
 void app_main(void)
 {
-//    xEventGroup = xEventGroupCreate();
+    xEventGroup = xEventGroupCreate();
 
     xTaskCreate(DisplayTask, "DisplayTask", 8192, NULL, 1, &xDisplayTaskHandle);
-//    xTaskCreate("LoaderTask", loader_task_name, 512, NULL, 2, &xLoaderTaskHandle);
+    xTaskCreate(LoaderTask, "LoaderTask", 4096, (void*)&system_variables, 1, &xLoaderTaskHandle);
 
     if(xDisplayTaskHandle != NULL)
     {

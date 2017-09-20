@@ -30,6 +30,9 @@
 
 const char* BLE_TAG = "BLE_API";
 
+/*Task synchronisation event group*/
+EventGroupHandle_t xLoaderBleEventGroup = NULL;
+
 /************************************************************************************************************
 *GATT PROFILE BASED ATTRIBUTE HANDLE TABLE DECLARATION
 *************************************************************************************************************/
@@ -265,6 +268,11 @@ esp_attr_value_t* get_usage_startup_string_attribute(void)
 esp_attr_value_t* get_usage_shutdown_string_attribute(void)
 {
     return &usage_shutdown_string_attribute;
+}
+
+void set_ble_event_group(EventGroupHandle_t event_group)
+{
+    xLoaderBleEventGroup=event_group;
 }
 
 /************************************************************************************************************
@@ -879,14 +887,28 @@ static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_wri
             if(prepare_write_env->handle == usage_handle_table[USAGE_IDX_DISPLAY_STRING_VAL])
             {
                 system_update_active((char*)nul_terminated_buffer);
+                if(xLoaderBleEventGroup != NULL)
+                {
+                    xEventGroupSetBits( xLoaderBleEventGroup, UPDATE_BIT );
+                }
             }
             else if(prepare_write_env->handle == usage_handle_table[USAGE_IDX_STARTUP_STRING_VAL])
             {
                 system_update_startup((char*)nul_terminated_buffer);
+
+                if(xLoaderBleEventGroup != NULL)
+                {
+                    xEventGroupSetBits( xLoaderBleEventGroup, UPDATE_BIT );
+                }
             }
             else if(prepare_write_env->handle == usage_handle_table[USAGE_IDX_SHUTDOWN_STRING_VAL])
             {
                 system_update_shutdown((char*)nul_terminated_buffer);
+               
+                if(xLoaderBleEventGroup != NULL)
+                {
+                    xEventGroupSetBits( xLoaderBleEventGroup, UPDATE_BIT );
+                }
             }            
             ESP_LOGI(BLE_TAG, "NUL TERMINATOR FOUND, WRITING STRING :D");
             ESP_LOGI(BLE_TAG, "STRING LEN IS: %d", strlen((char*)nul_terminated_buffer));
@@ -908,21 +930,35 @@ static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_wri
             if(prepare_write_env->handle == usage_handle_table[USAGE_IDX_DISPLAY_STRING_VAL])
             {
                 system_update_active((char*)prepare_write_env->prepare_buf);
+
+                if(xLoaderBleEventGroup != NULL)
+                {
+                    xEventGroupSetBits( xLoaderBleEventGroup, UPDATE_BIT );
+                }
             }
             else if(prepare_write_env->handle == usage_handle_table[USAGE_IDX_STARTUP_STRING_VAL])
             {
                 system_update_startup((char*)prepare_write_env->prepare_buf);
+
+                if(xLoaderBleEventGroup != NULL)
+                {
+                    xEventGroupSetBits( xLoaderBleEventGroup, UPDATE_BIT );
+                }
             }
             else if(prepare_write_env->handle == usage_handle_table[USAGE_IDX_SHUTDOWN_STRING_VAL])
             {
                 system_update_shutdown((char*)prepare_write_env->prepare_buf);
+
+                if(xLoaderBleEventGroup != NULL)
+                {
+                    xEventGroupSetBits( xLoaderBleEventGroup, UPDATE_BIT );
+                }
             }
             /*commit the utf8 string write*/
             /*In the case of multiple system messages, check handle against the GATT attribute handle table*/
             system_update_active((char*)prepare_write_env->prepare_buf);
             ESP_LOGI(BLE_TAG, "NULL TERMINATOR FOUND, WRITING STRING :D");
             ESP_LOGI(BLE_TAG, "STRING WRITTEN IS: %s", (char*)prepare_write_env->prepare_buf);
-            
         }
         else
         {

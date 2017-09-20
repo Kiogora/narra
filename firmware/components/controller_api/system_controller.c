@@ -176,7 +176,6 @@ void matrix_display(Matrix* matrixInstanceptr, System_variables* system_variable
                         break;
                 }
                 free(utf8string);
-                free(unprocessed_string);
             }
             else
             {

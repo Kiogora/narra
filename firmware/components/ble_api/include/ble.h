@@ -3,6 +3,10 @@
 
 #include <stdint.h>
 #include "sdkconfig.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/event_groups.h"
+
+#define UPDATE_BIT   (1<<0)
 
 /*Number of profiles*/
 #define NARRA_PROFILE_NUM 			    0x02
@@ -125,5 +129,7 @@ esp_attr_value_t* get_usage_runtime_string_attribute(void);
 esp_attr_value_t* get_usage_startup_string_attribute(void);
 
 esp_attr_value_t* get_usage_shutdown_string_attribute(void);
+
+void set_ble_event_group(EventGroupHandle_t event_group);
 
 #endif /*__BLE_H_*/
