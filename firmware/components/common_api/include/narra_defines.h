@@ -1,6 +1,20 @@
 #ifndef __NARRA_DEFINES_H_
 #define __NARRA_DEFINES_H_ 
 
+
+/**********************************************/
+/*Task eventgroup defines                    */
+/**********************************************/
+
+/*DEACTIVATE_BIT defines that the scrolling effect is done*/
+#define DEACTIVATE_BIT   (1<<0)
+
+/*ACTIVATE_BIT defines that the scrolling effect is done*/
+#define ACTIVATE_BIT   (1<<1)
+
+/*UPDATE_BIT defines that an update of a characteristic has occurred*/
+#define UPDATE_BIT   (1<<2)
+
 /**********************************************/
 /*Updater defines                             */
 /**********************************************/

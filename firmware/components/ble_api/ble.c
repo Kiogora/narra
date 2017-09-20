@@ -21,6 +21,7 @@
 #include "utf8_decoder.h"
 #include "sdkconfig.h"
 #include "narra_types.h"
+#include "narra_defines.h"
 
 #include "system_updater.h"
 #include "system_loader.h"
@@ -828,21 +829,6 @@ static void clear_write_buffer(prepare_write_t *prepare_write_env)
     prepare_write_env->prepare_len = UNINITIALISED;
     prepare_write_env->handle = UNINITIALISED;
 }
-
-//TODO: Read from the attribute that points to the respective matrix, sys_variable structure members.
-
-/*static void system_update_state(Matrix* matrixInstanceptr, System_variables* system_variables, uint8_t new_state)
-{
-    if(new_state == 0)
-    {
-        matrix_deactivate(matrixInstanceptr, system_variables);
-    }
-    else
-    {
-        matrix_activate(matrixInstanceptr); 
-    }
-}
-*/
 
 static void uint8_check_then_write(esp_attr_value_t* attribute, prepare_write_t* prepare_write_env, 
                                      esp_ble_gatts_cb_param_t *param)

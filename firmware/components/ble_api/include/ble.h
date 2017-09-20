@@ -6,15 +6,6 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/event_groups.h"
 
-/*DEACTIVATE_BIT defines that the scrolling effect is done*/
-#define DEACTIVATE_BIT   (1<<0)
-
-/*ACTIVATE_BIT defines that the scrolling effect is done*/
-#define ACTIVATE_BIT   (1<<1)
-
-/*UPDATE_BIT defines that an update of a characteristic has occurred*/
-#define UPDATE_BIT   (1<<2)
-
 /*Number of profiles*/
 #define NARRA_PROFILE_NUM 			    0x02
 

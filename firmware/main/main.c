@@ -27,21 +27,13 @@
 #include "system_loader.h"
 #include "system_controller.h"
 #include "system_updater.h"
+#include "narra_defines.h"
 
 static const char* BLE_TASK_TAG = "BLE_TASK";
 static const char* APP_MAIN_TAG = "APP_MAIN";
 static const char* DISPLAY_TASK_TAG = "DISPLAY_TASK";
 static const char* LOADER_TASK_TAG = "LOADER_TASK";
 static const char* STATE_TASK_TAG = "STATE_TASK";
-
-/*DEACTIVATE_BIT defines that the scrolling effect is done*/
-#define DEACTIVATE_BIT   (1<<0)
-
-/*ACTIVATE_BIT defines that the scrolling effect is done*/
-#define ACTIVATE_BIT   (1<<1)
-
-/*UPDATE_BIT defines that an update of a characteristic has occurred*/
-#define UPDATE_BIT   (1<<2)
 
 /*Task alias/handle*/
 TaskHandle_t xBleTaskHandle = NULL;
