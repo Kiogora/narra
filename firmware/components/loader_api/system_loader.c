@@ -42,7 +42,7 @@ static esp_err_t narra_load_startup_msg(System_variables* instanceptr)
     {
         nvs_close(system_loader);
         nvs_open("system", NVS_READWRITE, &system_loader);
-        char* test_message = "Test_startup_message";
+        char* test_message = "STARTING SYSTEM...";
         nvs_set_str(system_loader, "startup_msg", test_message);
         nvs_close(system_loader);
         nvs_open("system", NVS_READONLY, &system_loader);
@@ -108,7 +108,7 @@ static esp_err_t narra_load_shutdown_msg(System_variables* instanceptr)
     {
         nvs_close(system_loader);
         nvs_open("system", NVS_READWRITE, &system_loader);
-        char* test_message = "Test_shutdown_message";
+        char* test_message = "STOPPING SYSTEM...";
         nvs_set_str(system_loader, "shutdown_msg", test_message);
         nvs_close(system_loader);
         nvs_open("system", NVS_READONLY, &system_loader);
@@ -172,7 +172,7 @@ static esp_err_t narra_load_active_msg(System_variables* instanceptr)
     {
         nvs_close(system_loader);
         nvs_open("system", NVS_READWRITE, &system_loader);
-        char* test_message = "Test_active_message";
+        char* test_message = "RUNTIME MESSAGE";
         nvs_set_str(system_loader, "active_msg", test_message);
         nvs_close(system_loader);
         nvs_open("system", NVS_READONLY, &system_loader);

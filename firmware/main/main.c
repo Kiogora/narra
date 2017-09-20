@@ -142,8 +142,6 @@ void BleTask(void *pvParameters)
     usage_startup_string_attr->attr_value = (uint8_t*) ble_param->system_variables_ptr->startup_msg;
     usage_shutdown_string_attr->attr_value = (uint8_t*) ble_param->system_variables_ptr->shutdown_msg;
 
-    set_ble_event_group(xEventGroup);
-
     esp_ble_gatts_register_callback(gatts_event_handler);
     esp_ble_gap_register_callback(gap_event_handler);
     esp_ble_gatts_app_register(SYSTEM_APP_ID);
@@ -192,11 +190,11 @@ void LoaderTask(void *pvParameters)
     System_variables* LoaderSysVars = (System_variables*)pvParameters;
 
     EventBits_t xEventGroupValue;
-    EventBits_t xBitstoWaitFor = UPDATE_BIT;
+    EventBits_t xBitstoWaitFor = SYSTEM_STRING_UPDATE_STARTING_BIT;
 
     for(;;)
     {
-        xEventGroupValue = xEventGroupWaitBits(xEventGroup, xBitstoWaitFor, pdTRUE, pdTRUE, portMAX_DELAY); 
+        xEventGroupValue = xEventGroupWaitBits(xEventGroup, xBitstoWaitFor, pdTRUE, pdFALSE, portMAX_DELAY); 
 
         if(xEventGroupValue & xBitstoWaitFor)
         {
@@ -213,6 +211,7 @@ void StateTask(void *pvParameters)
     Generic_task_parameters* state_param = (Generic_task_parameters*)pvParameters;
 
     EventBits_t xEventGroupValue;
+
     EventBits_t xBitstoWaitFor = (ACTIVATE_BIT | DEACTIVATE_BIT);
 
     for(;;)
@@ -246,7 +245,7 @@ void StateTask(void *pvParameters)
             else
             {
                 ESP_LOGI(STATE_TASK_TAG, "MATRIX CONTROLLER ALREADY DEACTIVATED, SILENTLY IGNORING REQUEST");
-            }        
+            }      
         }
     }
         
@@ -255,6 +254,9 @@ void StateTask(void *pvParameters)
 void app_main(void)
 {
     xEventGroup = xEventGroupCreate();
+    
+    set_controller_event_group(xEventGroup);
+    set_ble_event_group(xEventGroup);
 
     xTaskCreate(DisplayTask, "DisplayTask", 8192, NULL, 1, &xDisplayTaskHandle);
     xTaskCreate(LoaderTask, "LoaderTask", 4096, (void*)&system_variables, 1, &xLoaderTaskHandle);

@@ -1,4 +1,3 @@
-
 /*Standard C libs*/
 #include <stdint.h>
 #include <string.h>
@@ -7,6 +6,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/gpio.h"
+#include "freertos/event_groups.h"
 #include "esp_system.h"
 #include "esp_err.h"
 #include "esp_log.h"
@@ -23,6 +23,10 @@
 #include "utf8_decoder.h"
 
 static const char* TAG = "CONTROLLER_API";
+
+uint8_t scroll_once_flag=0;
+/*Task synchronisation event group*/
+EventGroupHandle_t xControllerEventGroup = NULL;
 
 /*Private functions*/
 /*******************/
@@ -63,7 +67,7 @@ static char* add_txt_spacer(Matrix* matrixInstanceptr, char* spacer)
     else
     {
 /*        
-        NULL pointer dereferencing error!
+        NULL pointer dereferencing exception!
 */
         return matrixInstanceptr->current_message;
     }
@@ -97,8 +101,6 @@ esp_err_t matrix_init(Matrix* matrixInstanceptr, System_variables* system_variab
             return ESP_FAIL;
         }
 
-        /*Send event group to bluetooth task to start*/
-
         matrixInstanceptr->unit_per_matrix=0x08;
         matrixInstanceptr->fontwidth=0x08;
         matrixInstanceptr->num_rows=0x08;
@@ -122,14 +124,21 @@ esp_err_t matrix_init(Matrix* matrixInstanceptr, System_variables* system_variab
 void matrix_activate(Matrix* matrixInstanceptr)
 {
     ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
-    matrixInstanceptr->system_state=active;
+
+    if(matrixInstanceptr->system_state == shutdown)
+    {
+        matrixInstanceptr->system_state=startup;
+    }
 }
 
 void matrix_deactivate(Matrix* matrixInstanceptr, System_variables* system_variables)
 {
     ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
-    matrixInstanceptr->system_state=shutdown;
-    matrix_display(matrixInstanceptr, system_variables, scroll);
+
+    if(matrixInstanceptr->system_state == active)
+    {
+        matrixInstanceptr->system_state=shutdown;
+    }
 }
 
 void matrix_reboot(void)
@@ -137,51 +146,84 @@ void matrix_reboot(void)
     ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
     esp_restart();
 }
+
+void set_controller_event_group(EventGroupHandle_t event_group)
+{
+    if(event_group != NULL)
+    {
+        ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
+        xControllerEventGroup=event_group;
+        ESP_LOGI(TAG, "SET CONTROLLER EVENT GROUP");
+    }
+    else
+    {
+        ESP_LOGE(TAG, "UNABLE TO SET CONTROLLER EVENT GROUP! CHECK HEAP MEMORY");
+    }
+}
+
+void show(Matrix* matrixInstanceptr, System_variables* system_variables, narra_rendertype_enum _renderx)
+{
+    
+    char* unprocessed_string = add_txt_spacer(matrixInstanceptr, "    ");
+
+    if(unprocessed_string != NULL)
+    {
+        /*check byte buffer for UTF8 validity*/
+        size_t utf8_length;
+        uint8_t invalid = check_count_valid_UTF8(unprocessed_string, &utf8_length);
+
+        if(!invalid)
+        {
+            uint32_t* utf8string = (uint32_t*)malloc(sizeof(uint32_t)*utf8_length);
+            memset(utf8string, 0, sizeof(uint32_t)*utf8_length);
+
+            utf8string_create(utf8string, unprocessed_string);
+            switch(_renderx)
+            {
+                case scroll:
+                    scrolling_effect(matrixInstanceptr, utf8string, utf8_length);
+                    break;
+            }
+            free(utf8string);
+        }
+        else
+        {
+            /*implement invalid UTF8 exception handling or invalid char pointer here.*/
+            /*This may not actually be an error as for shutdown state the current message after scroll us NULL!*/
+        }
+    }
+}
     
 /*Matrix display function*/
 void matrix_display(Matrix* matrixInstanceptr, System_variables* system_variables, narra_rendertype_enum _renderx)
 {
     ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
-    if (matrixInstanceptr->system_state== startup || matrixInstanceptr->system_state== active)
+
+    switch(matrixInstanceptr->system_state)
     {
-        switch(matrixInstanceptr->system_state)
-        {
-            case(startup):
-                matrixInstanceptr->current_message=system_variables->startup_msg;
-                break;                
-            case(active):
-                matrixInstanceptr->current_message=system_variables->active_msg;
-                break;
-            case(shutdown):
-                matrixInstanceptr->current_message=system_variables->shutdown_msg;
-                break;
-        }
-        char* unprocessed_string = add_txt_spacer(matrixInstanceptr, "    ");
-        if(unprocessed_string != NULL)
-        {
-            /*check byte buffer for UTF8 validity*/
-            size_t utf8_length;
-            uint8_t invalid = check_count_valid_UTF8(unprocessed_string, &utf8_length);
-
-            if(!invalid)
+        case(startup):
+            scroll_once_flag=scroll_once_flag? 0 : 1;
+            matrixInstanceptr->current_message=system_variables->startup_msg;
+            show(matrixInstanceptr, system_variables, _renderx);
+            matrixInstanceptr->system_state=active;
+            break;
+        case(active):
+            scroll_once_flag=scroll_once_flag? 0 : 1;
+            matrixInstanceptr->current_message=system_variables->active_msg;
+            show(matrixInstanceptr, system_variables, _renderx);
+            break;
+        case(shutdown):
+            if(scroll_once_flag == 0)
             {
-                uint32_t* utf8string = (uint32_t*)malloc(sizeof(uint32_t)*utf8_length);
-                memset(utf8string, 0, sizeof(uint32_t)*utf8_length);
-
-                utf8string_create(utf8string, unprocessed_string);
-                switch(_renderx)
-                {
-                    case scroll:
-                        scrolling_effect(matrixInstanceptr, utf8string, utf8_length);
-                        break;
-                }
-                free(utf8string);
+                matrixInstanceptr->current_message=system_variables->shutdown_msg;
+                show(matrixInstanceptr, system_variables, _renderx);
+                scroll_once_flag = 1;
             }
             else
             {
-                //implement invalid UTF8 exception handling here.
+                matrixInstanceptr->current_message=NULL;
+                break;
             }
-        }
     }
 }
 

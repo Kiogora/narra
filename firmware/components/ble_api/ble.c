@@ -273,7 +273,16 @@ esp_attr_value_t* get_usage_shutdown_string_attribute(void)
 
 void set_ble_event_group(EventGroupHandle_t event_group)
 {
-    xBleEventGroup=event_group;
+    if(event_group != NULL)
+    {
+        ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
+        xBleEventGroup=event_group;
+        ESP_LOGI(BLE_TAG, "SET BLE EVENT GROUP");
+    }
+    else
+    {
+        ESP_LOGE(BLE_TAG, "UNABLE TO SET BLE EVENT GROUP! CHECK HEAP MEMORY");
+    }
 }
 
 /************************************************************************************************************
@@ -843,13 +852,13 @@ static void uint8_check_then_write(esp_attr_value_t* attribute, prepare_write_t*
     else
     {
         uint8_t desired_state = *(prepare_write_env->prepare_buf);
-        if(desired_state == active || desired_state == shutdown)
+        if(desired_state == startup || desired_state == shutdown)
         {
             ESP_LOGI(BLE_TAG, "VALID STATE VALUE RECEIVED. ATTEMPTING TO CHANGE CONTROLLER STATE");
             ESP_LOGI(BLE_TAG, "STATE LEN IS: %d", prepare_write_env->prepare_len)
             ESP_LOGI(BLE_TAG, "STATE VAL IS: DECIMAL %u, HEX 0x%02X", *(prepare_write_env->prepare_buf),
                                                                       *(prepare_write_env->prepare_buf));
-            if(desired_state == active)
+            if(desired_state == startup)
             {
                 if(xBleEventGroup != NULL)
                 {
@@ -867,7 +876,7 @@ static void uint8_check_then_write(esp_attr_value_t* attribute, prepare_write_t*
         else
         {
             ESP_LOGI(BLE_TAG, "INVALID STATE VALUE. VALUE NOT WRITTEN");
-        }
+        }   
     }
 }
 
@@ -893,9 +902,10 @@ static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_wri
             if(prepare_write_env->handle == usage_handle_table[USAGE_IDX_DISPLAY_STRING_VAL])
             {
                 system_update_active((char*)nul_terminated_buffer);
+
                 if(xBleEventGroup != NULL)
                 {
-                    xEventGroupSetBits( xBleEventGroup, UPDATE_BIT );
+                    xEventGroupSetBits( xBleEventGroup, SYSTEM_STRING_UPDATE_STARTING_BIT );
                 }
             }
             else if(prepare_write_env->handle == usage_handle_table[USAGE_IDX_STARTUP_STRING_VAL])
@@ -904,7 +914,7 @@ static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_wri
 
                 if(xBleEventGroup != NULL)
                 {
-                    xEventGroupSetBits( xBleEventGroup, UPDATE_BIT );
+                    xEventGroupSetBits( xBleEventGroup, SYSTEM_STRING_UPDATE_STARTING_BIT );
                 }
             }
             else if(prepare_write_env->handle == usage_handle_table[USAGE_IDX_SHUTDOWN_STRING_VAL])
@@ -913,7 +923,7 @@ static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_wri
                
                 if(xBleEventGroup != NULL)
                 {
-                    xEventGroupSetBits( xBleEventGroup, UPDATE_BIT );
+                    xEventGroupSetBits( xBleEventGroup, SYSTEM_STRING_UPDATE_STARTING_BIT );
                 }
             }            
             ESP_LOGI(BLE_TAG, "NUL TERMINATOR FOUND, WRITING STRING :D");
@@ -939,7 +949,7 @@ static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_wri
 
                 if(xBleEventGroup != NULL)
                 {
-                    xEventGroupSetBits( xBleEventGroup, UPDATE_BIT );
+                    xEventGroupSetBits( xBleEventGroup, SYSTEM_STRING_UPDATE_STARTING_BIT );
                 }
             }
             else if(prepare_write_env->handle == usage_handle_table[USAGE_IDX_STARTUP_STRING_VAL])
@@ -948,7 +958,7 @@ static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_wri
 
                 if(xBleEventGroup != NULL)
                 {
-                    xEventGroupSetBits( xBleEventGroup, UPDATE_BIT );
+                    xEventGroupSetBits( xBleEventGroup, SYSTEM_STRING_UPDATE_STARTING_BIT );
                 }
             }
             else if(prepare_write_env->handle == usage_handle_table[USAGE_IDX_SHUTDOWN_STRING_VAL])
@@ -957,7 +967,7 @@ static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_wri
 
                 if(xBleEventGroup != NULL)
                 {
-                    xEventGroupSetBits( xBleEventGroup, UPDATE_BIT );
+                    xEventGroupSetBits( xBleEventGroup, SYSTEM_STRING_UPDATE_STARTING_BIT );
                 }
             }
             /*commit the utf8 string write*/

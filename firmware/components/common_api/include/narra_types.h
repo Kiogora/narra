@@ -66,8 +66,8 @@ typedef enum
 */
 typedef enum
 {
-    startup = (narra_xristics_t)0x02,
-    active = (narra_xristics_t)0x01,
+    active = (narra_xristics_t)0x02,
+    startup = (narra_xristics_t)0x01,
     shutdown = (narra_xristics_t)0x00,
 }narra_state_enum;
 

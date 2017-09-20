@@ -5,6 +5,10 @@
 #include "narra_parameters.h"
 #include "narra_types.h"
 
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "freertos/event_groups.h"
+
 /***********************************************************************************/
 /*Public function prototypes go here*/
 /***********************************************************************************/
@@ -18,6 +22,8 @@ void matrix_activate(Matrix* matrixInstanceptr);
 void matrix_deactivate(Matrix* matrixInstanceptr, System_variables* system_variables);
 
 void matrix_reboot(void);
+
+void set_controller_event_group(EventGroupHandle_t event_group);
 
 
 #endif /*__SYSTEM_CONTROLLER_H_*/
