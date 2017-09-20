@@ -32,16 +32,22 @@ static const char* BLE_TASK_TAG = "BLE_TASK";
 static const char* APP_MAIN_TAG = "APP_MAIN";
 static const char* DISPLAY_TASK_TAG = "DISPLAY_TASK";
 static const char* LOADER_TASK_TAG = "LOADER_TASK";
+static const char* STATE_TASK_TAG = "STATE_TASK";
+
+/*DEACTIVATE_BIT defines that the scrolling effect is done*/
+#define DEACTIVATE_BIT   (1<<0)
+
+/*ACTIVATE_BIT defines that the scrolling effect is done*/
+#define ACTIVATE_BIT   (1<<1)
 
 /*UPDATE_BIT defines that an update of a characteristic has occurred*/
-#define UPDATE_BIT   (1<<0)
-/*SCROLL_BIT defines that the scrolling effect is done*/
-#define SCROLL_BIT   (1<<1)
+#define UPDATE_BIT   (1<<2)
 
 /*Task alias/handle*/
 TaskHandle_t xBleTaskHandle = NULL;
 TaskHandle_t xDisplayTaskHandle = NULL;
 TaskHandle_t xLoaderTaskHandle = NULL;
+TaskHandle_t xStateTaskHandle = NULL;
 
 /*Task synchronisation event group*/
 EventGroupHandle_t xEventGroup = NULL;
@@ -50,7 +56,7 @@ typedef struct
 {
     Matrix* matrix_instance_ptr;
     System_variables* system_variables_ptr;
-} Ble_task_parameters;
+} Generic_task_parameters;
 
 /*The below structures declared outside stack.*/
 Matrix matrix=
@@ -66,7 +72,7 @@ System_variables system_variables =
 };
 
 /*Now define the structure with references of the memory set aside for the above structures*/
-Ble_task_parameters ble_task_parameters=
+Generic_task_parameters generic_task_parameters=
 {
     .matrix_instance_ptr=&matrix,
     .system_variables_ptr=&system_variables
@@ -128,7 +134,7 @@ void BleTask(void *pvParameters)
         vTaskDelete(xBleTaskHandle);
     }
 
-    Ble_task_parameters* ble_param = (Ble_task_parameters*)pvParameters;    
+    Generic_task_parameters* ble_param = (Generic_task_parameters*)pvParameters;    
 
     /*The usage attributes are global in ble.c thus are available to the whole program after linking*/
     /*We assign the below variables via a safe way instead of at the global level*/
@@ -163,7 +169,7 @@ void DisplayTask(void *pvParameters)
     {
         /*Call xTaskCreate for the BLE task here*/
         /*pass pointer to a structure of pointers to other structures-crazy*/
-        xTaskCreate(BleTask, "BleTask", 4096, (void*)&ble_task_parameters, 1, &xBleTaskHandle);
+        xTaskCreate(BleTask, "BleTask", 4096, (void*)&generic_task_parameters, 1, &xBleTaskHandle);
 
         if(xBleTaskHandle != NULL)
         {
@@ -194,7 +200,7 @@ void LoaderTask(void *pvParameters)
     System_variables* LoaderSysVars = (System_variables*)pvParameters;
 
     EventBits_t xEventGroupValue;
-    EventBits_t xBitstoWaitFor = (UPDATE_BIT);
+    EventBits_t xBitstoWaitFor = UPDATE_BIT;
 
     for(;;)
     {
@@ -203,7 +209,53 @@ void LoaderTask(void *pvParameters)
         if(xEventGroupValue & xBitstoWaitFor)
         {
             system_loader(LoaderSysVars);
-        }      
+        }
+    }
+        
+}
+
+void StateTask(void *pvParameters)
+{
+    ESP_LOGD(STATE_TASK_TAG, "ENTERED TASK");
+
+    Generic_task_parameters* state_param = (Generic_task_parameters*)pvParameters;
+
+    EventBits_t xEventGroupValue;
+    EventBits_t xBitstoWaitFor = (ACTIVATE_BIT | DEACTIVATE_BIT);
+
+    for(;;)
+    {
+        /*Since the state bits can only be set one at a go, dont wait for all bits of interest*/
+        xEventGroupValue = xEventGroupWaitBits(xEventGroup, xBitstoWaitFor, pdTRUE, pdFALSE, portMAX_DELAY); 
+
+        if( ( xEventGroupValue & ACTIVATE_BIT ) != 0 )
+        {
+            /*Call activate function*/ 
+            ESP_LOGI(STATE_TASK_TAG, "ATTEMPTING MATRIX CONTROLLER ACTIVATION");
+            if(state_param->matrix_instance_ptr->system_state == shutdown)
+            {
+                ESP_LOGI(STATE_TASK_TAG, "ACTIVATED MATRIX CONTROLLER");
+                matrix_activate(state_param->matrix_instance_ptr);
+            }
+            else
+            {
+                ESP_LOGI(STATE_TASK_TAG, "MATRIX CONTROLLER ALREADY ACTIVATED, SILENTLY IGNORING REQUEST");
+            }
+        }
+        else if( ( xEventGroupValue & DEACTIVATE_BIT ) != 0 )
+        {
+            ESP_LOGI(STATE_TASK_TAG, "ATTEMPTING MATRIX CONTROLLER DEACTIVATION");
+            /*Call deactivate function*/
+            if(state_param->matrix_instance_ptr->system_state == active)
+            {
+                ESP_LOGI(STATE_TASK_TAG, "DEACTIVATED MATRIX CONTROLLER");
+                matrix_deactivate(state_param->matrix_instance_ptr, state_param->system_variables_ptr);
+            }
+            else
+            {
+                ESP_LOGI(STATE_TASK_TAG, "MATRIX CONTROLLER ALREADY DEACTIVATED, SILENTLY IGNORING REQUEST");
+            }        
+        }
     }
         
 }
@@ -214,6 +266,7 @@ void app_main(void)
 
     xTaskCreate(DisplayTask, "DisplayTask", 8192, NULL, 1, &xDisplayTaskHandle);
     xTaskCreate(LoaderTask, "LoaderTask", 4096, (void*)&system_variables, 1, &xLoaderTaskHandle);
+    xTaskCreate(StateTask, "StateTask", 4096, (void*)&generic_task_parameters, 1, &xStateTaskHandle);
 
     if(xDisplayTaskHandle != NULL)
     {

@@ -31,7 +31,7 @@
 const char* BLE_TAG = "BLE_API";
 
 /*Task synchronisation event group*/
-EventGroupHandle_t xLoaderBleEventGroup = NULL;
+EventGroupHandle_t xBleEventGroup = NULL;
 
 /************************************************************************************************************
 *GATT PROFILE BASED ATTRIBUTE HANDLE TABLE DECLARATION
@@ -272,7 +272,7 @@ esp_attr_value_t* get_usage_shutdown_string_attribute(void)
 
 void set_ble_event_group(EventGroupHandle_t event_group)
 {
-    xLoaderBleEventGroup=event_group;
+    xBleEventGroup=event_group;
 }
 
 /************************************************************************************************************
@@ -851,17 +851,37 @@ static void uint8_check_then_write(esp_attr_value_t* attribute, prepare_write_t*
     /*Check buffer length, should be a byte long*/
     if(prepare_write_env->prepare_len != sizeof(uint8_t))
     {
-        ESP_LOGI(BLE_TAG, "INVALID STATE VALUE. VALUE NOT WRITTEN");
+        ESP_LOGI(BLE_TAG, "INVALID STATE BYTE LENGTH. VALUE NOT WRITTEN");
         return;
     }
     else
     {
-        /*commit the value write*/
-        /*In the case of multiple values, check handle against the GATT attribute handle table*/
-        ESP_LOGI(BLE_TAG, "VALID STATE VALUE. VALUE WRITTEN :D");
-        ESP_LOGI(BLE_TAG, "STATE LEN IS: %d", prepare_write_env->prepare_len)
-        ESP_LOGI(BLE_TAG, "STATE VAL WRITTEN IS: DECIMAL %u, HEX 0x%02X",*(prepare_write_env->prepare_buf),
-                                                                                 *(prepare_write_env->prepare_buf));
+        uint8_t desired_state = *(prepare_write_env->prepare_buf);
+        if(desired_state == active || desired_state == shutdown)
+        {
+            ESP_LOGI(BLE_TAG, "VALID STATE VALUE RECEIVED. ATTEMPTING TO CHANGE CONTROLLER STATE");
+            ESP_LOGI(BLE_TAG, "STATE LEN IS: %d", prepare_write_env->prepare_len)
+            ESP_LOGI(BLE_TAG, "STATE VAL IS: DECIMAL %u, HEX 0x%02X", *(prepare_write_env->prepare_buf),
+                                                                      *(prepare_write_env->prepare_buf));
+            if(desired_state == active)
+            {
+                if(xBleEventGroup != NULL)
+                {
+                    xEventGroupSetBits( xBleEventGroup, ACTIVATE_BIT );
+                }
+            }
+            else if(desired_state == shutdown)
+            {
+                if(xBleEventGroup != NULL)
+                {
+                    xEventGroupSetBits( xBleEventGroup, DEACTIVATE_BIT );
+                }
+            }
+        }
+        else
+        {
+            ESP_LOGI(BLE_TAG, "INVALID STATE VALUE. VALUE NOT WRITTEN");
+        }
     }
 }
 
@@ -887,27 +907,27 @@ static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_wri
             if(prepare_write_env->handle == usage_handle_table[USAGE_IDX_DISPLAY_STRING_VAL])
             {
                 system_update_active((char*)nul_terminated_buffer);
-                if(xLoaderBleEventGroup != NULL)
+                if(xBleEventGroup != NULL)
                 {
-                    xEventGroupSetBits( xLoaderBleEventGroup, UPDATE_BIT );
+                    xEventGroupSetBits( xBleEventGroup, UPDATE_BIT );
                 }
             }
             else if(prepare_write_env->handle == usage_handle_table[USAGE_IDX_STARTUP_STRING_VAL])
             {
                 system_update_startup((char*)nul_terminated_buffer);
 
-                if(xLoaderBleEventGroup != NULL)
+                if(xBleEventGroup != NULL)
                 {
-                    xEventGroupSetBits( xLoaderBleEventGroup, UPDATE_BIT );
+                    xEventGroupSetBits( xBleEventGroup, UPDATE_BIT );
                 }
             }
             else if(prepare_write_env->handle == usage_handle_table[USAGE_IDX_SHUTDOWN_STRING_VAL])
             {
                 system_update_shutdown((char*)nul_terminated_buffer);
                
-                if(xLoaderBleEventGroup != NULL)
+                if(xBleEventGroup != NULL)
                 {
-                    xEventGroupSetBits( xLoaderBleEventGroup, UPDATE_BIT );
+                    xEventGroupSetBits( xBleEventGroup, UPDATE_BIT );
                 }
             }            
             ESP_LOGI(BLE_TAG, "NUL TERMINATOR FOUND, WRITING STRING :D");
@@ -931,27 +951,27 @@ static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_wri
             {
                 system_update_active((char*)prepare_write_env->prepare_buf);
 
-                if(xLoaderBleEventGroup != NULL)
+                if(xBleEventGroup != NULL)
                 {
-                    xEventGroupSetBits( xLoaderBleEventGroup, UPDATE_BIT );
+                    xEventGroupSetBits( xBleEventGroup, UPDATE_BIT );
                 }
             }
             else if(prepare_write_env->handle == usage_handle_table[USAGE_IDX_STARTUP_STRING_VAL])
             {
                 system_update_startup((char*)prepare_write_env->prepare_buf);
 
-                if(xLoaderBleEventGroup != NULL)
+                if(xBleEventGroup != NULL)
                 {
-                    xEventGroupSetBits( xLoaderBleEventGroup, UPDATE_BIT );
+                    xEventGroupSetBits( xBleEventGroup, UPDATE_BIT );
                 }
             }
             else if(prepare_write_env->handle == usage_handle_table[USAGE_IDX_SHUTDOWN_STRING_VAL])
             {
                 system_update_shutdown((char*)prepare_write_env->prepare_buf);
 
-                if(xLoaderBleEventGroup != NULL)
+                if(xBleEventGroup != NULL)
                 {
-                    xEventGroupSetBits( xLoaderBleEventGroup, UPDATE_BIT );
+                    xEventGroupSetBits( xBleEventGroup, UPDATE_BIT );
                 }
             }
             /*commit the utf8 string write*/
