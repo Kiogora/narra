@@ -101,6 +101,6 @@ if __name__=='__main__':
     esptool_path_rel_prefix='components/esptool_py/esptool/'
     esptool_path_prefix=os.path.join(os.environ['IDF_PATH'], esptool_path_rel_prefix)
     esptool=os.path.join(esptool_path_prefix, 'esptool.py')
-    print('The base MAC for the current connected chip will be {MAC}'.format(MAC=get_pretty_base_mac(esptool)))
+    print('The base MAC for the current connected chip is {MAC}'.format(MAC=get_pretty_base_mac(esptool)))
     bluetooth_mac=derive_bt_mac(get_base_mac(esptool), get_bt_mac_lsb_offset(sdkconfig_path_rel_prefix, sdkconfig))
     print('The bluetooth MAC for the current connected chip will be {MAC}'.format(MAC=bluetooth_mac))
