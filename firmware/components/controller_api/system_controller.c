@@ -199,10 +199,10 @@ void matrix_display(Matrix* matrixInstanceptr, System_variables* system_variable
 {
     ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
 
+    EventBits_t delete_display = STOP_DISPLAY;
     switch(matrixInstanceptr->system_state)
     {
         case(startup):
-            scroll_once_flag = 0;
             matrixInstanceptr->current_message=system_variables->startup_msg;
             show(matrixInstanceptr, system_variables, scroll);
             matrixInstanceptr->system_state=active;
@@ -212,17 +212,10 @@ void matrix_display(Matrix* matrixInstanceptr, System_variables* system_variable
             show(matrixInstanceptr, system_variables, _renderx);
             break;
         case(shutdown):
-            if(scroll_once_flag == 0)
-            {
                 matrixInstanceptr->current_message=system_variables->shutdown_msg;
                 show(matrixInstanceptr, system_variables, scroll);
-                scroll_once_flag = 1;
-            }
-            else
-            {
                 matrixInstanceptr->current_message=NULL;
-                break;
-            }
+                xEventGroupSetBits(xControllerEventGroup, delete_display);
     }
 }
 

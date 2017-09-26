@@ -159,16 +159,19 @@ void DisplayTask(void *pvParameters)
     {
         /*Call xTaskCreate for the BLE task here*/
         /*pass pointer to a structure of pointers to other structures-crazy*/
-        xTaskCreate(BleTask, "BleTask", 4096, (void*)&generic_task_parameters, 1, &xBleTaskHandle);
+        if(xBleTaskHandle == NULL)
+        {
+            xTaskCreate(BleTask, "BleTask", 4096, (void*)&generic_task_parameters, 1, &xBleTaskHandle);
 
-        if(xBleTaskHandle != NULL)
-        {
-            ESP_LOGI(DISPLAY_TASK_TAG, "Ble_Task created");
-        }
-        else
-        {
-            ESP_LOGE(DISPLAY_TASK_TAG, "function:\"%s\" Ble_Task creation failed! Check heap memory constraints",
-                                        __func__);
+            if(xBleTaskHandle != NULL)
+            {
+                ESP_LOGI(DISPLAY_TASK_TAG, "Ble_Task created or exists");
+            }
+            else
+            {
+                ESP_LOGE(DISPLAY_TASK_TAG, "function:\"%s\" Ble_Task creation failed! Check heap memory constraints",
+                                            __func__);
+            }
         }
 
         for(;;)
@@ -190,7 +193,7 @@ void LoaderTask(void *pvParameters)
     System_variables* LoaderSysVars = (System_variables*)pvParameters;
 
     EventBits_t xEventGroupValue;
-    EventBits_t xBitstoWaitFor = SYSTEM_STRING_UPDATE_STARTING_BIT;
+    EventBits_t xBitstoWaitFor = STRING_UPDATE_BIT;
 
     for(;;)
     {
@@ -212,7 +215,7 @@ void StateTask(void *pvParameters)
 
     EventBits_t xEventGroupValue;
 
-    EventBits_t xBitstoWaitFor = (ACTIVATE_BIT | DEACTIVATE_BIT);
+    EventBits_t xBitstoWaitFor = (ACTIVATE_BIT | DEACTIVATE_BIT | STOP_DISPLAY);
 
     for(;;)
     {
@@ -222,30 +225,57 @@ void StateTask(void *pvParameters)
         if( ( xEventGroupValue & ACTIVATE_BIT ) != 0 )
         {
             /*Call activate function*/ 
-            ESP_LOGI(STATE_TASK_TAG, "ATTEMPTING MATRIX CONTROLLER ACTIVATION");
-            if(state_param->matrix_instance_ptr->system_state == shutdown)
+            ESP_LOGI(STATE_TASK_TAG, "ATTEMPTING MATRIX CONTROLLER HARD ACTIVATION");
+            if(xDisplayTaskHandle == NULL)
             {
-                ESP_LOGI(STATE_TASK_TAG, "ACTIVATED MATRIX CONTROLLER");
-                matrix_activate(state_param->matrix_instance_ptr);
+                ESP_LOGI(STATE_TASK_TAG, "DISPLAY TASK NON-EXISTENT OR HANDLE UNALLOCATED, ATTEMPTING CREATION!");
+
+                xTaskCreate(DisplayTask, "DisplayTask", 8192, NULL, 1, &xDisplayTaskHandle);
+
+                if(xDisplayTaskHandle != NULL)
+                {
+                    ESP_LOGI(STATE_TASK_TAG, "Display_Task CREATED OR EXISTS");
+                }
+                else
+                {
+                    ESP_LOGE(STATE_TASK_TAG, "function:\"%s\"Display_Task CREATION FAILED! CHECK HEAP MEMORY!",
+                                             __func__);
+                } 
             }
             else
             {
-                ESP_LOGI(STATE_TASK_TAG, "MATRIX CONTROLLER ALREADY ACTIVATED, SILENTLY IGNORING REQUEST");
+                ESP_LOGE(STATE_TASK_TAG, "function:\"%s\" DISPLAY TASK EXISTS OR HANDLE ALLOCATED!",
+                                          __func__);    
             }
+
         }
         else if( ( xEventGroupValue & DEACTIVATE_BIT ) != 0 )
         {
-            ESP_LOGI(STATE_TASK_TAG, "ATTEMPTING MATRIX CONTROLLER DEACTIVATION");
+            ESP_LOGI(STATE_TASK_TAG, "ATTEMPTING MATRIX CONTROLLER SOFT DEACTIVATION");
             /*Call deactivate function*/
             if(state_param->matrix_instance_ptr->system_state == active)
             {
-                ESP_LOGI(STATE_TASK_TAG, "DEACTIVATED MATRIX CONTROLLER");
                 matrix_deactivate(state_param->matrix_instance_ptr, state_param->system_variables_ptr);
+                ESP_LOGI(STATE_TASK_TAG, "SOFT DEACTIVATED MATRIX CONTROLLER");
             }
             else
             {
-                ESP_LOGI(STATE_TASK_TAG, "MATRIX CONTROLLER ALREADY DEACTIVATED, SILENTLY IGNORING REQUEST");
+                ESP_LOGI(STATE_TASK_TAG, "MATRIX CONTROLLER ALREADY SOFT DEACTIVATED, SILENTLY IGNORING REQUEST");
             }      
+        }
+        else if( ( xEventGroupValue & STOP_DISPLAY ) != 0 )
+        {
+            /*Delete the display task so as not to consume CPU time when not needed*/
+            if(xDisplayTaskHandle != NULL)
+            {
+                vTaskDelete(xDisplayTaskHandle);
+                xDisplayTaskHandle=NULL;
+                ESP_LOGI(STATE_TASK_TAG, "HARD DEACTIVATION! DELETED DISPLAY TASK!")
+            }
+            else
+            {
+                ESP_LOGE(STATE_TASK_TAG, "UNABLE TO HARD DEACTIVATE DUE TO ALREADY NON-EXISTENT DISPLAY TASK!")
+            }
         }
     }
         
@@ -268,8 +298,8 @@ void app_main(void)
     }
     else
     {
-        ESP_LOGE(APP_MAIN_TAG, "function:\"%s\" DisplayTask and LoaderTask creation failed! Check heap memory\
-                                constraints", __func__);
+        ESP_LOGE(APP_MAIN_TAG, "function:\"%s\" DisplayTask and/or LoaderTask CREATION FAILED! CHECK HEAP MEMORY",
+                               __func__);
     }
 }
 //TODO: Move speed from system initialisation at start and implement in parameters in func write_speed/update_speed .

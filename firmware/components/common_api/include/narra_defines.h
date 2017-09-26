@@ -9,24 +9,14 @@
 /*DEACTIVATE_BIT defines that the scrolling effect is done.*/
 #define DEACTIVATE_BIT   (1<<0)
 
-/*ACTIVATE_BIT defines that the scrolling effect is done*/
+/*ACTIVATE_BIT defines that the scrolling effect is done.*/
 #define ACTIVATE_BIT   (1<<1)
 
-/*COMPLETE_SCROLL_BIT defines that a scroll is complete has occurred.*/
-#define COMPLETE_SCROLL_BIT (1<<2)
+/*STRING_UPDATE_BIT defines that a string update is about to commence.*/
+#define STRING_UPDATE_BIT (1<<2)
 
-/*STARTING_SCROLL_BIT defines that a scroll is about to occurred.*/
-#define STARTING_SCROLL_BIT (1<<3)
-
-/*SYSTEM_STATE_UPDATE_STARTING_BIT defines that a system state update is complete*/
-#define SYSTEM_STATE_UPDATE_STARTING_BIT (1<<4)
-
-/*SYSTEM_STATE_CHANGED defines that a system state update is starting*/
-#define SYSTEM_STATE_UPDATE_COMPLETE_BIT (1<<5)
-
-/*SYSTEM_STRING_UPDATE_STARTING_BIT defines that a system string update is starting*/
-#define SYSTEM_STRING_UPDATE_STARTING_BIT (1<<6)
-
+/*STOP_DISPLAY defines deletion of the display task*/
+#define STOP_DISPLAY (1<<3)
 
 /**********************************************/
 /*Updater defines                             */
