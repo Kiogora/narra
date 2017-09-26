@@ -885,16 +885,17 @@ static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_wri
 {
     ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
     /* sanity check variable that holds the (in)validity of the byte buffer as a UTF8 string*/
-    uint8_t invalid=0;
-    size_t bytestring_length;
+    uint8_t invalid = 0;
 
     if(prepare_write_env->prepare_buf[(prepare_write_env->prepare_len)-1] != '\0')
     {
         /*Byte array lacks NUL string terminator*/
         uint8_t* nul_terminated_buffer=(uint8_t*)malloc((prepare_write_env->prepare_len)+1);
         memcpy(nul_terminated_buffer, prepare_write_env->prepare_buf, prepare_write_env->prepare_len);
-        nul_terminated_buffer[prepare_write_env->prepare_len]='\0';
-        invalid = check_count_valid_UTF8( (char*)nul_terminated_buffer, &bytestring_length);
+        nul_terminated_buffer[prepare_write_env->prepare_len] = '\0';
+
+        invalid = simple_check_UTF8( (char*)nul_terminated_buffer);
+
         if(!invalid)
         {
             /*commit the utf8 string write*/
@@ -940,7 +941,7 @@ static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_wri
     else
     {
         /*Byte array contains NUL string terminator*/
-        invalid = check_count_valid_UTF8((char*)prepare_write_env->prepare_buf, &bytestring_length);
+        invalid = simple_check_UTF8((char*)prepare_write_env->prepare_buf);
         if(!invalid)
         {
             if(prepare_write_env->handle == usage_handle_table[USAGE_IDX_DISPLAY_STRING_VAL])
