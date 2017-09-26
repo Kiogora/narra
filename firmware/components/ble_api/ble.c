@@ -767,7 +767,7 @@ static void usage_profile_prepare_write_event_handler(prepare_write_t *prepare_w
                 bytestring_check_then_write(&usage_startup_string_attribute, prepare_write_env, param);
                 clear_write_buffer(prepare_write_env);
             }
-            else if (prepare_write_env->handle == usage_handle_table[USAGE_IDX_STARTUP_STRING_VAL])
+            else if (prepare_write_env->handle == usage_handle_table[USAGE_IDX_SHUTDOWN_STRING_VAL])
             {
                 bytestring_check_then_write(&usage_startup_string_attribute, prepare_write_env, param);
                 clear_write_buffer(prepare_write_env);
@@ -840,7 +840,7 @@ static void clear_write_buffer(prepare_write_t *prepare_write_env)
 }
 
 static void uint8_check_then_write(esp_attr_value_t* attribute, prepare_write_t* prepare_write_env, 
-                                     esp_ble_gatts_cb_param_t *param)
+                                   esp_ble_gatts_cb_param_t *param)
 {
     ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
     /*Check buffer length, should be a byte long*/
@@ -1006,8 +1006,8 @@ static void usage_profile_exec_write_event_handler(prepare_write_t* prepare_writ
         {
             bytestring_check_then_write(&usage_runtime_string_attribute, prepare_write_env, param);
         }
-        else
-        {
+        else 
+        { 
             ESP_LOGI(BLE_TAG,"ESP_GATT_PREP_WRITE_EXEC_CANCEL");
         }
         clear_write_buffer(prepare_write_env);
