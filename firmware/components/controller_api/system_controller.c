@@ -202,13 +202,12 @@ void matrix_display(Matrix* matrixInstanceptr, System_variables* system_variable
     switch(matrixInstanceptr->system_state)
     {
         case(startup):
-            scroll_once_flag=scroll_once_flag? 0 : 1;
+            scroll_once_flag = 0;
             matrixInstanceptr->current_message=system_variables->startup_msg;
-            show(matrixInstanceptr, system_variables, _renderx);
+            show(matrixInstanceptr, system_variables, scroll);
             matrixInstanceptr->system_state=active;
             break;
         case(active):
-            scroll_once_flag=scroll_once_flag? 0 : 1;
             matrixInstanceptr->current_message=system_variables->active_msg;
             show(matrixInstanceptr, system_variables, _renderx);
             break;
@@ -216,7 +215,7 @@ void matrix_display(Matrix* matrixInstanceptr, System_variables* system_variable
             if(scroll_once_flag == 0)
             {
                 matrixInstanceptr->current_message=system_variables->shutdown_msg;
-                show(matrixInstanceptr, system_variables, _renderx);
+                show(matrixInstanceptr, system_variables, scroll);
                 scroll_once_flag = 1;
             }
             else
