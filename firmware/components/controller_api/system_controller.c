@@ -32,7 +32,7 @@ EventGroupHandle_t xControllerEventGroup = NULL;
 /* You can change this function's contents depending on the embedded platform*/
 static esp_err_t init_pin_interface(Matrix* matrixInstanceptr)
 {
-    ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
+    ESP_LOGD(TAG, "ENTERED FUNCTION [%s]", __func__);
     gpio_pad_select_gpio(matrixInstanceptr->serial_pin);
     gpio_pad_select_gpio(matrixInstanceptr->shift_pin);
     gpio_pad_select_gpio(matrixInstanceptr->latch_pin);
@@ -49,7 +49,7 @@ static esp_err_t init_pin_interface(Matrix* matrixInstanceptr)
 
 static char* add_txt_spacer(Matrix* matrixInstanceptr, char* spacer)
 {
-    ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
+    ESP_LOGD(TAG, "ENTERED FUNCTION [%s]", __func__);
     if(spacer != NULL && matrixInstanceptr->current_message != NULL)
     {
 /*
@@ -74,7 +74,7 @@ static char* add_txt_spacer(Matrix* matrixInstanceptr, char* spacer)
 
 static void show(Matrix* matrixInstanceptr, System_variables* system_variables, narra_rendertype_enum _renderx)
 {
-    
+    ESP_LOGD(TAG, "ENTERED FUNCTION [%s]", __func__);
     char* unprocessed_string = add_txt_spacer(matrixInstanceptr, "    ");
 
     if(unprocessed_string != NULL)
@@ -112,7 +112,7 @@ static void show(Matrix* matrixInstanceptr, System_variables* system_variables, 
 /*setup matrix*/
 esp_err_t matrix_init(Matrix* matrixInstanceptr, System_variables* system_variables, narra_speed_enum _speed)
 {
-    ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
+    ESP_LOGD(TAG, "ENTERED FUNCTION [%s]", __func__);
     int32_t loader_return_code = system_loader(system_variables);
 
     if (loader_return_code == NVS_INIT_ERROR)
@@ -155,7 +155,7 @@ esp_err_t matrix_init(Matrix* matrixInstanceptr, System_variables* system_variab
 
 void matrix_activate(Matrix* matrixInstanceptr)
 {
-    ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
+    ESP_LOGD(TAG, "ENTERED FUNCTION [%s]", __func__);
 
     if(matrixInstanceptr->system_state == shutdown)
     {
@@ -165,7 +165,7 @@ void matrix_activate(Matrix* matrixInstanceptr)
 
 void matrix_deactivate(Matrix* matrixInstanceptr, System_variables* system_variables)
 {
-    ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
+    ESP_LOGD(TAG, "ENTERED FUNCTION [%s]", __func__);
 
     if(matrixInstanceptr->system_state == active)
     {
@@ -175,15 +175,15 @@ void matrix_deactivate(Matrix* matrixInstanceptr, System_variables* system_varia
 
 void matrix_reboot(void)
 {
-    ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
+    ESP_LOGD(TAG, "ENTERED FUNCTION [%s]", __func__);
     esp_restart();
 }
 
 void set_controller_event_group(EventGroupHandle_t event_group)
 {
+    ESP_LOGD(TAG, "ENTERED FUNCTION [%s]", __func__);
     if(event_group != NULL)
     {
-        ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
         xControllerEventGroup=event_group;
         ESP_LOGI(TAG, "SET CONTROLLER EVENT GROUP");
     }
@@ -196,7 +196,7 @@ void set_controller_event_group(EventGroupHandle_t event_group)
 /*Matrix display function*/
 void matrix_display(Matrix* matrixInstanceptr, System_variables* system_variables, narra_rendertype_enum _renderx)
 {
-    ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
+    ESP_LOGD(TAG, "ENTERED FUNCTION [%s]", __func__);
     EventBits_t delete_display = STOP_DISPLAY;
 
     switch(matrixInstanceptr->system_state)

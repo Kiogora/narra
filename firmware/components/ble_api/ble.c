@@ -200,7 +200,7 @@ static esp_ble_adv_params_t bitsoko_advert_params =
 
 void gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *param)
 {
-    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
+    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION [%s]", __func__);
     switch (event) 
     {
     case ESP_GAP_BLE_ADV_DATA_SET_COMPLETE_EVT:
@@ -275,7 +275,7 @@ void set_ble_event_group(EventGroupHandle_t event_group)
 {
     if(event_group != NULL)
     {
-        ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
+        ESP_LOGD(BLE_TAG, "ENTERED FUNCTION [%s]", __func__);
         xBleEventGroup=event_group;
         ESP_LOGI(BLE_TAG, "SET BLE EVENT GROUP");
     }
@@ -444,7 +444,7 @@ esp_gatts_attr_db_t usage_gatt_db[USAGE_IDX_NB] =
 
 void gatts_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param)
 {
-    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
+    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION [%s]", __func__);
     ESP_LOGI(BLE_TAG, "EVENT TYPE: %s, EVENT ID: %d, GATTS IF: %d\n", gatts_event[event], event, gatts_if);
     /* If event is register event, store the gatts_if for each profile */
     if (event == ESP_GATTS_REG_EVT)
@@ -482,7 +482,7 @@ void gatts_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, esp
 static void system_profile_event_handler(esp_gatts_cb_event_t event,
                                          esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param) 
 {
-    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
+    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION [%s]", __func__);
     switch (event) {
     	case ESP_GATTS_REG_EVT:
             ESP_LOGI(BLE_TAG, "%s %d\n", __func__, __LINE__);
@@ -563,7 +563,7 @@ static void system_profile_event_handler(esp_gatts_cb_event_t event,
 static void usage_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if,
                                         esp_ble_gatts_cb_param_t *param) 
 {
-    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
+    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION [%s]", __func__);
     switch (event) {
     	case ESP_GATTS_REG_EVT:
             ESP_LOGI(BLE_TAG, "%s %d\n", __func__, __LINE__);
@@ -637,7 +637,7 @@ static void usage_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_
 static void usage_profile_read_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if,
                                              esp_ble_gatts_cb_param_t *param)
 {
-    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
+    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION [%s]", __func__);
     if (param->read.handle == usage_handle_table[USAGE_IDX_DEVICE_STATE_VAL])
     {
         read_attribute_by_app(&usage_state_attribute, event, gatts_if, param);
@@ -663,7 +663,7 @@ static void usage_profile_read_event_handler(esp_gatts_cb_event_t event, esp_gat
 static void read_attribute_by_app(esp_attr_value_t* attribute, esp_gatts_cb_event_t event, 
                                   esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param)
 {
-    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
+    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION [%s]", __func__);
     update_attribute_length(attribute, param);
 
     esp_gatt_status_t status = ESP_GATT_OK;
@@ -700,7 +700,7 @@ static void read_attribute_by_app(esp_attr_value_t* attribute, esp_gatts_cb_even
 
 static void update_attribute_length(esp_attr_value_t* attribute, esp_ble_gatts_cb_param_t *param)
 {
-    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
+    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION [%s]", __func__);
     /*Do not get and update the length of attribute at global level, perform this at local at each read event.*/
     if (param->read.handle == usage_handle_table[USAGE_IDX_DEVICE_STATE_VAL])
     {
@@ -727,7 +727,7 @@ static void update_attribute_length(esp_attr_value_t* attribute, esp_ble_gatts_c
 static void usage_profile_prepare_write_event_handler(prepare_write_t *prepare_write_env, esp_gatt_if_t gatts_if,
                                                       esp_ble_gatts_cb_param_t *param)
 {
-    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
+    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION [%s]", __func__);
     if (param->write.need_rsp)
     {
         if (param->write.is_prep)
@@ -779,7 +779,7 @@ static void usage_profile_prepare_write_event_handler(prepare_write_t *prepare_w
 static esp_gatt_status_t prepare_write_buffer(prepare_write_t *prepare_write_env, esp_gatt_if_t gatts_if,
                                               esp_ble_gatts_cb_param_t *param)
 {
-    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
+    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION [%s]", __func__);
     esp_gatt_status_t status = ESP_GATT_OK;
     if (prepare_write_env->prepare_buf == NULL)
     {
@@ -829,7 +829,7 @@ static esp_gatt_status_t prepare_write_buffer(prepare_write_t *prepare_write_env
 
 static void clear_write_buffer(prepare_write_t *prepare_write_env)
 {
-    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
+    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION [%s]", __func__);
     if (prepare_write_env->prepare_buf)
     {
         free(prepare_write_env->prepare_buf);
@@ -842,7 +842,7 @@ static void clear_write_buffer(prepare_write_t *prepare_write_env)
 static void uint8_check_then_write(esp_attr_value_t* attribute, prepare_write_t* prepare_write_env, 
                                    esp_ble_gatts_cb_param_t *param)
 {
-    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
+    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION [%s]", __func__);
     /*Check buffer length, should be a byte long*/
     if(prepare_write_env->prepare_len != sizeof(uint8_t))
     {
@@ -855,22 +855,32 @@ static void uint8_check_then_write(esp_attr_value_t* attribute, prepare_write_t*
         if(desired_state == startup || desired_state == shutdown)
         {
             ESP_LOGI(BLE_TAG, "VALID STATE VALUE RECEIVED. ATTEMPTING TO CHANGE CONTROLLER STATE");
-            ESP_LOGI(BLE_TAG, "STATE LEN IS: %d", prepare_write_env->prepare_len)
-            ESP_LOGI(BLE_TAG, "STATE VAL IS: DECIMAL %u, HEX 0x%02X", *(prepare_write_env->prepare_buf),
-                                                                      *(prepare_write_env->prepare_buf));
-            if(desired_state == startup)
+            ESP_LOGI(BLE_TAG, "RECEIVED STATE LEN IS: %d", prepare_write_env->prepare_len)
+            ESP_LOGI(BLE_TAG, "RECEIVED STATE VAL IS: DECIMAL %u, HEX 0x%02X", *(prepare_write_env->prepare_buf),
+                                                                               *(prepare_write_env->prepare_buf));
+            if(desired_state == startup && *(uint8_t*)usage_state_attribute.attr_value == shutdown)
             {
                 if(xBleEventGroup != NULL)
                 {
                     xEventGroupSetBits( xBleEventGroup, ACTIVATE_BIT );
+                    ESP_LOGI(BLE_TAG, "CONTROLLER SOFT CHECK OK!");
                 }
             }
-            else if(desired_state == shutdown)
+            else if(desired_state == startup && *(uint8_t*)usage_state_attribute.attr_value != shutdown)
+            {
+                ESP_LOGI(BLE_TAG, "UNABLE TO SET CONTROLLER STATE, SOFT CONTROLLER STATE IS NOT IN SHUTDOWN MODE");
+            }
+            else if(desired_state == shutdown && *(uint8_t*)usage_state_attribute.attr_value == active)
             {
                 if(xBleEventGroup != NULL)
                 {
                     xEventGroupSetBits( xBleEventGroup, DEACTIVATE_BIT );
+                    ESP_LOGI(BLE_TAG, "CONTROLLER SOFT CHECK OK!");
                 }
+            }
+            else if(desired_state == shutdown && *(uint8_t*)usage_state_attribute.attr_value != shutdown)
+            {
+                ESP_LOGI(BLE_TAG, "UNABLE TO SET CONTROLLER STATE, SOFT CONTROLLER STATE IS NOT IN ACTIVE MODE");
             }
         }
         else
@@ -883,7 +893,7 @@ static void uint8_check_then_write(esp_attr_value_t* attribute, prepare_write_t*
 static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_write_t* prepare_write_env, 
                                         esp_ble_gatts_cb_param_t *param)
 {
-    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
+    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION [%s]", __func__);
     /* sanity check variable that holds the (in)validity of the byte buffer as a UTF8 string*/
     uint8_t invalid = 0;
 
@@ -928,8 +938,8 @@ static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_wri
                 }
             }            
             ESP_LOGI(BLE_TAG, "NUL TERMINATOR FOUND, WRITING STRING :D");
-            ESP_LOGI(BLE_TAG, "STRING LEN IS: %d", strlen((char*)nul_terminated_buffer));
-            ESP_LOGI(BLE_TAG, "STRING VAL WRITTEN IS: %s", (char*)nul_terminated_buffer);
+            ESP_LOGI(BLE_TAG, "RECEIVED STRING LEN IS: %d", strlen((char*)nul_terminated_buffer));
+            ESP_LOGI(BLE_TAG, "RECEIVED STRING VAL IS: %s", (char*)nul_terminated_buffer);
         }
         else
         {
@@ -988,7 +998,7 @@ static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_wri
 static void usage_profile_exec_write_event_handler(prepare_write_t* prepare_write_env, 
                                                    esp_ble_gatts_cb_param_t* param)
 {
-    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION: %s", __func__);
+    ESP_LOGD(BLE_TAG, "ENTERED FUNCTION [%s]", __func__);
     if (prepare_write_env->handle == usage_handle_table[USAGE_IDX_DEVICE_STATE_VAL])
     {
         if (param->exec_write.exec_write_flag == ESP_GATT_PREP_WRITE_EXEC)

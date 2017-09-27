@@ -25,7 +25,7 @@ static const char* TAG = "LOADER_API";
 
 static esp_err_t narra_load_startup_msg(System_variables* instanceptr)
 {
-    ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
+    ESP_LOGD(TAG, "ENTERED FUNCTION [%s]", __func__);
     nvs_handle system_loader;
     esp_err_t err = nvs_open("system", NVS_READONLY, &system_loader);
     if(err == ESP_ERR_NVS_NOT_FOUND)
@@ -91,7 +91,7 @@ static esp_err_t narra_load_startup_msg(System_variables* instanceptr)
 
 static esp_err_t narra_load_shutdown_msg(System_variables* instanceptr)
 {
-    ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
+    ESP_LOGD(TAG, "ENTERED FUNCTION [%s]", __func__);
     nvs_handle system_loader;
     esp_err_t err = nvs_open("system", NVS_READONLY, &system_loader);
     if(err == ESP_ERR_NVS_NOT_FOUND)
@@ -155,7 +155,7 @@ static esp_err_t narra_load_shutdown_msg(System_variables* instanceptr)
 
 static esp_err_t narra_load_active_msg(System_variables* instanceptr)
 {
-    ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
+    ESP_LOGD(TAG, "ENTERED FUNCTION [%s]", __func__);
     nvs_handle system_loader;
     esp_err_t err = nvs_open("system", NVS_READONLY, &system_loader);
     if(err == ESP_ERR_NVS_NOT_FOUND)
@@ -219,7 +219,7 @@ static esp_err_t narra_load_active_msg(System_variables* instanceptr)
 
 int32_t system_loader(System_variables* instanceptr)
 {
-    ESP_LOGD(TAG, "ENTERED FUNCTION: %s", __func__);
+    ESP_LOGD(TAG, "ENTERED FUNCTION [%s]", __func__);
     if (narra_nvs_init() != ESP_OK)
     {
         return NVS_INIT_ERROR;
