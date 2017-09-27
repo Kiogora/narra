@@ -24,7 +24,6 @@
 
 static const char* TAG = "CONTROLLER_API";
 
-uint8_t scroll_once_flag=0;
 /*Task synchronisation event group*/
 EventGroupHandle_t xControllerEventGroup = NULL;
 
