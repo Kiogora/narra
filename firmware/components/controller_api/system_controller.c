@@ -73,6 +73,39 @@ static char* add_txt_spacer(Matrix* matrixInstanceptr, char* spacer)
     }
 }
 
+static void show(Matrix* matrixInstanceptr, System_variables* system_variables, narra_rendertype_enum _renderx)
+{
+    
+    char* unprocessed_string = add_txt_spacer(matrixInstanceptr, "    ");
+
+    if(unprocessed_string != NULL)
+    {
+        /*check byte buffer for UTF8 validity*/
+        size_t utf8_length;
+        uint8_t invalid = check_count_valid_UTF8(unprocessed_string, &utf8_length);
+
+        if(!invalid)
+        {
+            uint32_t* utf8string = (uint32_t*)malloc(sizeof(uint32_t)*utf8_length);
+            memset(utf8string, 0, sizeof(uint32_t)*utf8_length);
+
+            utf8string_create(utf8string, unprocessed_string);
+            switch(_renderx)
+            {
+                case scroll:
+                    scrolling_effect(matrixInstanceptr, utf8string, utf8_length);
+                    break;
+            }
+            free(utf8string);
+        }
+        else
+        {
+            /*implement invalid UTF8 exception handling or invalid char pointer here.*/
+            /*This may not actually be an error as for shutdown state the current message after scroll us NULL!*/
+        }
+    }
+}
+
 
 /*Public functions*/
 /******************/
@@ -158,39 +191,6 @@ void set_controller_event_group(EventGroupHandle_t event_group)
     else
     {
         ESP_LOGE(TAG, "UNABLE TO SET CONTROLLER EVENT GROUP! CHECK HEAP MEMORY");
-    }
-}
-
-void show(Matrix* matrixInstanceptr, System_variables* system_variables, narra_rendertype_enum _renderx)
-{
-    
-    char* unprocessed_string = add_txt_spacer(matrixInstanceptr, "    ");
-
-    if(unprocessed_string != NULL)
-    {
-        /*check byte buffer for UTF8 validity*/
-        size_t utf8_length;
-        uint8_t invalid = check_count_valid_UTF8(unprocessed_string, &utf8_length);
-
-        if(!invalid)
-        {
-            uint32_t* utf8string = (uint32_t*)malloc(sizeof(uint32_t)*utf8_length);
-            memset(utf8string, 0, sizeof(uint32_t)*utf8_length);
-
-            utf8string_create(utf8string, unprocessed_string);
-            switch(_renderx)
-            {
-                case scroll:
-                    scrolling_effect(matrixInstanceptr, utf8string, utf8_length);
-                    break;
-            }
-            free(utf8string);
-        }
-        else
-        {
-            /*implement invalid UTF8 exception handling or invalid char pointer here.*/
-            /*This may not actually be an error as for shutdown state the current message after scroll us NULL!*/
-        }
     }
 }
     
