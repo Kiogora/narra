@@ -445,7 +445,7 @@ esp_gatts_attr_db_t usage_gatt_db[USAGE_IDX_NB] =
 void gatts_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param)
 {
     ESP_LOGD(BLE_TAG, "ENTERED FUNCTION [%s]", __func__);
-    ESP_LOGI(BLE_TAG, "EVENT TYPE: %s, EVENT ID: %d, GATTS IF: %d\n", gatts_event[event], event, gatts_if);
+    ESP_LOGI(BLE_TAG, "\nEVENT TYPE: %s, EVENT ID: %d, GATTS IF: %d\n", gatts_event[event], event, gatts_if);
     /* If event is register event, store the gatts_if for each profile */
     if (event == ESP_GATTS_REG_EVT)
     {
