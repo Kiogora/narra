@@ -190,8 +190,8 @@ static struct gatts_profile_inst narra_profile_table[NARRA_PROFILE_NUM] =
 
 static esp_ble_adv_params_t bitsoko_advert_params = 
 {
-    .adv_int_min        = 0x20,
-    .adv_int_max        = 0x40,
+    .adv_int_min        = 0x320, /*500ms*/
+    .adv_int_max        = 0x640, /*1000ms*/
     .adv_type           = ADV_TYPE_IND,
     .own_addr_type      = BLE_ADDR_TYPE_PUBLIC,
     .channel_map        = ADV_CHNL_ALL,
