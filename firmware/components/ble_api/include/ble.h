@@ -19,7 +19,7 @@
 #define SYSTEM_SERVICE_INSTANCE_ID      0x00
 #define USAGE_SERVICE_INSTANCE_ID       0x01
 /*GATT NAME*/
-#define ADVERTISED_DEVICE_NAME          "Narra_01"
+#define PRODUCT_NAME                   "NARRA"
 
 #define CHAR_VAL_LEN_MAX                512
 #define UNINITIALISED                   0

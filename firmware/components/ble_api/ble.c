@@ -486,7 +486,7 @@ static void system_profile_event_handler(esp_gatts_cb_event_t event,
     	case ESP_GATTS_REG_EVT:
             ESP_LOGI(BLE_TAG, "%s %d\n", __func__, __LINE__);
             //TODO Redo the advertised name as there may be more than one beacon in a vicinity.
-            esp_ble_gap_set_device_name(ADVERTISED_DEVICE_NAME);
+            esp_ble_gap_set_device_name(PRODUCT_NAME);
 
             ESP_LOGI(BLE_TAG, "%s %d\n", __func__, __LINE__);
 

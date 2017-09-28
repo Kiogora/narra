@@ -49,7 +49,7 @@ uint8_t raw_scan_rsp_data[] =
 
 #define FW_VER_STRING "0.9-rc1"
 
-const uint8_t  dev_id_val[DEV_ID_LEN] = {0x24,0x0A,0xC4,0xFF,0xFE,0x04,0xA6,0x76};
+const uint8_t  dev_id_val[8] = {0x24,0x0A,0xC4,0xFF,0xFE,0x04,0xA6,0x76};
 
 /************************************************************************************************************
 *PROPIETARY SERVICE: USAGE SERVICE, ATTRIBUTE UUID VALUES
