@@ -7,23 +7,22 @@
 #include "freertos/event_groups.h"
 
 /*Number of profiles*/
-#define NARRA_PROFILE_NUM 			    0x02
+#define NARRA_PROFILE_NUM               0x02
 
 /*Application ID*/
-#define SYSTEM_APP_ID			        0x00
+#define SYSTEM_APP_ID                   0x00
 #define USAGE_APP_ID                    0x01
 /*System profile ID*/
-#define SYSTEM_PROFILE_APP_IDX 			0x00
-#define USAGE_PROFILE_APP_IDX 			0x01
+#define SYSTEM_PROFILE_APP_IDX          0x00
+#define USAGE_PROFILE_APP_IDX           0x01
 /*service instance ID*/
-#define SYSTEM_SERVICE_INSTANCE_ID	    0x00
-#define USAGE_SERVICE_INSTANCE_ID	    0x01
+#define SYSTEM_SERVICE_INSTANCE_ID      0x00
+#define USAGE_SERVICE_INSTANCE_ID       0x01
 /*GATT NAME*/
-#define ADVERTISED_DEVICE_NAME         "Narra_01"
-#define DEV_ID_LEN                      8
+#define ADVERTISED_DEVICE_NAME          "Narra_01"
 
 #define CHAR_VAL_LEN_MAX                512
-#define UNINITIALISED                   0x00
+#define UNINITIALISED                   0
 
 typedef struct
 {
