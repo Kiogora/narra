@@ -34,18 +34,20 @@ uint8_t raw_adv_data[] =
 0x72
 };
 
+
 uint8_t raw_scan_rsp_data[] = 
 {
 
 };
 
+
 /************************************************************************************************************
 *SIG DEFINED SERVICE: SYSTEM INFO SERVICE, ATTRIBUTE VALUES
 *************************************************************************************************************/
 
-const uint8_t  man_name_val[16]={0x42,0x49,0x54,0x53,0x4F,0x4B,0x4F,0x5F,0x53,0x45,0x52,0x56,0x49,0x43,0x45,0x53};
+#define MANUFACTURER_NAME "BITSOKO SERVICES"
 
-const uint8_t  fw_ver_string_val[3] = {0x35,0x2E,0x31};
+#define FW_VER_STRING "0.9-rc1"
 
 const uint8_t  dev_id_val[DEV_ID_LEN] = {0x24,0x0A,0xC4,0xFF,0xFE,0x04,0xA6,0x76};
 

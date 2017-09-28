@@ -325,7 +325,7 @@ static const esp_gatts_attr_db_t system_gatt_db[SYSTEM_IDX_NB] =
 
     [SYSTEM_IDX_MAN_NAME_VAL]        	=    
     {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_manufacturer_name_uuid, ESP_GATT_PERM_READ, 
-    sizeof(man_name_val), sizeof(man_name_val), (uint8_t *)man_name_val}},
+    CHAR_VAL_LEN_MAX, (strlen(MANUFACTURER_NAME)+1), (uint8_t *)MANUFACTURER_NAME}},
 
     [SYSTEM_IDX_DEV_ID_CHAR]     	    =    
     {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&sys_character_declaration_uuid, ESP_GATT_PERM_READ, 
@@ -333,7 +333,7 @@ static const esp_gatts_attr_db_t system_gatt_db[SYSTEM_IDX_NB] =
 
     [SYSTEM_IDX_DEV_ID_VAL]     	    =    
     {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_dev_id_uuid, ESP_GATT_PERM_READ, 
-    sizeof(dev_id_val), sizeof(dev_id_val), (uint8_t *)dev_id_val}},
+    CHAR_VAL_LEN_MAX, sizeof(dev_id_val), (uint8_t *)dev_id_val}},
 
     [SYSTEM_IDX_FW_VER_STRING_CHAR]     =    
     {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&sys_character_declaration_uuid, ESP_GATT_PERM_READ, 
@@ -341,8 +341,7 @@ static const esp_gatts_attr_db_t system_gatt_db[SYSTEM_IDX_NB] =
 
     [SYSTEM_IDX_FW_VER_STRING_VAL]     	=    
     {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_fw_ver_string_uuid, ESP_GATT_PERM_READ, 
-    sizeof(fw_ver_string_val), sizeof(fw_ver_string_val), (uint8_t *)fw_ver_string_val}},
-
+    CHAR_VAL_LEN_MAX, (strlen(FW_VER_STRING)+1), (uint8_t *)FW_VER_STRING}},
 };
 
 /************************************************************************************************************
