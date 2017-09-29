@@ -131,8 +131,8 @@ static void update_attribute_length(esp_attr_value_t* attribute, esp_ble_gatts_c
 static void usage_profile_prepare_write_event_handler(prepare_write_t *prepare_write_env, esp_gatt_if_t gatts_if, 
                                                       esp_ble_gatts_cb_param_t *param);
 
-static esp_gatt_status_t prepare_write_buffer(prepare_write_t *prepare_write_env, esp_gatt_if_t gatts_if, 
-                                    esp_ble_gatts_cb_param_t *param);
+static esp_gatt_status_t prepare_write_buffer(prepare_write_t *prepare_write_env, esp_gatt_if_t gatts_if,
+                                              esp_ble_gatts_cb_param_t *param);
 
 static void clear_write_buffer(prepare_write_t *prepare_write_env);
 
@@ -144,8 +144,6 @@ static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_wri
 
 static void usage_profile_exec_write_event_handler(prepare_write_t* prepare_write_env, 
                                                    esp_ble_gatts_cb_param_t* param);
-
-void gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *param);
 
 /************************************************************************************************************
 *GATT profile declaration
@@ -669,8 +667,19 @@ static void read_attribute_by_app(esp_attr_value_t* attribute, esp_gatts_cb_even
 
     if(attribute->attr_len > attribute->attr_max_len)
     {
+        ESP_LOGI(BLE_TAG, "ATTRIBUTE LENGTH HAS BEEN TRUNCATED FROM ORIGINAL LENGTH: %d BYTE(S) TO %d BYTE(S).", 
+                           attribute->attr_len,
+                           attribute->attr_max_len);
+
         attribute->attr_len = attribute->attr_max_len;
     }
+    else
+    {
+        ESP_LOGI(BLE_TAG, "ATTRIBUTE LENGTH HAS NOT BEEN TRUNCATED, ORIGINAL LENGTH: %d BYTE(S), MAX: %d BYTE(S). ",
+                           attribute->attr_len,
+                           attribute->attr_max_len);
+    }
+
 
     esp_gatt_rsp_t rsp;
     memset(&rsp, UNINITIALISED, sizeof(esp_gatt_rsp_t));

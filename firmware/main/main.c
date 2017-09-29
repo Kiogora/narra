@@ -99,30 +99,30 @@ void BleTask(void *pvParameters)
     bt_init_fail = esp_bt_controller_init(&bt_cfg);
     if (bt_init_fail)
     {
-        ESP_LOGE(BLE_TASK_TAG, "function:\"%s\" BLUETOOTH CONTROLLER INIT FAILED\n", __func__);
+        ESP_LOGE(BLE_TASK_TAG, "FUNCTION:[%s] BLUETOOTH CONTROLLER INIT FAILED\n", __func__);
         vTaskDelete(xBleTaskHandle);
     }
 
     bt_init_fail = esp_bt_controller_enable(ESP_BT_MODE_BTDM);
     if (bt_init_fail)
     {
-        ESP_LOGE(BLE_TASK_TAG, "function:\"%s\" BLUETOOTH CONTROLLER ENABLE FAILED\n", __func__);
+        ESP_LOGE(BLE_TASK_TAG, "FUNCTION:[%s] BLUETOOTH CONTROLLER ENABLE FAILED\n", __func__);
         vTaskDelete(xBleTaskHandle);
     }
 
-    ESP_LOGI(BLE_TASK_TAG, "function:\"%s\" INITIALISED BLUETOOTH CONTROLLER\n", __func__);
+    ESP_LOGI(BLE_TASK_TAG, "FUNCTION:[%s] INITIALISED BLUETOOTH CONTROLLER\n", __func__);
 
     bt_init_fail = esp_bluedroid_init();
     if (bt_init_fail)
     {
-        ESP_LOGE(BLE_TASK_TAG, "function:\"%s\" BLUEDROID STACK INIT FAILED\n", __func__);
+        ESP_LOGE(BLE_TASK_TAG, "FUNCTION:[%s] BLUEDROID STACK INIT FAILED\n", __func__);
         vTaskDelete(xBleTaskHandle);
     }
 
     bt_init_fail = esp_bluedroid_enable();
     if (bt_init_fail) 
     {
-        ESP_LOGE(BLE_TASK_TAG, "function:\"%s\" BLUEDROID STACK ENABLE FAILED\n", __func__);
+        ESP_LOGE(BLE_TASK_TAG, "FUNCTION:[%s] BLUEDROID STACK ENABLE FAILED\n", __func__);
         vTaskDelete(xBleTaskHandle);
     }
 
@@ -165,11 +165,11 @@ void DisplayTask(void *pvParameters)
 
             if(xBleTaskHandle != NULL)
             {
-                ESP_LOGI(DISPLAY_TASK_TAG, "Ble_Task created or exists");
+                ESP_LOGI(DISPLAY_TASK_TAG, "BLE TASK CREATED OR EXISTS!");
             }
             else
             {
-                ESP_LOGE(DISPLAY_TASK_TAG, "function:\"%s\" Ble_Task creation failed! Check heap memory constraints",
+                ESP_LOGE(DISPLAY_TASK_TAG, "FUNCTION:[%s] BLE TASK CREATION FAILED! CHECK AVAILABLE HEAP MEMORY",
                                             __func__);
             }
         }
@@ -234,18 +234,17 @@ void StateTask(void *pvParameters)
 
                 if(xDisplayTaskHandle != NULL)
                 {
-                    ESP_LOGI(STATE_TASK_TAG, "Display_Task CREATED OR EXISTS");
+                    ESP_LOGI(STATE_TASK_TAG, "DISPLAY TASK CREATED OR EXISTS");
                 }
                 else
                 {
-                    ESP_LOGE(STATE_TASK_TAG, "function:\"%s\"Display_Task CREATION FAILED! CHECK HEAP MEMORY!",
+                    ESP_LOGE(STATE_TASK_TAG, "FUNCTION:[%s] DISPLAY TASK CREATION FAILED! CHECK HEAP MEMORY!",
                                              __func__);
                 } 
             }
             else
             {
-                ESP_LOGE(STATE_TASK_TAG, "function:\"%s\" DISPLAY TASK EXISTS OR HANDLE ALLOCATED!",
-                                          __func__);    
+                ESP_LOGE(STATE_TASK_TAG, "FUNCTION:[%s] DISPLAY TASK EXISTS OR HANDLE ALLOCATED!", __func__);    
             }
 
         }
