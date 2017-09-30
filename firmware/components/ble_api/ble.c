@@ -386,17 +386,17 @@ esp_gatts_attr_db_t usage_gatt_db[USAGE_IDX_NB] =
     {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_primary_service_uuid, ESP_GATT_PERM_READ,
       sizeof(usage_svc), sizeof(usage_svc), (uint8_t *)usage_svc}},
 
-    [USAGE_IDX_DISPLAY_STRING_CHAR]         =
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_declaration_uuid, ESP_GATT_PERM_READ,
-      CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE,(uint8_t *)&usage_char_prop_read_write}},
+    [USAGE_IDX_DEVICE_STATE_CHAR]           =    
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_declaration_uuid, ESP_GATT_PERM_READ, 
+    CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE, (uint8_t *)&usage_char_prop_read_write}},
 
-    [USAGE_IDX_DISPLAY_STRING_VAL]          =    
-    {{ESP_GATT_RSP_BY_APP}, {ESP_UUID_LEN_128, (uint8_t *)&character_display_string_uuid, ESP_GATT_PERM_READ|
-      ESP_GATT_PERM_WRITE, UNINITIALISED, UNINITIALISED, NULL}},
+    [USAGE_IDX_DEVICE_STATE_VAL]     	    =    
+    {{ESP_GATT_RSP_BY_APP}, {ESP_UUID_LEN_128, (uint8_t *)&character_device_state_uuid, ESP_GATT_PERM_READ|
+    ESP_GATT_PERM_WRITE, UNINITIALISED, UNINITIALISED, NULL}},
 
-    [USAGE_IDX_DISPLAY_STRING_CFG_1]     	=    
+    [USAGE_IDX_DEVICE_STATE_CFG_1]          =    
     {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_char_presentation_uuid,
-     ESP_GATT_PERM_READ, sizeof(utf8_presentation), sizeof(utf8_presentation), (uint8_t *)&utf8_presentation}},
+     ESP_GATT_PERM_READ, sizeof(uint8_presentation), sizeof(uint8_presentation), (uint8_t *)&uint8_presentation}},
 
     [USAGE_IDX_STARTUP_STRING_CHAR]         =
     {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_declaration_uuid, ESP_GATT_PERM_READ,
@@ -407,6 +407,18 @@ esp_gatts_attr_db_t usage_gatt_db[USAGE_IDX_NB] =
       ESP_GATT_PERM_WRITE, UNINITIALISED, UNINITIALISED, NULL}},
 
     [USAGE_IDX_STARTUP_STRING_CFG_1]     	=    
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_char_presentation_uuid,
+     ESP_GATT_PERM_READ, sizeof(utf8_presentation), sizeof(utf8_presentation), (uint8_t *)&utf8_presentation}},
+
+    [USAGE_IDX_DISPLAY_STRING_CHAR]         =
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_declaration_uuid, ESP_GATT_PERM_READ,
+      CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE,(uint8_t *)&usage_char_prop_read_write}},
+
+    [USAGE_IDX_DISPLAY_STRING_VAL]          =    
+    {{ESP_GATT_RSP_BY_APP}, {ESP_UUID_LEN_128, (uint8_t *)&character_display_string_uuid, ESP_GATT_PERM_READ|
+      ESP_GATT_PERM_WRITE, UNINITIALISED, UNINITIALISED, NULL}},
+
+    [USAGE_IDX_DISPLAY_STRING_CFG_1]     	=    
     {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_char_presentation_uuid,
      ESP_GATT_PERM_READ, sizeof(utf8_presentation), sizeof(utf8_presentation), (uint8_t *)&utf8_presentation}},
 
@@ -421,18 +433,6 @@ esp_gatts_attr_db_t usage_gatt_db[USAGE_IDX_NB] =
     [USAGE_IDX_SHUTDOWN_STRING_CFG_1]       =    
     {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_char_presentation_uuid,
      ESP_GATT_PERM_READ, sizeof(utf8_presentation), sizeof(utf8_presentation), (uint8_t *)&utf8_presentation}},
-
-    [USAGE_IDX_DEVICE_STATE_CHAR]           =    
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_declaration_uuid, ESP_GATT_PERM_READ, 
-    CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE, (uint8_t *)&usage_char_prop_read_write}},
-
-    [USAGE_IDX_DEVICE_STATE_VAL]     	    =    
-    {{ESP_GATT_RSP_BY_APP}, {ESP_UUID_LEN_128, (uint8_t *)&character_device_state_uuid, ESP_GATT_PERM_READ|
-    ESP_GATT_PERM_WRITE, UNINITIALISED, UNINITIALISED, NULL}},
-
-    [USAGE_IDX_DEVICE_STATE_CFG_1]          =    
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_char_presentation_uuid,
-     ESP_GATT_PERM_READ, sizeof(uint8_presentation), sizeof(uint8_presentation), (uint8_t *)&uint8_presentation}},
 };
 
 /************************************************************************************************************
