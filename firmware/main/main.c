@@ -128,10 +128,6 @@ void BleTask(void *pvParameters)
 
     Generic_task_parameters* ble_param = (Generic_task_parameters*)pvParameters;    
 
-    /*The usage attributes are global in ble.c thus are available to the whole program after linking*/
-    /*We assign the below variables via a safe way instead of at the global level*/
-    /*We could increase the priority of ble task during writes to ensure it is not preempted by a separate task*/
-    /*This is if there are writes from multiple sources to say a pointer*/
     esp_attr_value_t* usage_state_attr = get_usage_state_attribute();
     esp_attr_value_t* usage_runtime_string_attr = get_usage_runtime_string_attribute();
     esp_attr_value_t* usage_startup_string_attr = get_usage_startup_string_attribute();

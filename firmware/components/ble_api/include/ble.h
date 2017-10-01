@@ -24,6 +24,7 @@
 #define CHAR_VAL_LEN_MAX                512
 #define UNINITIALISED                   0
 
+
 typedef struct
 {
     uint8_t* prepare_buf;
@@ -114,6 +115,8 @@ enum
     USAGE_IDX_NB,
 };
 
+void set_ble_event_group(EventGroupHandle_t event_group);
+
 void gatts_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, 
 									esp_ble_gatts_cb_param_t *param);
 
@@ -126,7 +129,5 @@ esp_attr_value_t* get_usage_runtime_string_attribute(void);
 esp_attr_value_t* get_usage_startup_string_attribute(void);
 
 esp_attr_value_t* get_usage_shutdown_string_attribute(void);
-
-void set_ble_event_group(EventGroupHandle_t event_group);
 
 #endif /*__BLE_H_*/
