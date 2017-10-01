@@ -47,9 +47,9 @@ uint8_t raw_scan_rsp_data[] =
 
 #define MANUFACTURER_NAME "BITSOKO SERVICES"
 
-#define FW_VER_STRING "0.9-rc1"
+#define FW_VER_STRING "0.9.1-rc0"
 
-uint8_t  dev_id_val[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+uint8_t  dev_id_val[8] = {0};
 
 /************************************************************************************************************
 *PROPIETARY SERVICE: USAGE SERVICE, ATTRIBUTE UUID VALUES
