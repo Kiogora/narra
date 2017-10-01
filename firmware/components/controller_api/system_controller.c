@@ -173,12 +173,6 @@ void matrix_deactivate(Matrix* matrixInstanceptr, System_variables* system_varia
     }
 }
 
-void matrix_reboot(void)
-{
-    ESP_LOGD(TAG, "ENTERED FUNCTION [%s]", __func__);
-    esp_restart();
-}
-
 void set_controller_event_group(EventGroupHandle_t event_group)
 {
     ESP_LOGD(TAG, "ENTERED FUNCTION [%s]", __func__);

@@ -21,8 +21,6 @@ void matrix_activate(Matrix* matrixInstanceptr);
 
 void matrix_deactivate(Matrix* matrixInstanceptr, System_variables* system_variables);
 
-void matrix_reboot(void);
-
 void set_controller_event_group(EventGroupHandle_t event_group);
 
 
