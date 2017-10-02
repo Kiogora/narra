@@ -45,9 +45,9 @@ uint8_t raw_scan_rsp_data[] =
 *SIG DEFINED SERVICE: SYSTEM INFO SERVICE, ATTRIBUTE VALUES
 *************************************************************************************************************/
 
-#define MANUFACTURER_NAME "BITSOKO SERVICES"
+#define MANUFACTURER_NAME "BITSOKO_SERVICES"
 
-#define FW_VER_STRING "0.9.1-rc0"
+#define FW_VER_STRING "0.9.2"
 
 uint8_t  dev_id_val[8] = {0};
 
