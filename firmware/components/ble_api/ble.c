@@ -31,17 +31,8 @@
 
 const char* BLE_TAG = "BLE_API";
 
-esp_gatts_attr_db_t system_gatt_db[SYSTEM_IDX_NB];
-
 /*Task synchronisation event group*/
 EventGroupHandle_t xBleEventGroup = NULL;
-
-/************************************************************************************************************
-*GATT PROFILE BASED ATTRIBUTE HANDLE TABLE DECLARATION
-*************************************************************************************************************/
-uint16_t system_handle_table[SYSTEM_IDX_NB];
-uint16_t usage_handle_table[USAGE_IDX_NB];
-
 /************************************************************************************************************
 *DATATYPE TO ALLOW PREPARE AND EXECUTE WRITE OPERATIONS.
 *************************************************************************************************************/
@@ -325,103 +316,33 @@ static uint8_t* get_base_mac(uint8_t* dev_id_buffer)
 }
 
 /************************************************************************************************************
-*GATT SERVER CODE-SYSTEM PROFILE ATTRIBUTE TAB
+*GATT SERVER: ATTRIBUTE TABLES, ATTRIBUTE HANDLE TABLES, UUIDS, PROPERTIES.
 *************************************************************************************************************/
+esp_gatts_attr_db_t system_gatt_db[SYSTEM_IDX_NB];
+esp_gatts_attr_db_t usage_gatt_db[USAGE_IDX_NB];
+
+uint16_t system_handle_table[SYSTEM_IDX_NB];
+uint16_t usage_handle_table[USAGE_IDX_NB];
 
 #define CHAR_DECLARATION_SIZE   (sizeof(uint8_t))
 
-//SIG defined Device Info Service 0x180A
-//https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.service.device_information.xml
 static const uint16_t device_info_svc = ESP_GATT_UUID_DEVICE_INFO_SVC;
-//Reads are mandatory according to the service description xml for interoperability
-static const esp_gatt_char_prop_t  sys_char_prop_indicate = ESP_GATT_CHAR_PROP_BIT_INDICATE;
-static const esp_gatt_char_prop_t  sys_char_prop_notify = ESP_GATT_CHAR_PROP_BIT_NOTIFY;
-static const esp_gatt_char_prop_t  sys_char_prop_read = ESP_GATT_CHAR_PROP_BIT_READ;
-static const esp_gatt_char_prop_t  sys_char_prop_read_write = ESP_GATT_CHAR_PROP_BIT_WRITE|
-                                                              ESP_GATT_CHAR_PROP_BIT_READ;
-//Service type uuid
-static const uint16_t sys_primary_service_uuid = ESP_GATT_UUID_PRI_SERVICE;
-//GATT declaration
-static const uint16_t sys_character_declaration_uuid = ESP_GATT_UUID_CHAR_DECLARE;
-//GATT descriptor
-static const uint16_t sys_character_client_config_uuid = ESP_GATT_UUID_CHAR_CLIENT_CONFIG;
+
+static const uint16_t primary_service_uuid = ESP_GATT_UUID_PRI_SERVICE;
+static const uint16_t character_declaration_uuid = ESP_GATT_UUID_CHAR_DECLARE;
+static const uint16_t character_client_config_uuid = ESP_GATT_UUID_CHAR_CLIENT_CONFIG;
+static const uint16_t character_presentation_uuid = ESP_GATT_UUID_CHAR_PRESENT_FORMAT;
+
+/*Characteristic properties*/
+static const esp_gatt_char_prop_t  char_prop_indicate = ESP_GATT_CHAR_PROP_BIT_INDICATE;
+static const esp_gatt_char_prop_t  char_prop_notify = ESP_GATT_CHAR_PROP_BIT_NOTIFY;
+static const esp_gatt_char_prop_t  char_prop_read = ESP_GATT_CHAR_PROP_BIT_READ;
+static const esp_gatt_char_prop_t  char_prop_read_write = ESP_GATT_CHAR_PROP_BIT_WRITE|ESP_GATT_CHAR_PROP_BIT_READ;
+
 //Device info service characteristics implemented
 static const uint16_t character_manufacturer_name_uuid = ESP_GATT_UUID_MANU_NAME;
-
 static const uint16_t character_fw_ver_string_uuid = ESP_GATT_UUID_FW_VERSION_STR;
-
 static const uint16_t character_dev_id_uuid = ESP_GATT_UUID_SYSTEM_ID;
-
-static esp_gatts_attr_db_t* create_system_service(void)
-{
-    system_gatt_db[SYSTEM_IDX_SYSTEM_INFO_SERVICE].attr_control.auto_rsp = ESP_GATT_AUTO_RSP; 
-    system_gatt_db[SYSTEM_IDX_SYSTEM_INFO_SERVICE].att_desc.uuid_length = ESP_UUID_LEN_16;
-    system_gatt_db[SYSTEM_IDX_SYSTEM_INFO_SERVICE].att_desc.uuid_p=(uint8_t *)&sys_primary_service_uuid; 
-    system_gatt_db[SYSTEM_IDX_SYSTEM_INFO_SERVICE].att_desc.perm = ESP_GATT_PERM_READ;
-    system_gatt_db[SYSTEM_IDX_SYSTEM_INFO_SERVICE].att_desc.max_length = sizeof(uint16_t); 
-    system_gatt_db[SYSTEM_IDX_SYSTEM_INFO_SERVICE].att_desc.length = sizeof(uint16_t);
-    system_gatt_db[SYSTEM_IDX_SYSTEM_INFO_SERVICE].att_desc.value = (uint8_t *)&device_info_svc;
-
-    system_gatt_db[SYSTEM_IDX_MAN_NAME_CHAR].attr_control.auto_rsp = ESP_GATT_AUTO_RSP;
-    system_gatt_db[SYSTEM_IDX_MAN_NAME_CHAR].att_desc.uuid_length = ESP_UUID_LEN_16;
-    system_gatt_db[SYSTEM_IDX_MAN_NAME_CHAR].att_desc.uuid_p=(uint8_t *)&sys_character_declaration_uuid; 
-    system_gatt_db[SYSTEM_IDX_MAN_NAME_CHAR].att_desc.perm = ESP_GATT_PERM_READ;
-    system_gatt_db[SYSTEM_IDX_MAN_NAME_CHAR].att_desc.max_length = CHAR_DECLARATION_SIZE;
-    system_gatt_db[SYSTEM_IDX_MAN_NAME_CHAR].att_desc.length = CHAR_DECLARATION_SIZE; 
-    system_gatt_db[SYSTEM_IDX_MAN_NAME_CHAR].att_desc.value = (uint8_t *)&sys_char_prop_read;
-
-    system_gatt_db[SYSTEM_IDX_MAN_NAME_VAL].attr_control.auto_rsp = ESP_GATT_AUTO_RSP;
-    system_gatt_db[SYSTEM_IDX_MAN_NAME_VAL].att_desc.uuid_length = ESP_UUID_LEN_16;
-    system_gatt_db[SYSTEM_IDX_MAN_NAME_VAL].att_desc.uuid_p=(uint8_t*)&character_manufacturer_name_uuid; 
-    system_gatt_db[SYSTEM_IDX_MAN_NAME_VAL].att_desc.perm = ESP_GATT_PERM_READ;
-    system_gatt_db[SYSTEM_IDX_MAN_NAME_VAL].att_desc.max_length = CHAR_VAL_LEN_MAX; 
-    system_gatt_db[SYSTEM_IDX_MAN_NAME_VAL].att_desc.length = (strlen(MANUFACTURER_NAME)+1); 
-    system_gatt_db[SYSTEM_IDX_MAN_NAME_VAL].att_desc.value = (uint8_t *)MANUFACTURER_NAME;
-
-    system_gatt_db[SYSTEM_IDX_DEV_ID_CHAR].attr_control.auto_rsp = ESP_GATT_AUTO_RSP;
-    system_gatt_db[SYSTEM_IDX_DEV_ID_CHAR].att_desc.uuid_length = ESP_UUID_LEN_16;
-    system_gatt_db[SYSTEM_IDX_DEV_ID_CHAR].att_desc.uuid_p = (uint8_t *)&sys_character_declaration_uuid; 
-    system_gatt_db[SYSTEM_IDX_DEV_ID_CHAR].att_desc.perm = ESP_GATT_PERM_READ;
-    system_gatt_db[SYSTEM_IDX_DEV_ID_CHAR].att_desc.max_length = CHAR_DECLARATION_SIZE; 
-    system_gatt_db[SYSTEM_IDX_DEV_ID_CHAR].att_desc.length = CHAR_DECLARATION_SIZE;
-    system_gatt_db[SYSTEM_IDX_DEV_ID_CHAR].att_desc.value = (uint8_t *)&sys_char_prop_read;
-
-    system_gatt_db[SYSTEM_IDX_DEV_ID_VAL].attr_control.auto_rsp = ESP_GATT_AUTO_RSP;
-    system_gatt_db[SYSTEM_IDX_DEV_ID_VAL].att_desc.uuid_length = ESP_UUID_LEN_16;
-    system_gatt_db[SYSTEM_IDX_DEV_ID_VAL].att_desc.uuid_p = (uint8_t *)&character_dev_id_uuid; 
-    system_gatt_db[SYSTEM_IDX_DEV_ID_VAL].att_desc.perm = ESP_GATT_PERM_READ;
-    system_gatt_db[SYSTEM_IDX_DEV_ID_VAL].att_desc.max_length = CHAR_VAL_LEN_MAX; 
-    system_gatt_db[SYSTEM_IDX_DEV_ID_VAL].att_desc.length = sizeof(dev_id_val);
-    system_gatt_db[SYSTEM_IDX_DEV_ID_VAL].att_desc.value = (uint8_t *)get_base_mac(dev_id_val);
-
-    system_gatt_db[SYSTEM_IDX_FW_VER_STRING_CHAR].attr_control.auto_rsp = ESP_GATT_AUTO_RSP;
-    system_gatt_db[SYSTEM_IDX_FW_VER_STRING_CHAR].att_desc.uuid_length = ESP_UUID_LEN_16;
-    system_gatt_db[SYSTEM_IDX_FW_VER_STRING_CHAR].att_desc.uuid_p=(uint8_t*)&sys_character_declaration_uuid;
-    system_gatt_db[SYSTEM_IDX_FW_VER_STRING_CHAR].att_desc.perm = ESP_GATT_PERM_READ;
-    system_gatt_db[SYSTEM_IDX_FW_VER_STRING_CHAR].att_desc.max_length = CHAR_DECLARATION_SIZE; 
-    system_gatt_db[SYSTEM_IDX_FW_VER_STRING_CHAR].att_desc.length = CHAR_DECLARATION_SIZE;
-    system_gatt_db[SYSTEM_IDX_FW_VER_STRING_CHAR].att_desc.value = (uint8_t *)&sys_char_prop_read;
-
-    system_gatt_db[SYSTEM_IDX_FW_VER_STRING_VAL].attr_control.auto_rsp = ESP_GATT_AUTO_RSP; 
-    system_gatt_db[SYSTEM_IDX_FW_VER_STRING_VAL].att_desc.uuid_length = ESP_UUID_LEN_16;
-    system_gatt_db[SYSTEM_IDX_FW_VER_STRING_VAL].att_desc.uuid_p = (uint8_t *)&character_fw_ver_string_uuid;
-    system_gatt_db[SYSTEM_IDX_FW_VER_STRING_VAL].att_desc.perm = ESP_GATT_PERM_READ;
-    system_gatt_db[SYSTEM_IDX_FW_VER_STRING_VAL].att_desc.max_length = CHAR_VAL_LEN_MAX; 
-    system_gatt_db[SYSTEM_IDX_FW_VER_STRING_VAL].att_desc.length = (strlen(FW_VER_STRING)+1); 
-    system_gatt_db[SYSTEM_IDX_FW_VER_STRING_VAL].att_desc.value = (uint8_t *)FW_VER_STRING;
-
-    return(system_gatt_db);
-}
-/************************************************************************************************************
-*GATT SERVER CODE-USAGE PROFILE ATTRIBUTE TABLE
-*************************************************************************************************************/
-//propietary usage Service
-//https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.service.device_information.xml
-//Reads are mandatory according to the service description xml for interoperability
-esp_gatt_char_prop_t  usage_char_prop_indicate = ESP_GATT_CHAR_PROP_BIT_INDICATE;
-esp_gatt_char_prop_t  usage_char_prop_notify = ESP_GATT_CHAR_PROP_BIT_NOTIFY;
-esp_gatt_char_prop_t  usage_char_prop_read = ESP_GATT_CHAR_PROP_BIT_READ;
-esp_gatt_char_prop_t  usage_char_prop_read_write = ESP_GATT_CHAR_PROP_BIT_WRITE| ESP_GATT_CHAR_PROP_BIT_READ;
 
 presentation_t utf8_presentation = 
 {
@@ -441,73 +362,187 @@ presentation_t uint8_presentation =
     ._description=UNINITIALISED,
 };
 
-/*Service type uuid*/
-static const uint16_t usage_primary_service_uuid = ESP_GATT_UUID_PRI_SERVICE;
-/*GATT declaration*/
-static const uint16_t usage_character_declaration_uuid = ESP_GATT_UUID_CHAR_DECLARE;
-/*GATT presentation*/
-static const uint16_t usage_character_char_presentation_uuid = ESP_GATT_UUID_CHAR_PRESENT_FORMAT;
-/*GATT descriptor&*/
-static const uint16_t usage_character_client_config_uuid = ESP_GATT_UUID_CHAR_CLIENT_CONFIG;
-
-esp_gatts_attr_db_t usage_gatt_db[USAGE_IDX_NB] =
-{
-    [USAGE_IDX_USAGE_SERVICE]               =  
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_primary_service_uuid, ESP_GATT_PERM_READ,
-      sizeof(usage_svc), sizeof(usage_svc), (uint8_t *)usage_svc}},
-
-    [USAGE_IDX_DEVICE_STATE_CHAR]           =    
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_declaration_uuid, ESP_GATT_PERM_READ, 
-    CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE, (uint8_t *)&usage_char_prop_read_write}},
-
-    [USAGE_IDX_DEVICE_STATE_VAL]     	    =    
-    {{ESP_GATT_RSP_BY_APP}, {ESP_UUID_LEN_128, (uint8_t *)&character_device_state_uuid, ESP_GATT_PERM_READ|
-    ESP_GATT_PERM_WRITE, UNINITIALISED, UNINITIALISED, NULL}},
-
-    [USAGE_IDX_DEVICE_STATE_CFG_1]          =    
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_char_presentation_uuid,
-     ESP_GATT_PERM_READ, sizeof(uint8_presentation), sizeof(uint8_presentation), (uint8_t *)&uint8_presentation}},
-
-    [USAGE_IDX_STARTUP_STRING_CHAR]         =
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_declaration_uuid, ESP_GATT_PERM_READ,
-      CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE,(uint8_t *)&usage_char_prop_read_write}},
-
-    [USAGE_IDX_STARTUP_STRING_VAL]          =    
-    {{ESP_GATT_RSP_BY_APP}, {ESP_UUID_LEN_128, (uint8_t *)&character_startup_string_uuid, ESP_GATT_PERM_READ|
-      ESP_GATT_PERM_WRITE, UNINITIALISED, UNINITIALISED, NULL}},
-
-    [USAGE_IDX_STARTUP_STRING_CFG_1]     	=    
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_char_presentation_uuid,
-     ESP_GATT_PERM_READ, sizeof(utf8_presentation), sizeof(utf8_presentation), (uint8_t *)&utf8_presentation}},
-
-    [USAGE_IDX_DISPLAY_STRING_CHAR]         =
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_declaration_uuid, ESP_GATT_PERM_READ,
-      CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE,(uint8_t *)&usage_char_prop_read_write}},
-
-    [USAGE_IDX_DISPLAY_STRING_VAL]          =    
-    {{ESP_GATT_RSP_BY_APP}, {ESP_UUID_LEN_128, (uint8_t *)&character_display_string_uuid, ESP_GATT_PERM_READ|
-      ESP_GATT_PERM_WRITE, UNINITIALISED, UNINITIALISED, NULL}},
-
-    [USAGE_IDX_DISPLAY_STRING_CFG_1]     	=    
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_char_presentation_uuid,
-     ESP_GATT_PERM_READ, sizeof(utf8_presentation), sizeof(utf8_presentation), (uint8_t *)&utf8_presentation}},
-
-    [USAGE_IDX_SHUTDOWN_STRING_CHAR]        =
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_declaration_uuid, ESP_GATT_PERM_READ,
-      CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE,(uint8_t *)&usage_char_prop_read_write}},
-
-    [USAGE_IDX_SHUTDOWN_STRING_VAL]         =    
-    {{ESP_GATT_RSP_BY_APP}, {ESP_UUID_LEN_128, (uint8_t *)&character_shutdown_string_uuid, ESP_GATT_PERM_READ|
-      ESP_GATT_PERM_WRITE, UNINITIALISED, UNINITIALISED, NULL}},
-
-    [USAGE_IDX_SHUTDOWN_STRING_CFG_1]       =    
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&usage_character_char_presentation_uuid,
-     ESP_GATT_PERM_READ, sizeof(utf8_presentation), sizeof(utf8_presentation), (uint8_t *)&utf8_presentation}},
-};
-
 /************************************************************************************************************
-*GATT SERVER CODE-GLOBAL EVENT HANDLER. PROFILE INDEPENDENT
+*GATT SERVER CODE-SYSTEM PROFILE ATTRIBUTE TAB
 *************************************************************************************************************/
+
+/*SIG defined Device Info Service*/
+//https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.service.device_information.xml
+static esp_gatts_attr_db_t* create_system_service(void)
+{
+    system_gatt_db[SYSTEM_IDX_SYSTEM_INFO_SERVICE].attr_control.auto_rsp = ESP_GATT_AUTO_RSP; 
+    system_gatt_db[SYSTEM_IDX_SYSTEM_INFO_SERVICE].att_desc.uuid_length = ESP_UUID_LEN_16;
+    system_gatt_db[SYSTEM_IDX_SYSTEM_INFO_SERVICE].att_desc.uuid_p=(uint8_t *)&primary_service_uuid; 
+    system_gatt_db[SYSTEM_IDX_SYSTEM_INFO_SERVICE].att_desc.perm = ESP_GATT_PERM_READ;
+    system_gatt_db[SYSTEM_IDX_SYSTEM_INFO_SERVICE].att_desc.max_length = sizeof(uint16_t); 
+    system_gatt_db[SYSTEM_IDX_SYSTEM_INFO_SERVICE].att_desc.length = sizeof(uint16_t);
+    system_gatt_db[SYSTEM_IDX_SYSTEM_INFO_SERVICE].att_desc.value = (uint8_t *)&device_info_svc;
+
+    system_gatt_db[SYSTEM_IDX_MAN_NAME_CHAR].attr_control.auto_rsp = ESP_GATT_AUTO_RSP;
+    system_gatt_db[SYSTEM_IDX_MAN_NAME_CHAR].att_desc.uuid_length = ESP_UUID_LEN_16;
+    system_gatt_db[SYSTEM_IDX_MAN_NAME_CHAR].att_desc.uuid_p=(uint8_t *)&character_declaration_uuid; 
+    system_gatt_db[SYSTEM_IDX_MAN_NAME_CHAR].att_desc.perm = ESP_GATT_PERM_READ;
+    system_gatt_db[SYSTEM_IDX_MAN_NAME_CHAR].att_desc.max_length = CHAR_DECLARATION_SIZE;
+    system_gatt_db[SYSTEM_IDX_MAN_NAME_CHAR].att_desc.length = CHAR_DECLARATION_SIZE; 
+    system_gatt_db[SYSTEM_IDX_MAN_NAME_CHAR].att_desc.value = (uint8_t *)&char_prop_read;
+
+    system_gatt_db[SYSTEM_IDX_MAN_NAME_VAL].attr_control.auto_rsp = ESP_GATT_AUTO_RSP;
+    system_gatt_db[SYSTEM_IDX_MAN_NAME_VAL].att_desc.uuid_length = ESP_UUID_LEN_16;
+    system_gatt_db[SYSTEM_IDX_MAN_NAME_VAL].att_desc.uuid_p=(uint8_t*)&character_manufacturer_name_uuid; 
+    system_gatt_db[SYSTEM_IDX_MAN_NAME_VAL].att_desc.perm = ESP_GATT_PERM_READ;
+    system_gatt_db[SYSTEM_IDX_MAN_NAME_VAL].att_desc.max_length = CHAR_VAL_LEN_MAX; 
+    system_gatt_db[SYSTEM_IDX_MAN_NAME_VAL].att_desc.length = (strlen(MANUFACTURER_NAME)+1); 
+    system_gatt_db[SYSTEM_IDX_MAN_NAME_VAL].att_desc.value = (uint8_t *)MANUFACTURER_NAME;
+
+    system_gatt_db[SYSTEM_IDX_DEV_ID_CHAR].attr_control.auto_rsp = ESP_GATT_AUTO_RSP;
+    system_gatt_db[SYSTEM_IDX_DEV_ID_CHAR].att_desc.uuid_length = ESP_UUID_LEN_16;
+    system_gatt_db[SYSTEM_IDX_DEV_ID_CHAR].att_desc.uuid_p = (uint8_t *)&character_declaration_uuid; 
+    system_gatt_db[SYSTEM_IDX_DEV_ID_CHAR].att_desc.perm = ESP_GATT_PERM_READ;
+    system_gatt_db[SYSTEM_IDX_DEV_ID_CHAR].att_desc.max_length = CHAR_DECLARATION_SIZE; 
+    system_gatt_db[SYSTEM_IDX_DEV_ID_CHAR].att_desc.length = CHAR_DECLARATION_SIZE;
+    system_gatt_db[SYSTEM_IDX_DEV_ID_CHAR].att_desc.value = (uint8_t *)&char_prop_read;
+
+    system_gatt_db[SYSTEM_IDX_DEV_ID_VAL].attr_control.auto_rsp = ESP_GATT_AUTO_RSP;
+    system_gatt_db[SYSTEM_IDX_DEV_ID_VAL].att_desc.uuid_length = ESP_UUID_LEN_16;
+    system_gatt_db[SYSTEM_IDX_DEV_ID_VAL].att_desc.uuid_p = (uint8_t *)&character_dev_id_uuid; 
+    system_gatt_db[SYSTEM_IDX_DEV_ID_VAL].att_desc.perm = ESP_GATT_PERM_READ;
+    system_gatt_db[SYSTEM_IDX_DEV_ID_VAL].att_desc.max_length = CHAR_VAL_LEN_MAX; 
+    system_gatt_db[SYSTEM_IDX_DEV_ID_VAL].att_desc.length = sizeof(dev_id_val);
+    system_gatt_db[SYSTEM_IDX_DEV_ID_VAL].att_desc.value = (uint8_t *)get_base_mac(dev_id_val);
+
+    system_gatt_db[SYSTEM_IDX_FW_VER_STRING_CHAR].attr_control.auto_rsp = ESP_GATT_AUTO_RSP;
+    system_gatt_db[SYSTEM_IDX_FW_VER_STRING_CHAR].att_desc.uuid_length = ESP_UUID_LEN_16;
+    system_gatt_db[SYSTEM_IDX_FW_VER_STRING_CHAR].att_desc.uuid_p=(uint8_t*)&character_declaration_uuid;
+    system_gatt_db[SYSTEM_IDX_FW_VER_STRING_CHAR].att_desc.perm = ESP_GATT_PERM_READ;
+    system_gatt_db[SYSTEM_IDX_FW_VER_STRING_CHAR].att_desc.max_length = CHAR_DECLARATION_SIZE; 
+    system_gatt_db[SYSTEM_IDX_FW_VER_STRING_CHAR].att_desc.length = CHAR_DECLARATION_SIZE;
+    system_gatt_db[SYSTEM_IDX_FW_VER_STRING_CHAR].att_desc.value = (uint8_t *)&char_prop_read;
+
+    system_gatt_db[SYSTEM_IDX_FW_VER_STRING_VAL].attr_control.auto_rsp = ESP_GATT_AUTO_RSP; 
+    system_gatt_db[SYSTEM_IDX_FW_VER_STRING_VAL].att_desc.uuid_length = ESP_UUID_LEN_16;
+    system_gatt_db[SYSTEM_IDX_FW_VER_STRING_VAL].att_desc.uuid_p = (uint8_t *)&character_fw_ver_string_uuid;
+    system_gatt_db[SYSTEM_IDX_FW_VER_STRING_VAL].att_desc.perm = ESP_GATT_PERM_READ;
+    system_gatt_db[SYSTEM_IDX_FW_VER_STRING_VAL].att_desc.max_length = CHAR_VAL_LEN_MAX; 
+    system_gatt_db[SYSTEM_IDX_FW_VER_STRING_VAL].att_desc.length = (strlen(FW_VER_STRING)+1); 
+    system_gatt_db[SYSTEM_IDX_FW_VER_STRING_VAL].att_desc.value = (uint8_t *)FW_VER_STRING;
+
+    return(system_gatt_db);
+}
+/************************************************************************************************************
+*GATT SERVER CODE-USAGE PROFILE ATTRIBUTE TABLE
+*************************************************************************************************************/
+/*propietary usage Service*/
+static esp_gatts_attr_db_t* create_usage_service(void)
+{
+    usage_gatt_db[USAGE_IDX_USAGE_SERVICE].attr_control.auto_rsp = ESP_GATT_AUTO_RSP; 
+    usage_gatt_db[USAGE_IDX_USAGE_SERVICE].att_desc.uuid_length = ESP_UUID_LEN_16;
+    usage_gatt_db[USAGE_IDX_USAGE_SERVICE].att_desc.uuid_p=(uint8_t *)&primary_service_uuid; 
+    usage_gatt_db[USAGE_IDX_USAGE_SERVICE].att_desc.perm = ESP_GATT_PERM_READ;
+    usage_gatt_db[USAGE_IDX_USAGE_SERVICE].att_desc.max_length = sizeof(usage_svc); 
+    usage_gatt_db[USAGE_IDX_USAGE_SERVICE].att_desc.length = sizeof(usage_svc);
+    usage_gatt_db[USAGE_IDX_USAGE_SERVICE].att_desc.value = (uint8_t *)usage_svc;
+
+    usage_gatt_db[USAGE_IDX_DEVICE_STATE_CHAR].attr_control.auto_rsp = ESP_GATT_AUTO_RSP; 
+    usage_gatt_db[USAGE_IDX_DEVICE_STATE_CHAR].att_desc.uuid_length = ESP_UUID_LEN_16;
+    usage_gatt_db[USAGE_IDX_DEVICE_STATE_CHAR].att_desc.uuid_p = (uint8_t *)&character_declaration_uuid; 
+    usage_gatt_db[USAGE_IDX_DEVICE_STATE_CHAR].att_desc.perm = ESP_GATT_PERM_READ;
+    usage_gatt_db[USAGE_IDX_DEVICE_STATE_CHAR].att_desc.max_length = CHAR_DECLARATION_SIZE; 
+    usage_gatt_db[USAGE_IDX_DEVICE_STATE_CHAR].att_desc.length = CHAR_DECLARATION_SIZE;
+    usage_gatt_db[USAGE_IDX_DEVICE_STATE_CHAR].att_desc.value = (uint8_t *)&char_prop_read_write;
+
+    usage_gatt_db[USAGE_IDX_DEVICE_STATE_VAL].attr_control.auto_rsp = ESP_GATT_RSP_BY_APP; 
+    usage_gatt_db[USAGE_IDX_DEVICE_STATE_VAL].att_desc.uuid_length = ESP_UUID_LEN_128;
+    usage_gatt_db[USAGE_IDX_DEVICE_STATE_VAL].att_desc.uuid_p = (uint8_t *)&character_device_state_uuid; 
+    usage_gatt_db[USAGE_IDX_DEVICE_STATE_VAL].att_desc.perm = ESP_GATT_PERM_READ|ESP_GATT_PERM_WRITE;
+    usage_gatt_db[USAGE_IDX_DEVICE_STATE_VAL].att_desc.max_length = UNINITIALISED; 
+    usage_gatt_db[USAGE_IDX_DEVICE_STATE_VAL].att_desc.length = UNINITIALISED;
+    usage_gatt_db[USAGE_IDX_DEVICE_STATE_VAL].att_desc.value = NULL;
+
+    usage_gatt_db[USAGE_IDX_DEVICE_STATE_CFG_1].attr_control.auto_rsp = ESP_GATT_AUTO_RSP; 
+    usage_gatt_db[USAGE_IDX_DEVICE_STATE_CFG_1].att_desc.uuid_length = ESP_UUID_LEN_16;
+    usage_gatt_db[USAGE_IDX_DEVICE_STATE_CFG_1].att_desc.uuid_p = (uint8_t *)&character_presentation_uuid; 
+    usage_gatt_db[USAGE_IDX_DEVICE_STATE_CFG_1].att_desc.perm = ESP_GATT_PERM_READ;
+    usage_gatt_db[USAGE_IDX_DEVICE_STATE_CFG_1].att_desc.max_length = sizeof(uint8_presentation); 
+    usage_gatt_db[USAGE_IDX_DEVICE_STATE_CFG_1].att_desc.length = sizeof(uint8_presentation);
+    usage_gatt_db[USAGE_IDX_DEVICE_STATE_CFG_1].att_desc.value = (uint8_t *)&uint8_presentation;
+
+    usage_gatt_db[USAGE_IDX_STARTUP_STRING_CHAR].attr_control.auto_rsp = ESP_GATT_AUTO_RSP; 
+    usage_gatt_db[USAGE_IDX_STARTUP_STRING_CHAR].att_desc.uuid_length = ESP_UUID_LEN_16;
+    usage_gatt_db[USAGE_IDX_STARTUP_STRING_CHAR].att_desc.uuid_p = (uint8_t *)&character_declaration_uuid; 
+    usage_gatt_db[USAGE_IDX_STARTUP_STRING_CHAR].att_desc.perm = ESP_GATT_PERM_READ;
+    usage_gatt_db[USAGE_IDX_STARTUP_STRING_CHAR].att_desc.max_length = CHAR_DECLARATION_SIZE; 
+    usage_gatt_db[USAGE_IDX_STARTUP_STRING_CHAR].att_desc.length = CHAR_DECLARATION_SIZE;
+    usage_gatt_db[USAGE_IDX_STARTUP_STRING_CHAR].att_desc.value = (uint8_t *)&char_prop_read_write;
+
+    usage_gatt_db[USAGE_IDX_STARTUP_STRING_VAL].attr_control.auto_rsp = ESP_GATT_RSP_BY_APP; 
+    usage_gatt_db[USAGE_IDX_STARTUP_STRING_VAL].att_desc.uuid_length = ESP_UUID_LEN_128;
+    usage_gatt_db[USAGE_IDX_STARTUP_STRING_VAL].att_desc.uuid_p = (uint8_t *)&character_startup_string_uuid; 
+    usage_gatt_db[USAGE_IDX_STARTUP_STRING_VAL].att_desc.perm = ESP_GATT_PERM_READ|ESP_GATT_PERM_WRITE;
+    usage_gatt_db[USAGE_IDX_STARTUP_STRING_VAL].att_desc.max_length = UNINITIALISED; 
+    usage_gatt_db[USAGE_IDX_STARTUP_STRING_VAL].att_desc.length = UNINITIALISED;
+    usage_gatt_db[USAGE_IDX_STARTUP_STRING_VAL].att_desc.value = NULL;
+
+    usage_gatt_db[USAGE_IDX_STARTUP_STRING_CFG_1].attr_control.auto_rsp = ESP_GATT_AUTO_RSP; 
+    usage_gatt_db[USAGE_IDX_STARTUP_STRING_CFG_1].att_desc.uuid_length = ESP_UUID_LEN_16;
+    usage_gatt_db[USAGE_IDX_STARTUP_STRING_CFG_1].att_desc.uuid_p = (uint8_t *)&character_presentation_uuid; 
+    usage_gatt_db[USAGE_IDX_STARTUP_STRING_CFG_1].att_desc.perm = ESP_GATT_PERM_READ;
+    usage_gatt_db[USAGE_IDX_STARTUP_STRING_CFG_1].att_desc.max_length = sizeof(utf8_presentation); 
+    usage_gatt_db[USAGE_IDX_STARTUP_STRING_CFG_1].att_desc.length = sizeof(utf8_presentation);
+    usage_gatt_db[USAGE_IDX_STARTUP_STRING_CFG_1].att_desc.value = (uint8_t *)&utf8_presentation;
+
+    usage_gatt_db[USAGE_IDX_DISPLAY_STRING_CHAR].attr_control.auto_rsp = ESP_GATT_AUTO_RSP; 
+    usage_gatt_db[USAGE_IDX_DISPLAY_STRING_CHAR].att_desc.uuid_length = ESP_UUID_LEN_16;
+    usage_gatt_db[USAGE_IDX_DISPLAY_STRING_CHAR].att_desc.uuid_p = (uint8_t *)&character_declaration_uuid; 
+    usage_gatt_db[USAGE_IDX_DISPLAY_STRING_CHAR].att_desc.perm = ESP_GATT_PERM_READ;
+    usage_gatt_db[USAGE_IDX_DISPLAY_STRING_CHAR].att_desc.max_length = CHAR_DECLARATION_SIZE; 
+    usage_gatt_db[USAGE_IDX_DISPLAY_STRING_CHAR].att_desc.length = CHAR_DECLARATION_SIZE;
+    usage_gatt_db[USAGE_IDX_DISPLAY_STRING_CHAR].att_desc.value = (uint8_t *)&char_prop_read_write;
+
+    usage_gatt_db[USAGE_IDX_DISPLAY_STRING_VAL].attr_control.auto_rsp = ESP_GATT_RSP_BY_APP; 
+    usage_gatt_db[USAGE_IDX_DISPLAY_STRING_VAL].att_desc.uuid_length = ESP_UUID_LEN_128;
+    usage_gatt_db[USAGE_IDX_DISPLAY_STRING_VAL].att_desc.uuid_p = (uint8_t *)&character_display_string_uuid; 
+    usage_gatt_db[USAGE_IDX_DISPLAY_STRING_VAL].att_desc.perm = ESP_GATT_PERM_READ|ESP_GATT_PERM_WRITE;
+    usage_gatt_db[USAGE_IDX_DISPLAY_STRING_VAL].att_desc.max_length = UNINITIALISED; 
+    usage_gatt_db[USAGE_IDX_DISPLAY_STRING_VAL].att_desc.length = UNINITIALISED;
+    usage_gatt_db[USAGE_IDX_DISPLAY_STRING_VAL].att_desc.value = NULL;
+
+    usage_gatt_db[USAGE_IDX_DISPLAY_STRING_CFG_1].attr_control.auto_rsp = ESP_GATT_AUTO_RSP; 
+    usage_gatt_db[USAGE_IDX_DISPLAY_STRING_CFG_1].att_desc.uuid_length = ESP_UUID_LEN_16;
+    usage_gatt_db[USAGE_IDX_DISPLAY_STRING_CFG_1].att_desc.uuid_p = (uint8_t *)&character_presentation_uuid; 
+    usage_gatt_db[USAGE_IDX_DISPLAY_STRING_CFG_1].att_desc.perm = ESP_GATT_PERM_READ;
+    usage_gatt_db[USAGE_IDX_DISPLAY_STRING_CFG_1].att_desc.max_length = sizeof(utf8_presentation); 
+    usage_gatt_db[USAGE_IDX_DISPLAY_STRING_CFG_1].att_desc.length = sizeof(utf8_presentation);
+    usage_gatt_db[USAGE_IDX_DISPLAY_STRING_CFG_1].att_desc.value = (uint8_t *)&utf8_presentation;
+
+    usage_gatt_db[USAGE_IDX_SHUTDOWN_STRING_CHAR].attr_control.auto_rsp = ESP_GATT_AUTO_RSP; 
+    usage_gatt_db[USAGE_IDX_SHUTDOWN_STRING_CHAR].att_desc.uuid_length = ESP_UUID_LEN_16;
+    usage_gatt_db[USAGE_IDX_SHUTDOWN_STRING_CHAR].att_desc.uuid_p = (uint8_t *)&character_declaration_uuid; 
+    usage_gatt_db[USAGE_IDX_SHUTDOWN_STRING_CHAR].att_desc.perm = ESP_GATT_PERM_READ;
+    usage_gatt_db[USAGE_IDX_SHUTDOWN_STRING_CHAR].att_desc.max_length = CHAR_DECLARATION_SIZE; 
+    usage_gatt_db[USAGE_IDX_SHUTDOWN_STRING_CHAR].att_desc.length = CHAR_DECLARATION_SIZE;
+    usage_gatt_db[USAGE_IDX_SHUTDOWN_STRING_CHAR].att_desc.value = (uint8_t *)&char_prop_read_write;
+
+    usage_gatt_db[USAGE_IDX_SHUTDOWN_STRING_VAL].attr_control.auto_rsp = ESP_GATT_RSP_BY_APP; 
+    usage_gatt_db[USAGE_IDX_SHUTDOWN_STRING_VAL].att_desc.uuid_length = ESP_UUID_LEN_128;
+    usage_gatt_db[USAGE_IDX_SHUTDOWN_STRING_VAL].att_desc.uuid_p = (uint8_t *)&character_shutdown_string_uuid; 
+    usage_gatt_db[USAGE_IDX_SHUTDOWN_STRING_VAL].att_desc.perm = ESP_GATT_PERM_READ|ESP_GATT_PERM_WRITE;
+    usage_gatt_db[USAGE_IDX_SHUTDOWN_STRING_VAL].att_desc.max_length = UNINITIALISED; 
+    usage_gatt_db[USAGE_IDX_SHUTDOWN_STRING_VAL].att_desc.length = UNINITIALISED;
+    usage_gatt_db[USAGE_IDX_SHUTDOWN_STRING_VAL].att_desc.value = NULL;
+
+    usage_gatt_db[USAGE_IDX_SHUTDOWN_STRING_CFG_1].attr_control.auto_rsp = ESP_GATT_AUTO_RSP; 
+    usage_gatt_db[USAGE_IDX_SHUTDOWN_STRING_CFG_1].att_desc.uuid_length = ESP_UUID_LEN_16;
+    usage_gatt_db[USAGE_IDX_SHUTDOWN_STRING_CFG_1].att_desc.uuid_p = (uint8_t *)&character_presentation_uuid; 
+    usage_gatt_db[USAGE_IDX_SHUTDOWN_STRING_CFG_1].att_desc.perm = ESP_GATT_PERM_READ;
+    usage_gatt_db[USAGE_IDX_SHUTDOWN_STRING_CFG_1].att_desc.max_length = sizeof(utf8_presentation); 
+    usage_gatt_db[USAGE_IDX_SHUTDOWN_STRING_CFG_1].att_desc.length = sizeof(utf8_presentation);
+    usage_gatt_db[USAGE_IDX_SHUTDOWN_STRING_CFG_1].att_desc.value = (uint8_t *)&utf8_presentation;
+
+    return(usage_gatt_db);
+}
+/**************************************************************************************************************
+*GATT SERVER CODE-GLOBAL EVENT HANDLER. PROFILE INDEPENDENT. RESOLVES A GATT EVENT TO A SPECIFIC PROFILE HANDLER.
+***************************************************************************************************************/
 
 void gatts_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param)
 {
@@ -628,7 +663,7 @@ static void usage_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_
     ESP_LOGD(BLE_TAG, "ENTERED FUNCTION [%s]", __func__);
     switch (event) {
     	case ESP_GATTS_REG_EVT:
-            esp_ble_gatts_create_attr_tab(usage_gatt_db, gatts_if, USAGE_IDX_NB, USAGE_SERVICE_INSTANCE_ID);
+            esp_ble_gatts_create_attr_tab(create_usage_service(),gatts_if, USAGE_IDX_NB, USAGE_SERVICE_INSTANCE_ID);
        	    break;
     	case ESP_GATTS_READ_EVT:
             usage_profile_read_event_handler(event, gatts_if, param);
