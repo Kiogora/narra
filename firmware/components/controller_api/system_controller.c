@@ -91,7 +91,7 @@ static char* add_txt_spacer(Matrix* matrixInstanceptr, char* spacer)
 static void show(Matrix* matrixInstanceptr, System_variables* system_variables, narra_rendertype_enum _renderx)
 {
     ESP_LOGD(TAG, "ENTERED FUNCTION [%s]", __func__);
-    char* unprocessed_string = add_txt_spacer(matrixInstanceptr, "    ");
+    char* unprocessed_string = add_txt_spacer(matrixInstanceptr, "        ");
 
     if(unprocessed_string != NULL)
     {

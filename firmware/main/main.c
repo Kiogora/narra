@@ -151,7 +151,7 @@ void DisplayTask(void *pvParameters)
     ESP_LOGD(DISPLAY_TASK_TAG, "ENTERED TASK");
     init_pin_interface(&matrix);
 
-    if(matrix_init(&matrix, &system_variables, narra_speed_15) == ESP_OK)
+    if(matrix_init(&matrix, &system_variables, narra_speed_16) == ESP_OK)
     {
         /*Call xTaskCreate for the BLE task here*/
         /*pass pointer to a structure of pointers to other structures-crazy*/

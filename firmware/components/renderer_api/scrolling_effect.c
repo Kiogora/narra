@@ -33,12 +33,12 @@
 
 static const char* TAG = "RENDERER_API";
 
-static void shift_and_latch(Matrix* matrixInstanceptr, uint32_t row_data)
+static void shift_and_latch(Matrix* matrixInstanceptr, uint64_t row_data)
 {
 /*    ESP_LOGD(TAG, "ENTERED FUNCTION [%s]", __func__);*/
     /* The effect of clockskew should be accounted for,to ensure the clock pulse has effectively propagated*/ 
-    uint32_t Mask = 0x80000000;
-    uint32_t flag=0;
+    uint64_t Mask = 0x8000000000000000;
+    uint64_t flag=0;
     for (unsigned int pos=0; pos<(sizeof(Mask)*8); pos++)
     {
         flag = row_data & Mask;
@@ -67,7 +67,7 @@ static void shift_and_latch(Matrix* matrixInstanceptr, uint32_t row_data)
 void scrolling_effect(Matrix* matrixInstanceptr, uint32_t* _utf8string, size_t _utf8_length)
 {
 /*    ESP_LOGD(TAG, "ENTERED FUNCTION [%s]", __func__);*/
-    uint32_t buffer[8]={0,0,0,0,0,0,0,0};
+    uint64_t buffer[8]={0,0,0,0,0,0,0,0};
     uint32_t  temp=0;
     uint8_t shift_step=1;
     size_t index=0;
@@ -105,10 +105,10 @@ buffer[row] = (buffer[row] << shift_step)|(temp >> ((matrixInstanceptr->fontwidt
                     {
                         shift_and_latch(matrixInstanceptr, buffer[0]);
                     }
-                    else
+                    else if(i >= 0 && i < 7)
                     {
                         shift_and_latch(matrixInstanceptr, buffer[i+1]);
-                    }                  
+                    }
                     gpio_set_level(matrixInstanceptr->rowclk_pin, HIGH);
                     gpio_set_level(matrixInstanceptr->rowclk_pin, LOW);
                     vTaskDelay(1 / portTICK_PERIOD_MS);
