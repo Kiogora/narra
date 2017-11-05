@@ -301,33 +301,42 @@ static uint8_t* get_base_mac(uint8_t* dev_id_buffer)
 {
     ESP_LOGD(BLE_TAG, "ENTERED FUNCTION [%s]", __func__);
 
-    /*The index at which the byte order mark starts from idx 0*/
-    int bom_start_idx=2;
-
-    if(esp_efuse_mac_get_default(dev_id_buffer) == ESP_OK)
+    if(sizeof(*dev_id_buffer)/sizeof(dev_id_buffer[0]) == 8)
     {
-        ESP_LOGI(BLE_TAG, "SUCCESSFULLY READ BASE_MAC FROM EFUSE!");
-        ESP_LOGI(BLE_TAG, "MODIFYING THE BASE_MAC FORMAT AS NEEDED BY SYSTEM_ID ATTRIBUTE, SERVICE 0X180A");
-        ESP_LOGI(BLE_TAG, "REFERENCE: https://goo.gl/XvUwbd\n")
-
-        for(int i=7; i>bom_start_idx; i--)
+        if(esp_efuse_mac_get_default(dev_id_buffer) == ESP_OK)
         {
-            dev_id_buffer[i] = dev_id_buffer[i-2];
-        }
-        /*Add byte order mark*/
-        dev_id_buffer[bom_start_idx]=0xFF;
-        dev_id_buffer[bom_start_idx+1]=0xFE;
+            /*The index at which the byte order mark starts from idx 0*/
+            int bom_start_idx=2;
 
-        for(int i=0; i<8; i++)
-        {
-            ESP_LOGI(BLE_TAG, "MAC INDEX[%d], VALUE: 0x%02X", i, dev_id_buffer[i]);
+            ESP_LOGI(BLE_TAG, "SUCCESSFULLY READ BASE_MAC FROM EFUSE!");
+            ESP_LOGI(BLE_TAG, "MODIFYING THE BASE_MAC FORMAT AS NEEDED BY SYSTEM_ID ATTRIBUTE, SERVICE 0X180A");
+            ESP_LOGI(BLE_TAG, "REFERENCE: https://goo.gl/XvUwbd\n")
+
+            for(int i=7; i>bom_start_idx; i--)
+            {
+                dev_id_buffer[i] = dev_id_buffer[i-2];
+            }
+            /*Add byte order mark*/
+            dev_id_buffer[bom_start_idx]=0xFF;
+            dev_id_buffer[bom_start_idx+1]=0xFE;
+
+            for(int i=0; i<8; i++)
+            {
+                ESP_LOGI(BLE_TAG, "MAC INDEX[%d], VALUE: 0x%02X", i, dev_id_buffer[i]);
+            }
+            return dev_id_buffer;
         }
-        return dev_id_buffer;
+        else
+        {
+            ESP_LOGI(BLE_TAG, "UNSUCCESSFUL IN READING BASE_MAC FROM EFUSE!");
+            return dev_id_buffer;
+        }
     }
     else
     {
-        ESP_LOGI(BLE_TAG, "UNSUCCESSFUL IN READING BASE_MAC FROM EFUSE!");
-        return NULL;
+        ESP_LOGE(BLE_TAG, "NUM ELEMENTS IN DEVICE ID BUFFER IS NOT 8");
+        ESP_LOGI(BLE_TAG, "REFERENCE: https://goo.gl/XvUwbd\n")
+        return dev_id_buffer;
     }
 }
 

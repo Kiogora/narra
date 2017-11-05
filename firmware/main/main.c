@@ -75,8 +75,8 @@ void init_pin_interface(Matrix* matrixInstanceptr)
     matrixInstanceptr->serial_pin=GPIO_NUM_25;
     matrixInstanceptr->shift_pin=GPIO_NUM_26;
     matrixInstanceptr->latch_pin=GPIO_NUM_27;
-    matrixInstanceptr->rowclk_pin=GPIO_NUM_12;
-    matrixInstanceptr->rowrst_pin=GPIO_NUM_14;
+    matrixInstanceptr->rowclk_pin=GPIO_NUM_14;
+    matrixInstanceptr->rowrst_pin=GPIO_NUM_12;
 }
 
 void BleTask(void *pvParameters)
