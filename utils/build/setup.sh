@@ -1,12 +1,10 @@
 ## Author: Elliot Williams
 ## Modified by : Alois Mbutura
 
-## BASE variable-This is where you want the entire toolchain to live
+## INSTALL_DIR variable-This is where you want the entire toolchain to live
 ## You should run this script from within the destination directory, or redefine the BASE variable to fit your lifestyle.
 
 #The script here is derived from: http://esp-idf.readthedocs.io/en/latest/get-started/linux-setup.html
-
-BASE=$(pwd)
 
 #Install three directory levels up.
 INSTALL_DIR=$(pwd)/../../../
@@ -41,7 +39,6 @@ then
 	echo "[$0]:  Found esp-idf, it should be v2.1 updating."
 	cd esp-idf 
 	git pull && git submodule update --recursive 
-	cd $BASE
 else  ## not found, get it
 	git clone -b release/v2.1 --recursive https://github.com/espressif/esp-idf.git
 fi
@@ -67,13 +64,12 @@ then
 	echo "[$0]:  Current version at the making of this makefile 1.22.0-61-gab8375a-5.2.0"
 	echo "[$0]:  Check current version from http://esp-idf.readthedocs.io/en/latest/linux-setup.html"
 	rm -rf xtensa-esp32-elf
-	wget https://dl.espressif.com/dl/xtensa-esp32-elf-linux32-1.22.0-73-ge28a011-5.2.0.tar.gz
-	tar -xvzf xtensa-esp32-elf-linux64-1.22.0-73-ge28a011-5.2.0.tar.gz
+	wget https://dl.espressif.com/dl/xtensa-esp32-elf-linux64-1.22.0-61-gab8375a-5.2.0.tar.gz
+	tar -xvzf xtensa-esp32-elf-linux64-1.22.0-73-gab8375a-5.2.0.tar.gz
 	rm *.tar.gz 2>/dev/null
 else
-	wget https://dl.espressif.com/dl/xtensa-esp32-elf-linux32-1.22.0-73-ge28a011-5.2.0.tar.gz
-	tar -xvzf xtensa-esp32-elf-linux64-1.22.0-73-ge28a011-5.2.0.tar.gz
-	rm *.tar.gz 2>/dev/null
+	wget https://dl.espressif.com/dl/xtensa-esp32-elf-linux64-1.22.0-61-gab8375a-5.2.0.tar.gz
+	tar -xvzf xtensa-esp32-elf-linux64-1.22.0-61-gab8375a-5.2.0.tar.gz
 fi
 
 ## Get demo application
@@ -85,7 +81,6 @@ then
 	echo "[$0]:  Found esp-idf-template, updating."
 	cd esp-idf-template 
 	git pull 
-	cd $BASE
 else  ## not found, get it
 	git clone https://github.com/espressif/esp-idf-template.git
 fi
