@@ -91,11 +91,11 @@ fi
 
 echo ""
 echo "[$0]:  Setup environment variables"
-echo "[$0]:  Exporting environment variables:"
-export IDF_PATH=${INSTALL_DIR}/esp-idf
-echo "[$0]:  export IDF_PATH=${INSTALL_DIR}/esp-idf"
-export PATH=$PATH:${INSTALL_DIR}/xtensa-esp32-elf/bin
-echo "[$0]:  export PATH=$PATH:${INSTALL_DIR}/xtensa-esp32-elf/bin"
+echo "[$0]:  Exporting to bashrc environment variables:"
+echo "export IDF_PATH=${INSTALL_DIR}/esp-idf" >> ~/.bashrc
+echo "[$0]:  exported to bashrc IDF_PATH=${INSTALL_DIR}/esp-idf"
+echo "export PATH=$PATH:${INSTALL_DIR}/xtensa-esp32-elf/bin" >> ~/.bashrc
+echo "[$0]:  exported to bashrc PATH=$PATH:${INSTALL_DIR}/xtensa-esp32-elf/bin"
 
 echo ""
 echo "[$0]:  IDF demo instructions"
