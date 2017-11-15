@@ -19,11 +19,11 @@
 
 uint8_t raw_adv_data[] = 
 {
-0x02, // Len
+2,    // Length
 0x01, // Type Flags
 0x06, // GENERAL_DISC_MODE 0x02 | BR_EDR_NOT_SUPPORTED 0x04
 
-0x03, // Len
+3,    // Length
 0x03, // Type 16-Bit UUID
 0xAA, // Eddystone UUID 2 -> 0xFEAA LSB
 0xFE, // Eddystone UUID 1 MSB
