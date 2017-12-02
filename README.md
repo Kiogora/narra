@@ -3,7 +3,7 @@
 
 This repository contains hardware designs and software for Narra, an open source, BLE advertising and control, LED signage platform. The project utilises the ESP32 and the ESP-IDF framework. The signage device had to be able to be controlled over BLE via a mobile connection with web bluetooth running on the client web browser that would control the signage device functions such as what to display and change the device state by writing to predefined BLE characteristics.
 
-###Hardware
+### Hardware
 
 The hardware is made with the open-source PCB design tool [Kicad](http://kicad-pcb.org/). The hardware designs include:
 
@@ -11,15 +11,15 @@ The hardware is made with the open-source PCB design tool [Kicad](http://kicad-p
 2. The LED driver board as at different versions.
 3. A custom ESP32 module, friendly for development and product placement made from the ESP WROOM32. It is meant to be programmed using the programmer above.
 
-###Firmware
+### Firmware
 
 The fimware is divided into different components that are abstracted from each other and written in Pure C utilising the ESP-IDF framework and include:
 
-####Communication stack:
+#### Communication stack:
 
 1. ble_api- Contains utilities to control the BLE hardware. Interacts directly with the ESP BLE HAL. It is strictly written with multiple level of sanity checks on the input data from user prior to writing to flash.
 
-####Other components:
+#### Other components:
 
 2. common_api-Contains constants and definitions that persist across source files.
 
