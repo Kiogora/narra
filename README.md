@@ -29,9 +29,11 @@ The fimware is divided into different components that are abstracted from each o
 ### Building and uploading the code to device
 
 Run the build script in the utils/build folder
+
 ```shell
 cd utils/build
 sh setup.sh
+```
 
 The firmware uis build for extensability thus to support new languages, one just has to create the glyphs that represent the characters for that language and add to the current therefore allowing internationalisation.
 
@@ -41,4 +43,3 @@ Alois Mbutura(aloismbutura@gmail.com)
 Felix omwansa(omwansafelixa@gmail.com)
 
 See CONTRIBUTORS file
-```
