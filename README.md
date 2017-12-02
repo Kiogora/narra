@@ -3,11 +3,13 @@
 
 This repository contains hardware designs and software for Narra, an open source, BLE advertising and control, LED signage platform. The project utilises the ESP32 and the ESP-IDF framework. The signage device had to be able to be controlled over BLE via a mobile connection with web bluetooth running on the client web browser that would control the signage device functions such as what to display and change the device state by writing to predefined BLE characteristics.
 
+This repository is Bluetooth v4.2 compliant.
+
 ### Hardware
 
 The hardware is made with the open-source PCB design tool [Kicad](http://kicad-pcb.org/). The hardware designs include:
 
-1. A custom programmer that made using a common commercial off the shelf CP210x Uart-USB converter.
+1. A custom programmer that made using a common commercial off the shelf CP210x UART-USB converter.
 2. The LED driver board as at different versions.
 3. A custom ESP32 module, friendly for development and product placement made from the ESP WROOM32. It is meant to be programmed using the programmer above.
 
@@ -47,7 +49,7 @@ sh setup.sh
 ```
 Now build the firmware and flash to device over UART:
 ```shell
-cd ../../firmware
+cd ../../../firmware
 make flash
 ``` 
 
@@ -59,7 +61,7 @@ To add new characters, one just has to:
 
 2. Change the allowed character UTF-8 codepoint ranges in  common_api/narra_defines "UTF-8 implementation defines" section and add your own following the UTF-8 encoding ranges.
 
-3. Add the checks for the above codepoint defines in the renderer so that your new implementation is recognised. 
+3. Add the checks for the new codepoint definitions, added above, in the renderer so that your new implementation is recognised. 
 
 ### Contributors
 
