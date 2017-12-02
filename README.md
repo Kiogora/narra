@@ -3,16 +3,23 @@
 
 This repository contains hardware designs and software for Narra, an open source, BLE advertising and control, LED signage platform. The project utilises the ESP32 and the ESP-IDF framework. The signage device had to be able to be controlled over BLE via a mobile connection with web bluetooth running on the client web browser that would control the signage device functions such as what to display and change the device state by writing to predefined BLE characteristics.
 
+###Hardware
+
 The hardware is made with the open-source PCB design tool [Kicad](http://kicad-pcb.org/). The hardware designs include:
 
 1. A custom programmer that made using a common commercial off the shelf CP210x Uart-USB converter.
 2. The LED driver board as at different versions.
 3. A custom ESP32 module, friendly for development and product placement made from the ESP WROOM32. It is meant to be programmed using the programmer above.
 
+###Firmware
 
 The fimware is divided into different components that are abstracted from each other and written in Pure C utilising the ESP-IDF framework and include:
 
+####Communication stack:
+
 1. ble_api- Contains utilities to control the BLE hardware. Interacts directly with the ESP BLE HAL. It is strictly written with multiple level of sanity checks on the input data from user prior to writing to flash.
+
+####Other components:
 
 2. common_api-Contains constants and definitions that persist across source files.
 
@@ -27,6 +34,8 @@ The fimware is divided into different components that are abstracted from each o
 7. renderer_api- This is the API that is heavily tied to the hardware itself and display method. The current display method is a row-scan method that takes advantage of the human persistence of vision.It also includes a header file containg the implemented character glyphs.
 
 7. main file- Is used to setup the various tasks and coordinates the various task interactions.
+
+The communication stack is meant to be purely independent of other components thus one could use a TCP/IP or cellular stack and just reuse the same interface and function calls or add to them.
 
 ### Building and uploading the code to device
 
