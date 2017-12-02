@@ -1,35 +1,4 @@
-EESchema Schematic File Version 2
-LIBS:power
-LIBS:device
-LIBS:transistors
-LIBS:conn
-LIBS:linear
-LIBS:regul
-LIBS:74xx
-LIBS:cmos4000
-LIBS:adc-dac
-LIBS:memory
-LIBS:xilinx
-LIBS:microcontrollers
-LIBS:dsp
-LIBS:microchip
-LIBS:analog_switches
-LIBS:motorola
-LIBS:texas
-LIBS:intel
-LIBS:audio
-LIBS:interface
-LIBS:digital-audio
-LIBS:philips
-LIBS:display
-LIBS:cypress
-LIBS:siliconi
-LIBS:opto
-LIBS:atmel
-LIBS:contrib
-LIBS:valves
-LIBS:pochi
-LIBS:narra
+EESchema Schematic File Version 4
 LIBS:ND-01-cache
 EELAYER 26 0
 EELAYER END
@@ -56,7 +25,7 @@ COL-SRCLK
 Text HLabel 5700 1500 2    39   Output ~ 0
 COL-RCK
 $Comp
-L CONN_01X08 J3
+L CONN_01X08-RESCUE-ND-01 J3
 U 1 1 58E79D53
 P 5350 1350
 F 0 "J3" H 5428 1391 50  0000 L CNN
@@ -77,7 +46,7 @@ Wire Wire Line
 Wire Wire Line
 	5700 1500 5550 1500
 $Comp
-L GND #PWR07
+L GND-RESCUE-ND-01 #PWR07
 U 1 1 58E79E5E
 P 5700 1800
 F 0 "#PWR07" H 5700 1550 50  0001 C CNN

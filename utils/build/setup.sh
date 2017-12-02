@@ -1,12 +1,11 @@
 ## Author: Elliot Williams
 ## Modified by : Alois Mbutura
 
-## INSTALL_DIR variable-This is where you want the entire toolchain to live
-## You should run this script from within the destination directory, or redefine the BASE variable to fit your lifestyle.
+## INSTALL_DIR variable-This is where you want the entire toolchain to live. Install three directory levels up.
+## You should run this script from within the destination directory
 
 #The script here is derived from: http://esp-idf.readthedocs.io/en/latest/get-started/linux-setup.html
 
-#Install three directory levels up.
 INSTALL_DIR=$(pwd)/../../../
 
 cd $INSTALL_DIR
@@ -96,6 +95,8 @@ echo "export IDF_PATH=${INSTALL_DIR}/esp-idf" >> ~/.bashrc
 echo "[$0]:  exported to bashrc IDF_PATH=${INSTALL_DIR}/esp-idf"
 echo "export PATH=$PATH:${INSTALL_DIR}/xtensa-esp32-elf/bin" >> ~/.bashrc
 echo "[$0]:  exported to bashrc PATH=$PATH:${INSTALL_DIR}/xtensa-esp32-elf/bin"
+source ~/.bashrc
+echo "Loaded new bashrc variables, no need to restart"
 
 echo ""
 echo "[$0]:  IDF demo instructions"
