@@ -42,9 +42,11 @@ cd ../../firmware
 make flash
 ``` 
 
-The firmware uis build for extensibility thus to support new languages, one just has to:
+The firmware is build for extensibility to support new codepoints under UTF-8. 
 
-1. create the glyphs that represent the characters for that language and add to the existing in renderer_api/include/glyphmap.h .
+To add new characters, one just has to:
+
+1. create the glyphs that represent the characters for that language and add to the existing in renderer_api/include/glyphmap.h . The characters are defined in codepoint ranges. To add a single character, the character range is 1.
 
 2. Change the allowed character UTF-8 codepoint ranges in  common_api/narra_defines "UTF-8 implementation defines" section and add your own following the UTF-8 encoding ranges.
 
@@ -52,7 +54,7 @@ The firmware uis build for extensibility thus to support new languages, one just
 
 ### Contributors
 
-[Alois Mbutura](alois.live) "aloismbutura@gmail.com"
+[Alois Mbutura](https://alois.live/) "aloismbutura@gmail.com"
 
 Felix omwansa "omwansafelixa@gmail.com"
 
