@@ -52,7 +52,7 @@ uint8_t raw_scan_rsp_data[] =
 
 #define MANUFACTURER_NAME "BITSOKO_SERVICES"
 
-#define FW_VER_STRING "0.9.4"
+#define FW_VER_STRING "1.0.0"
 
 uint8_t  dev_id_val[8] = {0};
 
