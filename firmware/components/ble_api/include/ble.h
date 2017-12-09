@@ -130,11 +130,12 @@ enum
     USAGE_IDX_NB,
 };
 
-void set_ble_event_group(EventGroupHandle_t event_group);
-
 void gatts_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param);
 
 void gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *param);
+
+
+void set_ble_event_group(EventGroupHandle_t event_group);
 
 esp_attr_value_t* get_usage_state_attribute(void);
 
