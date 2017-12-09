@@ -17,6 +17,7 @@
 #ifndef __CONFIG_BLE_H_
 #define __CONFIG_BLE_H_
 
+/*There exists an implicit 31 byte initial advertisement length limit*/
 uint8_t raw_adv_data[] = 
 {
 2,    // Length
@@ -39,7 +40,7 @@ uint8_t raw_adv_data[] =
 0x67,0x6F,0x6F,0x2E,0x67,0x6C,0x2F,0x46,0x39,0x31,0x55,0x72,0x72
 };
 
-
+/*There exists an implicit 31 byte scan-response advertisement length limit*/
 uint8_t raw_scan_rsp_data[] = 
 {
 
