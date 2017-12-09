@@ -1031,7 +1031,7 @@ static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_wri
 
     if(prepare_write_env->prepare_buf[(prepare_write_env->prepare_len)-1] != '\0')
     {
-        /*Byte array lacks NUL string terminator*/
+        /*Safety check-Byte array lacks NUL string terminator*/
         uint8_t* nul_terminated_buffer=(uint8_t*)malloc((prepare_write_env->prepare_len)+1);
         memcpy(nul_terminated_buffer, prepare_write_env->prepare_buf, prepare_write_env->prepare_len);
         nul_terminated_buffer[prepare_write_env->prepare_len] = '\0';
@@ -1082,7 +1082,7 @@ static void bytestring_check_then_write(esp_attr_value_t* attribute, prepare_wri
     }
     else
     {
-        /*Byte array contains NUL string terminator*/
+        /*Safety check-Byte array contains NUL string terminator*/
         invalid = simple_check_UTF8((char*)prepare_write_env->prepare_buf);
         if(!invalid)
         {
