@@ -901,7 +901,7 @@ static void usage_profile_prepare_write_event_handler(prepare_write_t *prepare_w
             }
             else if (prepare_write_env->handle == usage_handle_table[USAGE_IDX_SHUTDOWN_STRING_VAL])
             {
-                bytestring_check_then_write(&usage_startup_string_attribute, prepare_write_env, param);
+                bytestring_check_then_write(&usage_shutdown_string_attribute, prepare_write_env, param);
                 clear_write_buffer(prepare_write_env);
             }
         }
